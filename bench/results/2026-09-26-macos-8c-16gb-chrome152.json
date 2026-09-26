@@ -1,0 +1,49 @@
+{
+  "note": "AkariSP amortizes session initialization over repeated tasks; warm.baseCreate is a real one-time cost.",
+  "config": {
+    "iterations": 30,
+    "warmup": 3,
+    "prompts": [
+      "What is the capital of France?",
+      "Name one benefit of unit tests.",
+      "What does HTTP stand for?",
+      "Give a synonym for \"fast\".",
+      "What is 12 times 12?"
+    ],
+    "session": {
+      "initialPrompts": [
+        { "role": "system", "content": "You are a concise assistant. Answer in one sentence." }
+      ]
+    },
+    "order": "interleaved, alternating first path"
+  },
+  "env": {
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+    "brands": [
+      { "brand": "Chromium", "version": "152" },
+      { "brand": "Not?A_Brand", "version": "24" },
+      { "brand": "Google Chrome", "version": "152" }
+    ],
+    "hardwareConcurrency": 8,
+    "deviceMemory": 16,
+    "date": "2026-09-26T13:46:57.249Z"
+  },
+  "cold": {
+    "create": { "n": 30, "min": 204.40000009536743, "median": 222.89999997615814, "mean": 255.7100000222524, "p95": 488.09999990463257, "max": 667.2000000476837 },
+    "prompt": { "n": 30, "min": 618.1000001430511, "median": 910.6499999761581, "mean": 1064.22666665713, "p95": 1921.8999998569489, "max": 2181.300000190735 },
+    "total": { "n": 30, "min": 831.6999998092651, "median": 1209.1499999761581, "mean": 1319.97666665713, "p95": 2155.2000000476837, "max": 2393.600000143051 }
+  },
+  "warm": {
+    "baseCreate": 16380.5,
+    "acquire": { "n": 30, "min": 0.09999990463256836, "median": 0.40000009536743164, "mean": 0.5633333603541056, "p95": 1.5, "max": 3.299999952316284 },
+    "prompt": { "n": 30, "min": 362.19999980926514, "median": 1011.4000000953674, "mean": 1102.4200000047683, "p95": 2219.5, "max": 2508.399999856949 },
+    "total": { "n": 30, "min": 362.39999985694885, "median": 1011.9000000953674, "mean": 1103.0366666952768, "p95": 2220.0999999046326, "max": 2509 },
+    "queueWait": { "n": 30, "min": 0, "median": 0, "mean": 0, "p95": 0, "max": 0 },
+    "overhead": { "n": 30, "min": 0, "median": 0, "mean": 0.05333333015441895, "p95": 0.20000004768371582, "max": 0.40000009536743164 },
+    "amortizedTotal": { "1": 17090, "10": 2770.9700000047683, "30": 1649.0533333619435 }
+  },
+  "checks": {
+    "SC-001 warm.acquire.median × 10 ≤ cold.create.median": true,
+    "SC-002 warm.overhead.median < 1 ms": true
+  }
+}

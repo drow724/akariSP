@@ -1,0 +1,25 @@
+{
+  "name": "akarisp",
+  "version": "0.1.0",
+  "description": "Lightweight runtime for browser-native LLM sessions: warm base session, cloned isolated tasks",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=22.18"
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "node --test test/*.test.ts"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  }
+}
