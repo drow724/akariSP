@@ -1,10 +1,10 @@
 import { test, beforeEach } from 'node:test';
 import assert from 'node:assert/strict';
 import { getEventListeners } from 'node:events';
-import { createRuntime, TaskError } from '../src/index.ts';
+import { createCoreRuntime, TaskError, type RuntimeOptions } from '../src/core/runtime.ts';
 
 // ---------------------------------------------------------------------------
-// Fake LanguageModel. Hook modes express AkariSP race scenarios, not claims about
+// Fake session provider. Hook modes express AkariSP race scenarios, not claims about
 // Chrome's behavior.
 // ---------------------------------------------------------------------------
 
@@ -14,6 +14,7 @@ type PromptHook = (signal: Signal, input: unknown) => Promise<string>;
 /** One provider stream: string = chunk, { hold } = wait for release, { error } = throw. */
 type StreamStep = string | { hold: Promise<void> } | { error: unknown };
 
+let provider: any;
 let fake: {
   live: number;
   liveClones: number;
@@ -107,7 +108,7 @@ beforeEach(() => {
     streamHooks: [], streams: 0, streamSignals: [],
     createError: undefined, destroyThrows: false, onDestroy: undefined,
   };
-  (globalThis as any).LanguageModel = {
+  provider = {
     async create(options?: { initialPrompts?: unknown[] }) {
       fake.creates++;
       fake.createArgs.push(options);
@@ -116,6 +117,8 @@ beforeEach(() => {
     },
   };
 });
+
+const createRuntime = (options?: RuntimeOptions) => createCoreRuntime(provider, options);
 
 function deferred<T = void>() {
   let resolve!: (v: T) => void, reject!: (e: unknown) => void;
@@ -409,6 +412,19 @@ test('clone InvalidStateError: broken, later runs rejected without clone, no rec
   assert.equal((await rejection(runtime.run('y'))).code, 'broken');
   assert.equal(fake.clones, 1);
   assert.equal(fake.creates, 1);
+});
+
+// 005 T005: pins the existing condition (DOMException named InvalidStateError); not new behavior.
+test('clone error named InvalidStateError but not a DOMException: failed, not broken', async () => {
+  const runtime = await createRuntime();
+  const error = { name: 'InvalidStateError' };
+  failNextClone(error);
+  const e = await rejection(runtime.run('x'));
+  assert.equal(e.code, 'failed');
+  assert.equal(e.cause, error);
+  assert.equal(runtime.state, 'ready');
+  await runtime.run('y');
+  assert.equal(fake.clones, 2);
 });
 
 // ---------------------------------------------------------------------------
@@ -1549,9 +1565,9 @@ test('templates: empty templates → TypeError without session, single-session w
 // US5 — lifecycle for all bases (T007–T009)
 
 function failCreateOn(n: number, error: unknown) {
-  const create = (globalThis as any).LanguageModel.create;
+  const create = provider.create;
   let calls = 0;
-  (globalThis as any).LanguageModel.create = async (options: unknown) => {
+  provider.create = async (options: unknown) => {
     if (++calls === n) throw error;
     return create(options);
   };
