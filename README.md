@@ -118,6 +118,9 @@ of a full `LanguageModel.create()`. Measure it on your device with the benchmark
 ## Development
 
 ```bash
-npm test       # node:test against a fake LanguageModel (Node ≥ 22.18)
+npm test       # node:test: core with a fake provider, browser adapter, boundary (Node ≥ 22.18)
 npm run build  # tsc → dist/
 ```
+
+Source layout: `src/core/` is the provider-neutral runtime (no browser globals);
+`src/browser/` maps it to the Prompt API's `LanguageModel`; `src/index.ts` is the public entry.
