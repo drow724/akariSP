@@ -1163,3 +1163,246 @@ test('burst of 100 mixed run/stream: running never exceeds the limit (SC-104)', 
   assert.ok(fake.maxLiveClones <= 2);
   assert.equal(fake.live, 1);
 });
+
+// ===========================================================================
+// 003 — runtime snapshot
+// ===========================================================================
+
+// US1 — inspect current pressure (T003)
+
+test('snapshot: idle with defaults and explicit config', async () => {
+  let runtime = await createRuntime();
+  assert.deepEqual(runtime.snapshot(), { state: 'ready', active: 0, queued: 0, limit: 1, queueCapacity: 32 });
+  runtime = await createRuntime({ limit: 3, queueCapacity: 7 });
+  const s = runtime.snapshot();
+  assert.ok(!((s as unknown) instanceof Promise));
+  assert.equal(s.limit, 3);
+  assert.equal(s.queueCapacity, 7);
+});
+
+test('snapshot: independent fresh object per call', async () => {
+  const runtime = await createRuntime();
+  const a = runtime.snapshot();
+  a.active = 99;
+  (a as { state: string }).state = 'closed';
+  const b = runtime.snapshot();
+  assert.notEqual(a, b);
+  assert.equal(b.active, 0);
+  assert.equal(b.state, 'ready');
+  assert.equal(runtime.state, 'ready');
+  const hold = holdPrompt();
+  const p = runtime.run('x');
+  const c = runtime.snapshot();
+  assert.equal(b.active, 0);
+  assert.equal(c.active, 1);
+  hold.release();
+  await p;
+});
+
+// US2 — counts follow the task lifecycle (T004, T005)
+
+test('snapshot: active follows slot ownership for run and stream', async () => {
+  const runtime = await createRuntime({ limit: 2 });
+  const hold = holdPrompt();
+  const r = runtime.run('r');
+  assert.equal(runtime.snapshot().active, 1);
+  const held = holdStream(['a'], ['b']);
+  const it = runtime.stream('s')[Symbol.asyncIterator]();
+  await it.next();
+  assert.equal(runtime.snapshot().active, 2); // shared count
+  hold.release();
+  await r;
+  assert.equal(runtime.snapshot().active, 1);
+  held.release();
+  while (!(await it.next()).done);
+  assert.equal(runtime.snapshot().active, 0);
+});
+
+test('snapshot: task stays active while its session is being destroyed', async () => {
+  const runtime = await createRuntime();
+  let during: number | undefined;
+  fake.onDestroy = () => { during = runtime.snapshot().active; fake.onDestroy = undefined; };
+  await runtime.run('x');
+  assert.equal(during, 1);
+  assert.equal(runtime.snapshot().active, 0);
+});
+
+test('snapshot: paused stream consumer drops out of active on abort without another pull', async () => {
+  const runtime = await createRuntime();
+  const ctrl = new AbortController();
+  const it = runtime.stream('x', { signal: ctrl.signal })[Symbol.asyncIterator]();
+  await it.next();
+  assert.equal(runtime.snapshot().active, 1);
+  ctrl.abort();
+  await tick();
+  assert.equal(runtime.snapshot().active, 0);
+  await rejection(it.next());
+});
+
+test('snapshot: queued run and queued stream; lazy stream not counted', async () => {
+  const runtime = await createRuntime({ limit: 1, queueCapacity: 2 });
+  const hold = holdPrompt();
+  const a = runtime.run('A');
+  const lazy = runtime.stream('lazy');
+  assert.deepEqual([runtime.snapshot().active, runtime.snapshot().queued], [1, 0]);
+  const b = runtime.run('B');
+  assert.equal(runtime.snapshot().queued, 1);
+  const s = collect(runtime.stream('S')); // first pull happens now and waits
+  assert.equal(runtime.snapshot().queued, 2);
+  assert.equal(lazy.timing, undefined);
+  hold.release();
+  await Promise.all([a, b, s]);
+  assert.deepEqual([runtime.snapshot().active, runtime.snapshot().queued], [0, 0]);
+});
+
+test('snapshot: capacity rejection not queued; queued cancellation removed immediately', async () => {
+  const runtime = await createRuntime({ limit: 1, queueCapacity: 1 });
+  const hold = holdPrompt();
+  const a = runtime.run('A');
+  const ctrl = new AbortController();
+  const b = rejection(runtime.run('B', { signal: ctrl.signal }));
+  const c = rejection(runtime.run('C'));
+  assert.equal(runtime.snapshot().queued, 1);
+  assert.equal((await c).code, 'rejected');
+  assert.equal(runtime.snapshot().queued, 1);
+  ctrl.abort();
+  assert.equal(runtime.snapshot().queued, 0); // same tick as the abort
+  assert.equal((await b).code, 'cancelled');
+  hold.release();
+  await a;
+});
+
+test('snapshot: queued → active handoff is consistent at every deterministic observation', async () => {
+  // Invariant: active + queued = tasks whose admission was accepted and that have not yet
+  // left the queue or released their slot. Lazy streams and failed admissions never count.
+  const runtime = await createRuntime({ limit: 1, queueCapacity: 2 });
+  const lazy = runtime.stream('never pulled');
+  const hold = holdPrompt();
+  let admitted = 0;
+  const check = () => {
+    const { active, queued } = runtime.snapshot();
+    assert.equal(active + queued, admitted);
+    assert.ok(active <= 1);
+    return { active, queued };
+  };
+  const a = runtime.run('A'); admitted++;
+  check();
+  const b = runtime.run('B'); admitted++;
+  const c = collect(runtime.stream('C')); admitted++;
+  assert.deepEqual(check(), { active: 1, queued: 2 });
+  const observed: Array<{ active: number; queued: number }> = [];
+  fake.onDestroy = () => observed.push(check()); // A (then B, C) still owns its slot here
+  hold.release();
+  await a; admitted--;
+  assert.deepEqual(check(), { active: 1, queued: 1 }); // B moved to active, C still queued
+  await b; admitted--;
+  assert.deepEqual(check(), { active: 1, queued: 0 });
+  await c; admitted--;
+  assert.deepEqual(check(), { active: 0, queued: 0 });
+  assert.deepEqual(observed.map((o) => o.active), [1, 1, 1]);
+  assert.deepEqual(observed.map((o) => o.queued), [2, 1, 0]);
+  assert.equal(lazy.timing, undefined);
+});
+
+test('snapshot: saturated — limit 2, 2 held + 5 queued (mixed run/stream)', async () => {
+  const runtime = await createRuntime({ limit: 2, queueCapacity: 32 });
+  const h1 = holdPrompt();
+  const h2 = holdPrompt();
+  const tasks = [runtime.run('1'), runtime.run('2')];
+  for (let i = 0; i < 5; i++) tasks.push(i % 2 ? runtime.run(`q${i}`) : collect(runtime.stream(`q${i}`)) as Promise<any>);
+  assert.deepEqual([runtime.snapshot().active, runtime.snapshot().queued], [2, 5]);
+  h1.release();
+  h2.release();
+  await Promise.all(tasks);
+  assert.deepEqual([runtime.snapshot().active, runtime.snapshot().queued], [0, 0]);
+});
+
+// US3 — safe in every lifecycle state (T006, T007)
+
+test('snapshot: broken — queued 0, running task stays active, no recovery', async () => {
+  const runtime = await createRuntime({ limit: 2, queueCapacity: 1 });
+  const hold = holdPrompt('A');
+  const a = runtime.run('A');
+  await tick();
+  failNextClone(new DOMException('gone', 'InvalidStateError'));
+  const b = rejection(runtime.run('B'));
+  const c = rejection(runtime.run('C'));
+  assert.equal(runtime.snapshot().queued, 1);
+  assert.equal((await b).code, 'broken');
+  const s = runtime.snapshot();
+  assert.deepEqual([s.state, s.queued, s.active], ['broken', 0, 1]);
+  assert.equal((await c).code, 'broken');
+  const creates = fake.creates;
+  for (let i = 0; i < 10; i++) runtime.snapshot();
+  assert.equal(fake.creates, creates);
+  hold.release();
+  await a;
+  assert.deepEqual([runtime.snapshot().state, runtime.snapshot().active], ['broken', 0]);
+});
+
+test('snapshot: shutdown in progress vs completed', async () => {
+  const runtime = await createRuntime({ limit: 1, queueCapacity: 1 });
+  holdPrompt();
+  const a = rejection(runtime.run('A'));
+  const b = rejection(runtime.run('B'));
+  const closing = runtime.shutdown();
+  assert.deepEqual(runtime.snapshot(), { state: 'closed', active: 1, queued: 0, limit: 1, queueCapacity: 1 });
+  await closing;
+  assert.deepEqual(runtime.snapshot(), { state: 'closed', active: 0, queued: 0, limit: 1, queueCapacity: 1 });
+  await Promise.all([a, b]);
+});
+
+test('snapshot: shutdown with a paused stream reaches 0 active', async () => {
+  const runtime = await createRuntime();
+  const it = runtime.stream('x')[Symbol.asyncIterator]();
+  await it.next();
+  assert.equal(runtime.snapshot().active, 1);
+  await runtime.shutdown();
+  assert.deepEqual([runtime.snapshot().state, runtime.snapshot().active, runtime.snapshot().queued], ['closed', 0, 0]);
+  await rejection(it.next());
+});
+
+// Polish — bound and side-effect validation (T008, T009)
+
+test('snapshot: 100 mixed tasks never exceed limit or queue capacity (SC-203)', async () => {
+  const runtime = await createRuntime({ limit: 2, queueCapacity: 4 });
+  for (let i = 0; i < 100; i++) {
+    fake.promptHooks.push(async () => { await tick(); return 'ok'; });
+    fake.streamHooks.push(['a', { hold: tick() as Promise<any> }, 'b']);
+  }
+  let peak = 0;
+  const bound = () => {
+    const { active, queued } = runtime.snapshot();
+    assert.ok(active <= 2 && queued <= 4, `active=${active} queued=${queued}`);
+    peak = Math.max(peak, active + queued);
+  };
+  const ctrls = Array.from({ length: 100 }, () => new AbortController());
+  const tasks = ctrls.map((c, i) => {
+    const p = i % 2
+      ? runtime.run(`r${i}`, { signal: c.signal })
+      : collect(runtime.stream(`s${i}`, { signal: c.signal }));
+    return p.then(bound, bound);
+  });
+  bound();
+  ctrls[3].abort();
+  ctrls[4].abort();
+  bound();
+  await Promise.all(tasks);
+  assert.equal(peak, 6); // the burst really saturated limit + queue
+  assert.deepEqual([runtime.snapshot().active, runtime.snapshot().queued], [0, 0]);
+});
+
+test('snapshot: 10,000 reads have no side effects (SC-204; not a benchmark)', async () => {
+  const runtime = await createRuntime({ limit: 1, queueCapacity: 1 });
+  const hold = holdPrompt();
+  const a = runtime.run('A');
+  const b = runtime.run('B');
+  const before = { creates: fake.creates, clones: fake.clones, destroys: fake.destroys, state: runtime.state };
+  const snap = runtime.snapshot();
+  for (let i = 0; i < 10_000; i++) runtime.snapshot();
+  assert.deepEqual({ creates: fake.creates, clones: fake.clones, destroys: fake.destroys, state: runtime.state }, before);
+  assert.deepEqual(runtime.snapshot(), snap);
+  hold.release();
+  await Promise.all([a, b]);
+  assert.ok((await runtime.run('after')).output);
+});
