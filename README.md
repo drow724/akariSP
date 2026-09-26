@@ -41,6 +41,27 @@ await runtime.shutdown(); // cancels running tasks, rejects waiting ones, destro
 Each `run()` clones the base, prompts the clone, and destroys it. The task's promise settles
 only after its session is destroyed and its slot released.
 
+## Streaming
+
+```js
+const stream = runtime.stream('Explain HTTP in two sentences.', {
+  signal: AbortSignal.timeout(10_000),
+});
+for await (const chunk of stream) {
+  output.textContent += chunk;
+  if (userClickedStop) break; // clone destroyed and slot released before the loop exits
+}
+console.log(stream.timing); // final TaskTiming; undefined until the stream has fully ended
+```
+
+- Same limit, queue, cancellation, broken, and shutdown rules as `run()`; both share one queue.
+- Lazy: nothing is queued or cloned until the first pull, so an unused stream costs nothing.
+- Single use: iterating the same stream twice throws `TypeError`.
+- `timing.prompt` runs until the loop sees the model's end; because chunks are pulled, it includes
+  the time your loop body spends on each chunk.
+- `break` is not an error. Cancellation, timeout, model failure, and shutdown end the loop with a
+  `TaskError`, and cleanup happens even if you have stopped pulling chunks.
+
 ## States
 
 - `ready`: accepts tasks.

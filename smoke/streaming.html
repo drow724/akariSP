@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<title>AkariSP streaming smoke test</title>
+<style>
+  body { font: 14px system-ui, sans-serif; margin: 2rem; max-width: 64rem; }
+  table { border-collapse: collapse; margin-bottom: 1rem; }
+  td { padding: 2px 12px 2px 0; }
+  button { margin: 0 6px 6px 0; }
+  .pass { color: #0a7d32; } .fail { color: #b3261e; } .run { color: #8a6d00; }
+  pre { background: #f4f4f4; padding: .75rem; overflow: auto; white-space: pre-wrap; }
+  #unavailable { color: #b3261e; font-weight: 600; white-space: pre-line; }
+</style>
+<h1>AkariSP streaming smoke test</h1>
+<p>Real Chrome <code>LanguageModel</code> → AkariSP <code>runtime.stream()</code>. Verifies lifecycle
+compatibility only; not a benchmark and not an output-quality check.</p>
+
+<table>
+  <tr><td>LanguageModel exists</td><td id="exists">…</td></tr>
+  <tr><td>Model availability</td><td id="availability">…</td></tr>
+  <tr><td>Runtime state</td><td id="state">–</td></tr>
+  <tr><td>Current test</td><td id="current">–</td></tr>
+</table>
+<p id="unavailable" hidden></p>
+
+<div id="buttons"></div>
+
+<h2>Results</h2>
+<pre id="results"></pre>
+
+<h2>Chunks (current test)</h2>
+<pre id="chunks"></pre>
+
+<h2>Log</h2>
+<pre id="log"></pre>
+
+<script type="module" src="./streaming.js"></script>
+</html>

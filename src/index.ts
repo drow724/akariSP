@@ -2,6 +2,7 @@
 interface Session {
   clone(options?: { signal?: AbortSignal }): Promise<Session>;
   prompt(input: Prompt, options?: { signal?: AbortSignal }): Promise<string>;
+  promptStreaming(input: Prompt, options?: { signal?: AbortSignal }): AsyncIterable<string>;
   destroy(): void;
 }
 declare const LanguageModel: { create(options?: object): Promise<Session> };
@@ -27,9 +28,17 @@ export interface Runtime {
   readonly state: 'ready' | 'broken' | 'closed';
   /** Clone base → prompt → destroy clone. */
   run(input: Prompt, options?: { signal?: AbortSignal }): Promise<TaskResult>;
+  /** Same lifecycle as run(), output as chunks. Lazy: nothing is admitted until the first
+   *  pull. Single-use. Leaving the loop early destroys the clone before the loop exits. */
+  stream(input: Prompt, options?: { signal?: AbortSignal }): TaskStream;
   /** Reject waiters, cancel running tasks, destroy all sessions. Idempotent and safe to
    *  call concurrently; never rejects. Resolves only after all cleanup is done. */
   shutdown(): Promise<void>;
+}
+
+export interface TaskStream extends AsyncIterable<string> {
+  /** undefined until the task has ended and its resources are cleaned up. */
+  readonly timing: TaskTiming | undefined;
 }
 
 export interface TaskResult {
@@ -83,80 +92,140 @@ export async function createRuntime(options: RuntimeOptions = {}): Promise<Runti
     if (running === 0) idle?.();
   };
 
+  // --- Task lifecycle shared by run() and stream() --------------------------------------
+
+  // State and pre-abort checks, then a slot now or a FIFO wait. Sets `total` on its errors.
+  const admit = async (signal: AbortSignal | undefined) => {
+    const t0 = performance.now();
+    const timing: TaskTiming = { total: 0 };
+    const fail = (code: TaskError['code'], cause?: unknown) => {
+      timing.total = performance.now() - t0;
+      return new TaskError(code, timing, cause);
+    };
+    if (state !== 'ready') throw fail(state);
+    if (signal?.aborted) throw fail('cancelled', signal.reason);
+
+    if (running < limit) {
+      running++;
+      timing.queueWait = 0;
+    } else if (queue.length < queueCapacity) {
+      await new Promise<void>((resolve, reject) => {
+        const leave: Leave = (code, cause) => {
+          signal?.removeEventListener('abort', onAbort);
+          timing.queueWait = performance.now() - t0;
+          code ? reject(fail(code, cause)) : resolve();
+        };
+        const onAbort = () => {
+          queue.splice(queue.indexOf(leave), 1);
+          leave('cancelled', signal!.reason);
+        };
+        signal?.addEventListener('abort', onAbort, { once: true });
+        queue.push(leave);
+      });
+    } else {
+      throw fail('rejected');
+    }
+    // Now a running task holding a slot; the caller must end() it.
+    const sig = signal ? AbortSignal.any([signal, closer.signal]) : closer.signal;
+    return { t0, timing, sig };
+  };
+
+  // Errors thrown while running leave `total` to end().
+  const failure = (sig: AbortSignal, timing: TaskTiming, e: unknown) =>
+    sig.aborted ? new TaskError('cancelled', timing, sig.reason) : new TaskError('failed', timing, e);
+
+  const acquire = async (sig: AbortSignal, timing: TaskTiming) => {
+    if (sig.aborted) throw new TaskError('cancelled', timing, sig.reason);
+    if (state === 'broken') throw new TaskError('broken', timing); // broke while this task waited
+    const t1 = performance.now();
+    let task: Session;
+    try {
+      task = await base.clone({ signal: sig });
+    } catch (e) {
+      // ponytail: InvalidStateError = base no longer trusted (research R2); revisit if the
+      // Prompt API spec defines destroyed-session errors differently.
+      if (!sig.aborted && e instanceof DOMException && e.name === 'InvalidStateError') {
+        if (state === 'ready') {
+          state = 'broken';
+          drain('broken');
+        }
+        throw new TaskError('broken', timing, e);
+      }
+      throw failure(sig, timing, e);
+    }
+    timing.acquire = performance.now() - t1;
+    return task; // caller owns it before checking sig.aborted, so end() destroys a late clone
+  };
+
+  // Destroy → release slot → total. Runs before the task's outcome settles (FR-009b).
+  const end = (task: Session | undefined, t0: number, timing: TaskTiming) => {
+    try { task?.destroy(); } catch {}
+    release();
+    timing.total = performance.now() - t0;
+  };
+
   return {
     get state() { return state; },
 
     async run(input, { signal } = {}) {
-      const t0 = performance.now();
-      const timing: TaskTiming = { total: 0 };
-      const fail = (code: TaskError['code'], cause?: unknown) => {
-        timing.total = performance.now() - t0;
-        return new TaskError(code, timing, cause);
-      };
-      if (state !== 'ready') throw fail(state);
-      if (signal?.aborted) throw fail('cancelled', signal.reason);
-
-      if (running < limit) {
-        running++;
-        timing.queueWait = 0;
-      } else if (queue.length < queueCapacity) {
-        await new Promise<void>((resolve, reject) => {
-          const leave: Leave = (code, cause) => {
-            signal?.removeEventListener('abort', onAbort);
-            timing.queueWait = performance.now() - t0;
-            code ? reject(fail(code, cause)) : resolve();
-          };
-          const onAbort = () => {
-            queue.splice(queue.indexOf(leave), 1);
-            leave('cancelled', signal!.reason);
-          };
-          signal?.addEventListener('abort', onAbort, { once: true });
-          queue.push(leave);
-        });
-      } else {
-        throw fail('rejected');
-      }
-
-      // Running task: holds a slot; its session is destroyed and the slot released in
-      // `finally`, before the outcome settles (FR-009b).
-      const sig = signal ? AbortSignal.any([signal, closer.signal]) : closer.signal;
+      const { t0, timing, sig } = await admit(signal);
       let task: Session | undefined;
       try {
-        if (sig.aborted) throw fail('cancelled', sig.reason);
-        // `state` may have changed while waiting; TS keeps the pre-await narrowing.
-        if ((state as Runtime['state']) === 'broken') throw fail('broken');
-        const t1 = performance.now();
-        try {
-          task = await base.clone({ signal: sig });
-        } catch (e) {
-          if (sig.aborted) throw fail('cancelled', sig.reason);
-          // ponytail: InvalidStateError = base no longer trusted (research R2); revisit if the
-          // Prompt API spec defines destroyed-session errors differently.
-          if (e instanceof DOMException && e.name === 'InvalidStateError') {
-            if (state === 'ready') {
-              state = 'broken';
-              drain('broken');
-            }
-            throw fail('broken', e);
-          }
-          throw fail('failed', e);
-        }
-        timing.acquire = performance.now() - t1;
-        if (sig.aborted) throw fail('cancelled', sig.reason);
+        task = await acquire(sig, timing);
+        if (sig.aborted) throw new TaskError('cancelled', timing, sig.reason);
         const t2 = performance.now();
-        let output: string;
-        try {
-          output = await task.prompt(input, { signal: sig });
-        } catch (e) {
-          throw sig.aborted ? fail('cancelled', sig.reason) : fail('failed', e);
-        }
+        const output = await task.prompt(input, { signal: sig }).catch((e) => { throw failure(sig, timing, e); });
         timing.prompt = performance.now() - t2;
         return { output, timing };
       } finally {
-        try { task?.destroy(); } catch {}
-        release();
-        timing.total = performance.now() - t0;
+        end(task, t0, timing);
       }
+    },
+
+    stream(input, { signal } = {}) {
+      let used = false;
+      const s = {
+        timing: undefined as TaskTiming | undefined,
+        // Async generator: nothing runs before the first pull (lazy), and `break`/return()
+        // runs `finally` and cancels the provider stream before the loop exit completes.
+        async *[Symbol.asyncIterator]() {
+          if (used) throw new TypeError('stream already consumed');
+          used = true;
+          const { t0, timing, sig } = await admit(signal).catch((e: TaskError) => {
+            s.timing = e.timing;
+            throw e;
+          });
+          let task: Session | undefined;
+          let onAbort: (() => void) | undefined; // declared before cleanup, which reads it
+          let cleaning: Promise<void> | undefined;
+          // Single-flight: every caller awaits the same cleanup.
+          const cleanup = () => (cleaning ??= (async () => {
+            if (onAbort) sig.removeEventListener('abort', onAbort);
+            end(task, t0, timing);
+            s.timing = timing;
+          })());
+          try {
+            task = await acquire(sig, timing);
+            if (sig.aborted) throw new TaskError('cancelled', timing, sig.reason);
+            // The consumer may stop pulling while paused at `yield`; clean up on abort anyway.
+            onAbort = () => void cleanup();
+            sig.addEventListener('abort', onAbort, { once: true });
+            const t2 = performance.now();
+            try {
+              for await (const chunk of task.promptStreaming(input, { signal: sig })) {
+                yield chunk;
+                if (sig.aborted) throw sig.reason; // resumed after abort; mapped below
+              }
+            } catch (e) {
+              throw failure(sig, timing, e);
+            }
+            timing.prompt = performance.now() - t2;
+          } finally {
+            await cleanup();
+          }
+        },
+      };
+      return s;
     },
 
     shutdown() {
