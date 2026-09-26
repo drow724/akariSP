@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<title>AkariSP benchmark</title>
+<style>
+  body { font: 14px system-ui, sans-serif; margin: 2rem; max-width: 60rem; }
+  label { margin-right: 1rem; }
+  input { width: 4rem; }
+  pre { background: #f4f4f4; padding: 1rem; overflow: auto; }
+</style>
+<h1>AkariSP: cold vs warm</h1>
+<p>Cold: <code>LanguageModel.create → prompt → destroy</code>. Warm: one-time
+<code>createRuntime</code>, then <code>clone → prompt → destroy</code> per task.</p>
+<label>Iterations <input id="iterations" type="number" min="1" value="30"></label>
+<label>Warmup <input id="warmup" type="number" min="0" value="3"></label>
+<button id="run">Run</button>
+<p id="status"></p>
+<pre id="out"></pre>
+<script type="module" src="./bench.js"></script>
+</html>
