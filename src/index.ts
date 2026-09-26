@@ -14,8 +14,11 @@ type Prompt = string | readonly object[];
 type Leave = (code?: 'cancelled' | 'broken' | 'closed', cause?: unknown) => void;
 
 export interface RuntimeOptions {
-  /** Passed unchanged to LanguageModel.create() for the base session. */
+  /** Passed unchanged to LanguageModel.create() for the unnamed default template. */
   session?: object;
+  /** Named templates: name → options passed unchanged to LanguageModel.create(). Fixed for the
+   *  runtime's lifetime. If given without `session`, there is no default template. */
+  templates?: Record<string, object>;
   /** Absolute cap on running tasks (slot acquire → clone → prompt → destroy → release).
    *  Integer ≥ 1. Default 1. */
   limit?: number;
@@ -27,10 +30,10 @@ export interface RuntimeOptions {
 export interface Runtime {
   readonly state: 'ready' | 'broken' | 'closed';
   /** Clone base → prompt → destroy clone. */
-  run(input: Prompt, options?: { signal?: AbortSignal }): Promise<TaskResult>;
+  run(input: Prompt, options?: { signal?: AbortSignal; template?: string }): Promise<TaskResult>;
   /** Same lifecycle as run(), output as chunks. Lazy: nothing is admitted until the first
    *  pull. Single-use. Leaving the loop early destroys the clone before the loop exits. */
-  stream(input: Prompt, options?: { signal?: AbortSignal }): TaskStream;
+  stream(input: Prompt, options?: { signal?: AbortSignal; template?: string }): TaskStream;
   /** Synchronous, read-only view of current state. Never waits, never changes anything. */
   snapshot(): RuntimeSnapshot;
   /** Reject waiters, cancel running tasks, destroy all sessions. Idempotent and safe to
@@ -78,12 +81,32 @@ export class TaskError extends Error {
 }
 
 export async function createRuntime(options: RuntimeOptions = {}): Promise<Runtime> {
-  const { session, limit = 1, queueCapacity = 32 } = options;
+  const { session, templates, limit = 1, queueCapacity = 32 } = options;
   if (!Number.isInteger(limit) || limit < 1) throw new TypeError('limit must be an integer >= 1');
   if (!Number.isInteger(queueCapacity) || queueCapacity < 0) {
     throw new TypeError('queueCapacity must be a finite integer >= 0');
   }
-  const base = await LanguageModel.create(session);
+  if (templates && Object.keys(templates).length === 0 && session === undefined) {
+    throw new TypeError('templates is empty and no session was given');
+  }
+  // One warm base per template; key undefined = unnamed default. Fixed after creation.
+  const bases = new Map<string | undefined, Session>();
+  try {
+    // ponytail: sequential creation scales startup with template count; use Promise.allSettled
+    // if startup latency matters.
+    if (templates === undefined || session !== undefined) bases.set(undefined, await LanguageModel.create(session));
+    for (const [name, config] of Object.entries(templates ?? {})) bases.set(name, await LanguageModel.create(config));
+  } catch (e) {
+    for (const b of bases.values()) try { b.destroy(); } catch {}
+    throw e;
+  }
+  const pick = (template?: string) => {
+    const base = bases.get(template);
+    if (base) return base;
+    throw new TypeError(template === undefined
+      ? 'template is required: this runtime has no default session'
+      : `unknown template "${template}"`);
+  };
   let state: Runtime['state'] = 'ready';
   const closer = new AbortController();
   let running = 0;
@@ -146,7 +169,7 @@ export async function createRuntime(options: RuntimeOptions = {}): Promise<Runti
   const failure = (sig: AbortSignal, timing: TaskTiming, e: unknown) =>
     sig.aborted ? new TaskError('cancelled', timing, sig.reason) : new TaskError('failed', timing, e);
 
-  const acquire = async (sig: AbortSignal, timing: TaskTiming) => {
+  const acquire = async (base: Session, sig: AbortSignal, timing: TaskTiming) => {
     if (sig.aborted) throw new TaskError('cancelled', timing, sig.reason);
     if (state === 'broken') throw new TaskError('broken', timing); // broke while this task waited
     const t1 = performance.now();
@@ -181,11 +204,12 @@ export async function createRuntime(options: RuntimeOptions = {}): Promise<Runti
 
     snapshot: () => ({ state, active: running, queued: queue.length, limit, queueCapacity }),
 
-    async run(input, { signal } = {}) {
+    async run(input, { signal, template } = {}) {
+      const base = pick(template); // before admission: a bad template consumes nothing
       const { t0, timing, sig } = await admit(signal);
       let task: Session | undefined;
       try {
-        task = await acquire(sig, timing);
+        task = await acquire(base, sig, timing);
         if (sig.aborted) throw new TaskError('cancelled', timing, sig.reason);
         const t2 = performance.now();
         const output = await task.prompt(input, { signal: sig }).catch((e) => { throw failure(sig, timing, e); });
@@ -196,7 +220,7 @@ export async function createRuntime(options: RuntimeOptions = {}): Promise<Runti
       }
     },
 
-    stream(input, { signal } = {}) {
+    stream(input, { signal, template } = {}) {
       let used = false;
       const s = {
         timing: undefined as TaskTiming | undefined,
@@ -205,6 +229,7 @@ export async function createRuntime(options: RuntimeOptions = {}): Promise<Runti
         async *[Symbol.asyncIterator]() {
           if (used) throw new TypeError('stream already consumed');
           used = true;
+          const base = pick(template); // first pull, before admission
           const { t0, timing, sig } = await admit(signal).catch((e: TaskError) => {
             s.timing = e.timing;
             throw e;
@@ -219,7 +244,7 @@ export async function createRuntime(options: RuntimeOptions = {}): Promise<Runti
             s.timing = timing;
           })());
           try {
-            task = await acquire(sig, timing);
+            task = await acquire(base, sig, timing);
             if (sig.aborted) throw new TaskError('cancelled', timing, sig.reason);
             // The consumer may stop pulling while paused at `yield`; clean up on abort anyway.
             onAbort = () => void cleanup();
@@ -249,7 +274,7 @@ export async function createRuntime(options: RuntimeOptions = {}): Promise<Runti
         drain('closed');
         closer.abort(new DOMException('Runtime closed', 'AbortError'));
         if (running) await new Promise<void>((resolve) => { idle = resolve; });
-        try { base.destroy(); } catch {}
+        for (const b of bases.values()) try { b.destroy(); } catch {}
       })());
     },
   };

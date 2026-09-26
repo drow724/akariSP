@@ -62,6 +62,33 @@ console.log(stream.timing); // final TaskTiming; undefined until the stream has 
 - `break` is not an error. Cancellation, timeout, model failure, and shutdown end the loop with a
   `TaskError`, and cleanup happens even if you have stopped pulling chunks.
 
+## Templates
+
+One runtime can hold a small fixed set of named warm base sessions and clone the one each task
+names:
+
+```js
+const runtime = await createRuntime({
+  session: { initialPrompts: [{ role: 'system', content: 'General assistant.' }] }, // optional default
+  templates: {
+    momentum: { initialPrompts: [{ role: 'system', content: 'You analyze momentum.' }] },
+    risk: { initialPrompts: [{ role: 'system', content: 'You analyze risk.' }] },
+  },
+  limit: 2,
+});
+
+await runtime.run(text, { template: 'momentum' });
+for await (const chunk of runtime.stream(text, { template: 'risk' })) render(chunk);
+await runtime.run(text); // uses the default `session` template
+```
+
+- Each template value is passed to `LanguageModel.create()`; the runtime creates and owns every base.
+- With `session`, omitting `template` uses it. With only `templates`, you must name one; otherwise
+  `run()` rejects and `stream()`'s first pull throws `TypeError`. Unknown names throw `TypeError`.
+  Neither consumes a queue entry or slot.
+- All templates share one `limit` and one queue. A clone failure that breaks any base makes the whole
+  runtime `broken`. `shutdown()` destroys every base.
+
 ## Snapshot
 
 ```js

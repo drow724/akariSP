@@ -1406,3 +1406,264 @@ test('snapshot: 10,000 reads have no side effects (SC-204; not a benchmark)', as
   await Promise.all([a, b]);
   assert.ok((await runtime.run('after')).output);
 });
+
+// ===========================================================================
+// 004 — named session templates
+// ===========================================================================
+
+const bases = () => fake.sessions.filter((s) => s.isBase);
+const clonesOf = () => fake.sessions.filter((s) => !s.isBase);
+const TEMPLATES = {
+  momentum: { initialPrompts: ['momentum'] },
+  risk: { initialPrompts: ['risk'] },
+};
+
+// US1 — run tasks against a chosen template (T003)
+
+test('templates: each task clones only its template; bases unchanged', async () => {
+  const runtime = await createRuntime({ templates: TEMPLATES });
+  assert.deepEqual(bases().map((b) => b.history), [['momentum'], ['risk']]);
+  await runtime.run('m1', { template: 'momentum' });
+  await runtime.run('r1', { template: 'risk' });
+  await collect(runtime.stream('r2', { template: 'risk' }));
+  assert.deepEqual(clonesOf().map((c) => c.history), [['momentum', 'm1'], ['risk', 'r1'], ['risk', 'r2']]);
+  assert.deepEqual(bases().map((b) => b.history), [['momentum'], ['risk']]);
+  assert.ok(bases().every((b) => b.prompts === 0));
+});
+
+// US2 — shared scheduler (T004)
+
+test('templates: one limit and one queue shared across templates', async () => {
+  let runtime = await createRuntime({ templates: { ...TEMPLATES, summary: { initialPrompts: ['summary'] } }, limit: 1 });
+  const hold = holdPrompt();
+  const m = runtime.run('m', { template: 'momentum' });
+  const r = runtime.run('r', { template: 'risk' });
+  assert.deepEqual(runtime.snapshot(), { state: 'ready', active: 1, queued: 1, limit: 1, queueCapacity: 32 });
+  hold.release();
+  await Promise.all([m, r]);
+
+  runtime = await createRuntime({ templates: { ...TEMPLATES, summary: { initialPrompts: ['summary'] } }, limit: 2 });
+  const h1 = holdPrompt();
+  const h2 = holdPrompt();
+  const tasks = [
+    runtime.run('a', { template: 'momentum' }),
+    runtime.run('b', { template: 'risk' }),
+    runtime.run('c', { template: 'summary' }),
+  ];
+  assert.deepEqual([runtime.snapshot().active, runtime.snapshot().queued], [2, 1]);
+  h1.release();
+  h2.release();
+  await Promise.all(tasks);
+});
+
+test('templates: FIFO across templates; lazy named stream consumes nothing', async () => {
+  const runtime = await createRuntime({ templates: { ...TEMPLATES, summary: { initialPrompts: ['summary'] } }, limit: 1, queueCapacity: 3 });
+  const lazy = runtime.stream('x', { template: 'risk' });
+  const hold = holdPrompt();
+  const first = runtime.run('first', { template: 'momentum' });
+  const clonesBefore = fake.clones;
+  const order = [
+    runtime.run('1', { template: 'risk' }),
+    runtime.run('2', { template: 'momentum' }),
+    runtime.run('3', { template: 'summary' }),
+  ];
+  assert.equal(fake.clones, clonesBefore);
+  assert.deepEqual([runtime.snapshot().active, runtime.snapshot().queued], [1, 3]);
+  hold.release();
+  await Promise.all([first, ...order]);
+  assert.deepEqual(clonesOf().slice(1).map((c) => c.history[0]), ['risk', 'momentum', 'summary']);
+  assert.equal(lazy.timing, undefined);
+  assert.equal(fake.streams, 0);
+});
+
+// US3 — invalid template selection (T005)
+
+test('templates: unknown or missing template → TypeError, nothing consumed', async () => {
+  const runtime = await createRuntime({ templates: TEMPLATES });
+  const hold = holdPrompt();
+  const running = runtime.run('ok', { template: 'momentum' });
+  await tick(); // let the running task finish cloning before taking the baseline
+  const before = { clones: fake.clones, creates: fake.creates, snap: runtime.snapshot() };
+  const unchanged = () => {
+    assert.equal(fake.clones, before.clones);
+    assert.equal(fake.creates, before.creates);
+    assert.deepEqual(runtime.snapshot(), before.snap);
+  };
+
+  const e1 = await runtime.run('x', { template: 'nope' }).catch((e) => e);
+  assert.ok(e1 instanceof TypeError && !(e1 instanceof TaskError));
+  unchanged();
+
+  const stream = runtime.stream('x', { template: 'nope' });
+  unchanged();
+  await assert.rejects(stream[Symbol.asyncIterator]().next(), TypeError);
+  assert.equal(stream.timing, undefined);
+  unchanged();
+
+  await assert.rejects(runtime.run('x'), TypeError); // no default, no automatic choice
+  await assert.rejects(runtime.stream('x')[Symbol.asyncIterator]().next(), TypeError);
+  unchanged();
+
+  hold.release();
+  await running;
+});
+
+// US4 — existing single-session usage (T006)
+
+test('templates: existing createRuntime() / { session } unchanged', async () => {
+  let runtime = await createRuntime();
+  assert.equal(fake.creates, 1);
+  assert.equal(bases().length, 1);
+  assert.ok((await runtime.run('x')).output);
+  holdPrompt();
+  const ctrl = new AbortController();
+  const p = rejection(runtime.run('y', { signal: ctrl.signal }));
+  await tick();
+  ctrl.abort();
+  assert.equal((await p).code, 'cancelled');
+
+  const session = { initialPrompts: ['sys'] };
+  runtime = await createRuntime({ session });
+  assert.equal(fake.createArgs.at(-1), session);
+  assert.ok(await collect(runtime.stream('z')));
+});
+
+test('templates: session + templates → unnamed uses default, named uses template', async () => {
+  const runtime = await createRuntime({ session: { initialPrompts: ['default'] }, templates: { risk: { initialPrompts: ['risk'] } } });
+  assert.equal(bases().length, 2);
+  await runtime.run('a');
+  await runtime.run('b', { template: 'risk' });
+  await collect(runtime.stream('c'));
+  assert.deepEqual(clonesOf().map((c) => c.history), [['default', 'a'], ['risk', 'b'], ['default', 'c']]);
+});
+
+test('templates: empty templates → TypeError without session, single-session with session', async () => {
+  await assert.rejects(createRuntime({ templates: {} }), TypeError);
+  assert.equal(fake.creates, 0);
+  const runtime = await createRuntime({ session: { initialPrompts: ['s'] }, templates: {} });
+  assert.equal(bases().length, 1);
+  await runtime.run('x');
+  assert.deepEqual(clonesOf()[0].history, ['s', 'x']);
+});
+
+// US5 — lifecycle for all bases (T007–T009)
+
+function failCreateOn(n: number, error: unknown) {
+  const create = (globalThis as any).LanguageModel.create;
+  let calls = 0;
+  (globalThis as any).LanguageModel.create = async (options: unknown) => {
+    if (++calls === n) throw error;
+    return create(options);
+  };
+}
+
+test('templates: partial creation rolls back created bases and rethrows the original error', async () => {
+  const err = new DOMException('no model', 'NotAllowedError');
+  failCreateOn(3, err);
+  await assert.rejects(createRuntime({ templates: { a: {}, b: {}, c: {} } }), (e) => e === err);
+  assert.equal(fake.destroys, 2);
+  assert.equal(fake.live, 0);
+});
+
+test('templates: rollback includes the default base and continues past destroy failures', async () => {
+  const err = new Error('create failed');
+  failCreateOn(3, err);
+  fake.destroyThrows = true;
+  await assert.rejects(createRuntime({ session: {}, templates: { a: {}, b: {} } }), (e) => e === err);
+  assert.equal(fake.destroys, 2);
+  assert.ok(bases().every((b) => b.destroyed));
+  assert.equal(fake.live, 0);
+});
+
+test('templates: broken is runtime-wide; running task on another template completes', async () => {
+  const runtime = await createRuntime({ templates: { a: { initialPrompts: ['a'] }, b: { initialPrompts: ['b'] } }, limit: 2, queueCapacity: 2 });
+  const hold = holdPrompt('b done');
+  const heldB = runtime.run('held', { template: 'b' });
+  await tick();
+  failNextClone(new DOMException('gone', 'InvalidStateError'));
+  const a = rejection(runtime.run('a', { template: 'a' }));
+  const queuedB = rejection(runtime.run('queued', { template: 'b' }));
+  assert.equal((await a).code, 'broken');
+  assert.equal(runtime.state, 'broken');
+  assert.equal((await queuedB).code, 'broken');
+  const clones = fake.clones;
+  assert.equal((await rejection(runtime.run('x', { template: 'a' }))).code, 'broken');
+  assert.equal((await rejection(runtime.run('y', { template: 'b' }))).code, 'broken');
+  assert.equal(fake.clones, clones);
+  assert.deepEqual(runtime.snapshot(), { state: 'broken', active: 1, queued: 0, limit: 2, queueCapacity: 2 });
+  const creates = fake.creates;
+  hold.release();
+  assert.equal((await heldB).output, 'b done');
+  assert.equal(fake.creates, creates);
+});
+
+test('templates: shutdown destroys every base exactly once', async () => {
+  let runtime = await createRuntime({ session: {}, templates: { a: {}, b: {} } });
+  await runtime.run('x', { template: 'a' });
+  await runtime.run('y', { template: 'b' });
+  const s1 = runtime.shutdown();
+  const s2 = runtime.shutdown();
+  assert.equal(s1, s2);
+  await Promise.all([s1, s2]);
+  assert.equal(fake.destroys, fake.clones + 3);
+  assert.ok(bases().every((b) => b.destroyed));
+  assert.equal(fake.live, 0);
+  const destroys = fake.destroys;
+  await runtime.shutdown();
+  assert.equal(fake.destroys, destroys);
+
+  runtime = await createRuntime({ templates: { a: {}, b: {}, c: {} } });
+  fake.destroyThrows = true;
+  await runtime.shutdown();
+  assert.ok(bases().every((b) => b.destroyed));
+  assert.equal(fake.live, 0);
+});
+
+test('templates: shutdown cancels a running task and destroys its clone before any base', async () => {
+  const runtime = await createRuntime({ templates: { a: {}, b: {} } });
+  holdPrompt();
+  const p = rejection(runtime.run('x', { template: 'a' }));
+  await tick();
+  let basesAliveAtFirstDestroy: boolean | undefined;
+  fake.onDestroy = () => {
+    basesAliveAtFirstDestroy ??= bases().every((b) => !b.destroyed);
+  };
+  await runtime.shutdown();
+  assert.equal((await p).code, 'cancelled');
+  assert.equal(basesAliveAtFirstDestroy, true);
+  assert.equal(fake.live, 0);
+});
+
+// Polish — mixed-template bound validation (T010; not a benchmark)
+
+test('templates: 100 mixed run/stream tasks across 3 templates stay within global bounds (SC-303)', async () => {
+  const runtime = await createRuntime({ templates: { a: {}, b: {}, c: {} }, limit: 2, queueCapacity: 4 });
+  for (let i = 0; i < 100; i++) {
+    fake.promptHooks.push(async () => { await tick(); return 'ok'; });
+    fake.streamHooks.push(['x', { hold: tick() as Promise<any> }, 'y']);
+  }
+  let peak = 0;
+  const bound = () => {
+    const s = runtime.snapshot();
+    assert.deepEqual(Object.keys(s).sort(), ['active', 'limit', 'queueCapacity', 'queued', 'state']);
+    assert.ok(s.active <= 2 && s.queued <= 4, `active=${s.active} queued=${s.queued}`);
+    peak = Math.max(peak, s.active + s.queued);
+  };
+  const names = ['a', 'b', 'c'];
+  const ctrls = Array.from({ length: 100 }, () => new AbortController());
+  const outcomes = ctrls.map((c, i) => {
+    const options = { signal: c.signal, template: names[i % 3] };
+    const p = i % 2 ? runtime.run(`r${i}`, options).then(() => 'ok') : collect(runtime.stream(`s${i}`, options)).then(() => 'ok');
+    return p.then(
+      (v) => { bound(); return v; },
+      (e: TaskError) => { bound(); return e.code; },
+    );
+  });
+  bound();
+  ctrls[3].abort();
+  ctrls[4].abort();
+  const codes = await Promise.all(outcomes);
+  assert.ok(codes.every((c) => ['ok', 'rejected', 'cancelled'].includes(c)), codes.join());
+  assert.equal(peak, 6);
+  assert.deepEqual([runtime.snapshot().active, runtime.snapshot().queued], [0, 0]);
+});
