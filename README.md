@@ -62,6 +62,17 @@ console.log(stream.timing); // final TaskTiming; undefined until the stream has 
 - `break` is not an error. Cancellation, timeout, model failure, and shutdown end the loop with a
   `TaskError`, and cleanup happens even if you have stopped pulling chunks.
 
+## Snapshot
+
+```js
+const { state, active, queued, limit, queueCapacity } = runtime.snapshot();
+```
+
+Synchronous and read-only: it never waits, admits, cancels, or changes anything, and each call
+returns a fresh plain object. `active` counts tasks holding a concurrency slot, including a task
+whose session is still being destroyed; `queued` counts tasks waiting for a slot (a stream counts
+only after its first pull). After `await runtime.shutdown()` it reports `closed` with `0/0`.
+
 ## States
 
 - `ready`: accepts tasks.

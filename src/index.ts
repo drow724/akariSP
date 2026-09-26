@@ -31,9 +31,21 @@ export interface Runtime {
   /** Same lifecycle as run(), output as chunks. Lazy: nothing is admitted until the first
    *  pull. Single-use. Leaving the loop early destroys the clone before the loop exits. */
   stream(input: Prompt, options?: { signal?: AbortSignal }): TaskStream;
+  /** Synchronous, read-only view of current state. Never waits, never changes anything. */
+  snapshot(): RuntimeSnapshot;
   /** Reject waiters, cancel running tasks, destroy all sessions. Idempotent and safe to
    *  call concurrently; never rejects. Resolves only after all cleanup is done. */
   shutdown(): Promise<void>;
+}
+
+export interface RuntimeSnapshot {
+  state: Runtime['state'];
+  /** Tasks holding a concurrency slot (clone → prompt → task session destroyed). */
+  active: number;
+  /** Tasks waiting for a slot. */
+  queued: number;
+  limit: number;
+  queueCapacity: number;
 }
 
 export interface TaskStream extends AsyncIterable<string> {
@@ -166,6 +178,8 @@ export async function createRuntime(options: RuntimeOptions = {}): Promise<Runti
 
   return {
     get state() { return state; },
+
+    snapshot: () => ({ state, active: running, queued: queue.length, limit, queueCapacity }),
 
     async run(input, { signal } = {}) {
       const { t0, timing, sig } = await admit(signal);
