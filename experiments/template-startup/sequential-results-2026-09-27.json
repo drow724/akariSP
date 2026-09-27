@@ -1,0 +1,490 @@
+{
+  "evidence": "DETERMINISTIC_STAND_IN",
+  "date": "2026-09-27T14:00:24.081Z",
+  "node": "v23.9.0",
+  "os": "Darwin 24.6.0",
+  "cpu": "Apple M1",
+  "cores": 8,
+  "source": "src/ at HEAD (sequential createCoreRuntime)",
+  "definition": "bases = named templates (no default session)",
+  "warmup": 3,
+  "runs": 15,
+  "timing": "performance.now()",
+  "rows": [
+    {
+      "bases": 1,
+      "delayMs": 0,
+      "runs": 15,
+      "expectedSequentialMs": 0,
+      "startupMs": {
+        "median": 0.01,
+        "p95": 0.1,
+        "min": 0,
+        "max": 0.1
+      },
+      "akarispOverheadMs": {
+        "median": 0,
+        "p95": 0.1
+      },
+      "gapBetweenCreatesMs": {
+        "median": 0
+      }
+    },
+    {
+      "bases": 2,
+      "delayMs": 0,
+      "runs": 15,
+      "expectedSequentialMs": 0,
+      "startupMs": {
+        "median": 0,
+        "p95": 0.01,
+        "min": 0,
+        "max": 0.01
+      },
+      "akarispOverheadMs": {
+        "median": 0,
+        "p95": 0.01
+      },
+      "gapBetweenCreatesMs": {
+        "median": 0
+      }
+    },
+    {
+      "bases": 4,
+      "delayMs": 0,
+      "runs": 15,
+      "expectedSequentialMs": 0,
+      "startupMs": {
+        "median": 0,
+        "p95": 0.63,
+        "min": 0,
+        "max": 0.63
+      },
+      "akarispOverheadMs": {
+        "median": 0,
+        "p95": 0.63
+      },
+      "gapBetweenCreatesMs": {
+        "median": 0
+      }
+    },
+    {
+      "bases": 8,
+      "delayMs": 0,
+      "runs": 15,
+      "expectedSequentialMs": 0,
+      "startupMs": {
+        "median": 0.01,
+        "p95": 0.03,
+        "min": 0.01,
+        "max": 0.03
+      },
+      "akarispOverheadMs": {
+        "median": 0,
+        "p95": 0.03
+      },
+      "gapBetweenCreatesMs": {
+        "median": 0
+      }
+    },
+    {
+      "bases": 16,
+      "delayMs": 0,
+      "runs": 15,
+      "expectedSequentialMs": 0,
+      "startupMs": {
+        "median": 0.01,
+        "p95": 0.06,
+        "min": 0.01,
+        "max": 0.06
+      },
+      "akarispOverheadMs": {
+        "median": 0.01,
+        "p95": 0.05
+      },
+      "gapBetweenCreatesMs": {
+        "median": 0
+      }
+    },
+    {
+      "bases": 1,
+      "delayMs": 10,
+      "runs": 15,
+      "expectedSequentialMs": 10,
+      "startupMs": {
+        "median": 11.14,
+        "p95": 11.45,
+        "min": 10.18,
+        "max": 11.45
+      },
+      "akarispOverheadMs": {
+        "median": 0.02,
+        "p95": 0.02
+      },
+      "gapBetweenCreatesMs": {
+        "median": 0
+      }
+    },
+    {
+      "bases": 2,
+      "delayMs": 10,
+      "runs": 15,
+      "expectedSequentialMs": 20,
+      "startupMs": {
+        "median": 22.16,
+        "p95": 26.05,
+        "min": 20.89,
+        "max": 26.05
+      },
+      "akarispOverheadMs": {
+        "median": 0.05,
+        "p95": 0.18
+      },
+      "gapBetweenCreatesMs": {
+        "median": 0.01
+      }
+    },
+    {
+      "bases": 4,
+      "delayMs": 10,
+      "runs": 15,
+      "expectedSequentialMs": 40,
+      "startupMs": {
+        "median": 44.35,
+        "p95": 50.14,
+        "min": 42.5,
+        "max": 50.14
+      },
+      "akarispOverheadMs": {
+        "median": 0.07,
+        "p95": 0.32
+      },
+      "gapBetweenCreatesMs": {
+        "median": 0.01
+      }
+    },
+    {
+      "bases": 8,
+      "delayMs": 10,
+      "runs": 15,
+      "expectedSequentialMs": 80,
+      "startupMs": {
+        "median": 87.16,
+        "p95": 89.52,
+        "min": 84.76,
+        "max": 89.52
+      },
+      "akarispOverheadMs": {
+        "median": 0.12,
+        "p95": 0.29
+      },
+      "gapBetweenCreatesMs": {
+        "median": 0.01
+      }
+    },
+    {
+      "bases": 16,
+      "delayMs": 10,
+      "runs": 15,
+      "expectedSequentialMs": 160,
+      "startupMs": {
+        "median": 177.7,
+        "p95": 189.95,
+        "min": 175.85,
+        "max": 189.95
+      },
+      "akarispOverheadMs": {
+        "median": 0.26,
+        "p95": 0.55
+      },
+      "gapBetweenCreatesMs": {
+        "median": 0.01
+      }
+    },
+    {
+      "bases": 1,
+      "delayMs": 50,
+      "runs": 15,
+      "expectedSequentialMs": 50,
+      "startupMs": {
+        "median": 51.17,
+        "p95": 54.85,
+        "min": 50.14,
+        "max": 54.85
+      },
+      "akarispOverheadMs": {
+        "median": 0.04,
+        "p95": 3.38
+      },
+      "gapBetweenCreatesMs": {
+        "median": 0
+      }
+    },
+    {
+      "bases": 2,
+      "delayMs": 50,
+      "runs": 15,
+      "expectedSequentialMs": 100,
+      "startupMs": {
+        "median": 101.6,
+        "p95": 103.91,
+        "min": 100.08,
+        "max": 103.91
+      },
+      "akarispOverheadMs": {
+        "median": 0.06,
+        "p95": 0.12
+      },
+      "gapBetweenCreatesMs": {
+        "median": 0.01
+      }
+    },
+    {
+      "bases": 4,
+      "delayMs": 50,
+      "runs": 15,
+      "expectedSequentialMs": 200,
+      "startupMs": {
+        "median": 203.46,
+        "p95": 204.53,
+        "min": 201.73,
+        "max": 204.53
+      },
+      "akarispOverheadMs": {
+        "median": 0.07,
+        "p95": 0.13
+      },
+      "gapBetweenCreatesMs": {
+        "median": 0.01
+      }
+    },
+    {
+      "bases": 8,
+      "delayMs": 50,
+      "runs": 15,
+      "expectedSequentialMs": 400,
+      "startupMs": {
+        "median": 407.12,
+        "p95": 408.83,
+        "min": 405.44,
+        "max": 408.83
+      },
+      "akarispOverheadMs": {
+        "median": 0.11,
+        "p95": 0.51
+      },
+      "gapBetweenCreatesMs": {
+        "median": 0.01
+      }
+    },
+    {
+      "bases": 16,
+      "delayMs": 50,
+      "runs": 15,
+      "expectedSequentialMs": 800,
+      "startupMs": {
+        "median": 814.68,
+        "p95": 854.24,
+        "min": 811.16,
+        "max": 854.24
+      },
+      "akarispOverheadMs": {
+        "median": 0.21,
+        "p95": 4.98
+      },
+      "gapBetweenCreatesMs": {
+        "median": 0.01
+      }
+    },
+    {
+      "bases": 1,
+      "delayMs": 100,
+      "runs": 15,
+      "expectedSequentialMs": 100,
+      "startupMs": {
+        "median": 101.11,
+        "p95": 101.22,
+        "min": 100.18,
+        "max": 101.22
+      },
+      "akarispOverheadMs": {
+        "median": 0.03,
+        "p95": 0.07
+      },
+      "gapBetweenCreatesMs": {
+        "median": 0
+      }
+    },
+    {
+      "bases": 2,
+      "delayMs": 100,
+      "runs": 15,
+      "expectedSequentialMs": 200,
+      "startupMs": {
+        "median": 202.29,
+        "p95": 202.65,
+        "min": 201.33,
+        "max": 202.65
+      },
+      "akarispOverheadMs": {
+        "median": 0.04,
+        "p95": 0.09
+      },
+      "gapBetweenCreatesMs": {
+        "median": 0.01
+      }
+    },
+    {
+      "bases": 4,
+      "delayMs": 100,
+      "runs": 15,
+      "expectedSequentialMs": 400,
+      "startupMs": {
+        "median": 403.58,
+        "p95": 406.93,
+        "min": 402.8,
+        "max": 406.93
+      },
+      "akarispOverheadMs": {
+        "median": 0.07,
+        "p95": 0.29
+      },
+      "gapBetweenCreatesMs": {
+        "median": 0.01
+      }
+    },
+    {
+      "bases": 8,
+      "delayMs": 100,
+      "runs": 15,
+      "expectedSequentialMs": 800,
+      "startupMs": {
+        "median": 807.78,
+        "p95": 810.52,
+        "min": 805.57,
+        "max": 810.52
+      },
+      "akarispOverheadMs": {
+        "median": 0.13,
+        "p95": 0.42
+      },
+      "gapBetweenCreatesMs": {
+        "median": 0.01
+      }
+    },
+    {
+      "bases": 16,
+      "delayMs": 100,
+      "runs": 15,
+      "expectedSequentialMs": 1600,
+      "startupMs": {
+        "median": 1615.21,
+        "p95": 1621.44,
+        "min": 1612.23,
+        "max": 1621.44
+      },
+      "akarispOverheadMs": {
+        "median": 0.22,
+        "p95": 0.55
+      },
+      "gapBetweenCreatesMs": {
+        "median": 0.01
+      }
+    },
+    {
+      "bases": 1,
+      "delayMs": 250,
+      "runs": 15,
+      "expectedSequentialMs": 250,
+      "startupMs": {
+        "median": 250.79,
+        "p95": 252.41,
+        "min": 250.21,
+        "max": 252.41
+      },
+      "akarispOverheadMs": {
+        "median": 0.03,
+        "p95": 0.05
+      },
+      "gapBetweenCreatesMs": {
+        "median": 0
+      }
+    },
+    {
+      "bases": 2,
+      "delayMs": 250,
+      "runs": 15,
+      "expectedSequentialMs": 500,
+      "startupMs": {
+        "median": 502.12,
+        "p95": 512.26,
+        "min": 501.04,
+        "max": 512.26
+      },
+      "akarispOverheadMs": {
+        "median": 0.04,
+        "p95": 0.36
+      },
+      "gapBetweenCreatesMs": {
+        "median": 0.01
+      }
+    },
+    {
+      "bases": 4,
+      "delayMs": 250,
+      "runs": 15,
+      "expectedSequentialMs": 1000,
+      "startupMs": {
+        "median": 1003.07,
+        "p95": 1004.93,
+        "min": 1001.99,
+        "max": 1004.93
+      },
+      "akarispOverheadMs": {
+        "median": 0.08,
+        "p95": 0.15
+      },
+      "gapBetweenCreatesMs": {
+        "median": 0.01
+      }
+    },
+    {
+      "bases": 8,
+      "delayMs": 250,
+      "runs": 15,
+      "expectedSequentialMs": 2000,
+      "startupMs": {
+        "median": 2009.3,
+        "p95": 2685.31,
+        "min": 2005.62,
+        "max": 2685.31
+      },
+      "akarispOverheadMs": {
+        "median": 0.29,
+        "p95": 3.43
+      },
+      "gapBetweenCreatesMs": {
+        "median": 0.01
+      }
+    },
+    {
+      "bases": 16,
+      "delayMs": 250,
+      "runs": 15,
+      "expectedSequentialMs": 4000,
+      "startupMs": {
+        "median": 4017.85,
+        "p95": 4033.39,
+        "min": 4013.27,
+        "max": 4033.39
+      },
+      "akarispOverheadMs": {
+        "median": 0.39,
+        "p95": 3.32
+      },
+      "gapBetweenCreatesMs": {
+        "median": 0.01
+      }
+    }
+  ]
+}
