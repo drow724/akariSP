@@ -1,0 +1,42 @@
+{
+  "akarisp": "0.1.0-alpha.2",
+  "node": "v23.9.0",
+  "date": "2026-09-27T13:43:28.342Z",
+  "evidence": "STAND_IN",
+  "passthrough": {
+    "sameObject": true,
+    "keys": [
+      "custom",
+      "expectedInputs",
+      "monitor",
+      "signal",
+      "temperature",
+      "topK"
+    ],
+    "signalPreserved": true,
+    "monitorPreserved": true,
+    "monitorCalledByAkariSP": 0,
+    "createCalls": 1
+  },
+  "abortDuringCreate": {
+    "rejected": true,
+    "constructor": "DOMException",
+    "name": "AbortError",
+    "message": "This operation was aborted",
+    "isTaskError": false,
+    "ms": 21,
+    "createCalls": 1,
+    "basesDestroyedByAkariSP": 0
+  },
+  "abortAfterCreate": {
+    "runBefore": "ok",
+    "runAfterAbort": {
+      "name": "TaskError",
+      "code": "broken",
+      "cause": "InvalidStateError"
+    },
+    "stateAfter": "broken",
+    "shutdown": "resolved",
+    "stateAfterShutdown": "closed"
+  }
+}

@@ -57,6 +57,11 @@ the provider's error is propagated without AkariSP-specific translation or conve
 first test `'LanguageModel' in globalThis` and, only when the global is present, use
 `LanguageModel.availability()`.
 
+Options in `session` and in each template reach `LanguageModel.create()` unchanged and keep their
+platform-defined meaning. A `signal` passed there is not only a way to cancel `createRuntime()`:
+aborting it after the runtime is created may invalidate the native base session, so later tasks
+fail and the runtime becomes `broken`.
+
 ## Streaming
 
 ```js
