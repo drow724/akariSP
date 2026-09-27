@@ -1,10 +1,11 @@
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
-import { execFileSync, spawnSync } from 'node:child_process';
+import { execFileSync } from 'node:child_process';
 import { cpSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import ts from 'typescript';
+import * as c from './consumer.ts';
 
 // The packed tarball is the product (spec 008). Everything below runs against a consumer
 // installed from it, outside the repository. Never import 'akarisp' in this process: Node's
@@ -29,13 +30,11 @@ before(() => {
 
 after(() => { if (dir) rmSync(dir, { recursive: true, force: true }); });
 
-/** Run code in a child process inside the consumer, so resolution goes through the tarball. */
-function run(code: string, commonjs = false) {
-  const args = commonjs ? ['-e', code] : ['--input-type=module', '-e', code];
-  const r = spawnSync(process.execPath, args, { cwd: consumer, encoding: 'utf8' });
-  return { ok: r.status === 0, out: r.stdout.trim(), err: r.stderr };
-}
-const keys = (spec: string) => run(`const m = await import('${spec}'); console.log(Object.keys(m).sort().join())`);
+// Shared consumer checks (test/consumer.ts), bound to this test's tarball consumer.
+const run = (code: string, commonjs = false) => c.run(consumer, code, commonjs);
+const keys = (spec: string) => c.keys(consumer, spec);
+const tsc = (resolution: string, module: string, files: string[]) => c.tsc(consumer, resolution, module, files);
+const { internal } = c;
 
 test('tarball contains exactly the allow-listed files', () => {
   const allowed = ['LICENSE', 'README.md', 'package.json',
@@ -47,7 +46,7 @@ test('tarball contains exactly the allow-listed files', () => {
 
 test('installed metadata: version, no dependencies, no engines', () => {
   const pkg = JSON.parse(readFileSync(join(consumer, 'node_modules/akarisp/package.json'), 'utf8'));
-  assert.equal(pkg.version, '0.1.0-alpha.0');
+  assert.equal(pkg.version, '0.1.0-alpha.1');
   assert.equal(pkg.dependencies, undefined);
   assert.equal(pkg.engines, undefined);
 });
@@ -57,16 +56,7 @@ test('public entry points export exactly their names', () => {
   assert.deepEqual(keys('akarisp/webllm'), { ok: true, out: 'createWebLLMRuntime', err: '' });
 });
 
-const internal = ['akarisp/core', 'akarisp/browser', 'akarisp/internal', 'akarisp/dist/index.js',
-  'akarisp/dist/core/runtime.js', 'akarisp/src/index.ts', 'akarisp/package.json'];
-
-/** Type-check consumer files with the repository's TypeScript. */
-function tsc(resolution: string, module: string, files: string[]) {
-  return spawnSync(join(repo, 'node_modules/.bin/tsc'), ['--noEmit', '--strict', '--target', 'es2022', '--lib', 'es2022,dom',
-    '--skipLibCheck', 'false', '--moduleResolution', resolution, '--module', module, ...files], { cwd: consumer, encoding: 'utf8' });
-}
-
-for (const [resolution, module] of [['bundler', 'esnext'], ['node16', 'node16'], ['nodenext', 'nodenext']]) {
+for (const [resolution, module] of c.RESOLUTIONS) {
   test(`consumer type-checks under moduleResolution ${resolution} (public ok, internal paths fail)`, () => {
     const r = tsc(resolution, module, ['root.ts', 'webllm.ts', 'internal.ts']);
     assert.equal(r.status, 0, r.stdout); // an unused @ts-expect-error in internal.ts fails too

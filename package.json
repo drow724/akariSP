@@ -1,6 +1,6 @@
 {
   "name": "akarisp",
-  "version": "0.1.0-alpha.0",
+  "version": "0.1.0-alpha.1",
   "description": "Lightweight lifecycle runtime for browser LLM sessions: bounded queue, cancellation, and deterministic cleanup for the Chrome Prompt API and WebLLM",
   "license": "Apache-2.0",
   "repository": {
@@ -25,10 +25,8 @@
     "build": "tsc",
     "test": "node --test test/*.test.ts",
     "test:browser": "playwright test",
-    "prepack": "npm run build"
-  },
-  "publishConfig": {
-    "tag": "alpha"
+    "prepack": "npm run build",
+    "test:registry": "node --test test/registry/registry.test.ts"
   },
   "devDependencies": {
     "@playwright/test": "^1.63.0",

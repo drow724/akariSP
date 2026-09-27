@@ -15,10 +15,10 @@ Zero runtime dependencies. No framework, no agent abstraction.
 npm install akarisp@alpha
 ```
 
-The initial alpha release, `0.1.0-alpha.0`, is available as both `alpha` and `latest`, so
-`npm install akarisp` currently installs the alpha release. Use `npm install akarisp@alpha` when
-you explicitly want the alpha channel. When a stable release is published, `latest` will move to
-the stable version.
+For the `0.1.0-alpha.1` release, both `alpha` and `latest` are intended to point to
+`0.1.0-alpha.1`, so `npm install akarisp` and `npm install akarisp@alpha` install the same
+version. This does not define a permanent dist-tag policy. Each release records its intended and
+verified tags under [`releases/`](releases/).
 
 ## Usage
 
@@ -180,6 +180,7 @@ requirement only; the package itself runs in browsers.
 npm test       # node:test: core, browser and WebLLM adapters, boundary, packed-tarball consumer
 npm run build  # tsc → dist/
 npm run test:browser  # Playwright: compatibility page on Chromium / Firefox / WebKit engines
+RELEASE=<version> npm run test:registry  # on demand, needs the network: the published package vs releases/<version>.json
 ```
 
 ### Browser compatibility
@@ -202,9 +203,16 @@ the diff.
 
 ### Release
 
-`npm publish` uses `publishConfig.tag` (`alpha`). `prepack` rebuilds `dist/` first.
+Each release states its intent before publishing and verifies the registry afterwards. Nothing
+relies on a configured default tag: with npm 10.9.2, a configured `publishConfig.tag` was
+observed not to be applied, so the tag is always named on the command line.
 
-The first publish nevertheless also created `latest` (observed 2026-09-27; see
-`specs/008-package-public-api-stabilization/research.md`). According to the npm documentation,
-later publishes with a non-`latest` tag do not move `latest`. To move it explicitly, run
-`npm dist-tag add akarisp@<version> latest`.
+1. Bump `version`, and write and commit `releases/<version>.json`, which names every intended
+   dist-tag target.
+2. Publish: `npm publish --tag <tag>` (`prepack` rebuilds `dist/` first).
+3. For every other tag in the intent: `npm dist-tag add akarisp@<version> <tag>`.
+4. Verify: `RELEASE=<version> npm run test:registry`. It re-reads the registry for up to 10
+   minutes while metadata propagates, then installs from the registry into clean consumers.
+   Commit the resulting `releases/<version>.verified.json`.
+5. On a mismatch, fix forward: correct a tag with `npm dist-tag add` and re-run the check, or
+   publish the next version for a content defect. Never unpublish.
