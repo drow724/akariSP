@@ -1,0 +1,48 @@
+{
+  "recordedAt": "2026-09-27T05:54:49.962Z",
+  "runner": {
+    "kind": "manual"
+  },
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+  "webllm": "0.2.85",
+  "model": "Qwen2.5-0.5B-Instruct-q4f16_1-MLC",
+  "webgpu": true,
+  "checks": {
+    "isolation": {
+      "status": "PASS",
+      "detail": "marker 39f6b779; task B: \"NONE\""
+    },
+    "cloneless": {
+      "status": "PASS",
+      "detail": "run 43 chars; stream 12 chunks"
+    },
+    "serialization": {
+      "status": "PASS",
+      "detail": "limit 2 → TypeError; snapshot active 1 queued 1; B first chunk 47 ms after A ended"
+    },
+    "queuedCancel": {
+      "status": "PASS",
+      "detail": "B cancelled; A completed with 627 chars"
+    },
+    "activeCancel": {
+      "status": "PASS",
+      "detail": "abort → cancelled, next 39 chars; timeout → cancelled, next 39 chars"
+    },
+    "earlyBreak": {
+      "status": "PASS",
+      "detail": "broke after 2 chunks; next run 39 chars in 230 ms"
+    },
+    "shutdownUnload": {
+      "status": "PASS",
+      "detail": "after shutdown getMessage → ModelNotLoadedError; stream → cancelled; state closed"
+    },
+    "classification": {
+      "status": "PASS",
+      "detail": "invalid setting → failed (state ready); unloaded engine → broken (state broken)"
+    },
+    "templates": {
+      "status": "PASS",
+      "detail": "[[\"apple\",\"APPLE\"],[\"banana\",\"BANANA\"],[\"apple\",\"APPLE\"],[\"banana\",\"BANANA\"]]"
+    }
+  }
+}

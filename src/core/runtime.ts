@@ -1,11 +1,22 @@
 // Internal session contract the core runtime calls. Not public; see specs/005 research B2.
+// One task's execution unit. destroy() is its cleanup; the slot is released after it settles.
 export interface Session {
-  clone(options?: { signal?: AbortSignal }): Promise<Session>;
-  prompt(input: Prompt, options?: { signal?: AbortSignal }): Promise<string>;
-  promptStreaming(input: Prompt, options?: { signal?: AbortSignal }): AsyncIterable<string>;
-  destroy(): void;
+  prompt(input: Prompt, options: { signal: AbortSignal }): Promise<string>;
+  promptStreaming(input: Prompt, options: { signal: AbortSignal }): AsyncIterable<string>;
+  destroy(): void | Promise<void>;
 }
-export interface SessionProvider { create(config?: object): Promise<Session>; }
+// B is the provider's long-lived resource for one template, opaque to the core. An absent
+// destroy/close means the provider owns no resource at that level (never a skipped cleanup).
+export interface SessionProvider<B> {
+  create(config?: object): Promise<B>;
+  start(base: B, options: { signal: AbortSignal }): Promise<Session>;
+  /** Consulted only when start() rejects and the task was not aborted: true = runtime broken. */
+  broken(error: unknown): boolean;
+  /** Per-template resource cleanup. */
+  destroy?(base: B): void | Promise<void>;
+  /** Provider-wide resource cleanup; shutdown only, after every destroy(base). */
+  close?(): void | Promise<void>;
+}
 
 type Prompt = string | readonly object[];
 
@@ -19,7 +30,7 @@ export interface RuntimeOptions {
   /** Named templates: name → options passed unchanged to the session provider's create(). Fixed for the
    *  runtime's lifetime. If given without `session`, there is no default template. */
   templates?: Record<string, object>;
-  /** Absolute cap on running tasks (slot acquire → clone → prompt → destroy → release).
+  /** Absolute cap on running tasks (slot acquire → start task session → prompt → destroy → release).
    *  Integer ≥ 1. Default 1. */
   limit?: number;
   /** Max waiting tasks. Finite integer ≥ 0. Default 32.
@@ -29,10 +40,10 @@ export interface RuntimeOptions {
 
 export interface Runtime {
   readonly state: 'ready' | 'broken' | 'closed';
-  /** Clone base → prompt → destroy clone. */
+  /** Start a task session from the template's base → prompt → destroy the task session. */
   run(input: Prompt, options?: { signal?: AbortSignal; template?: string }): Promise<TaskResult>;
   /** Same lifecycle as run(), output as chunks. Lazy: nothing is admitted until the first
-   *  pull. Single-use. Leaving the loop early destroys the clone before the loop exits. */
+   *  pull. Single-use. Leaving the loop early destroys the task session before the loop exits. */
   stream(input: Prompt, options?: { signal?: AbortSignal; template?: string }): TaskStream;
   /** Synchronous, read-only view of current state. Never waits, never changes anything. */
   snapshot(): RuntimeSnapshot;
@@ -43,7 +54,7 @@ export interface Runtime {
 
 export interface RuntimeSnapshot {
   state: Runtime['state'];
-  /** Tasks holding a concurrency slot (clone → prompt → task session destroyed). */
+  /** Tasks holding a concurrency slot (task session started → prompt → task session destroyed). */
   active: number;
   /** Tasks waiting for a slot. */
   queued: number;
@@ -80,7 +91,7 @@ export class TaskError extends Error {
   }
 }
 
-export async function createCoreRuntime(provider: SessionProvider, options: RuntimeOptions = {}): Promise<Runtime> {
+export async function createCoreRuntime<B>(provider: SessionProvider<B>, options: RuntimeOptions = {}): Promise<Runtime> {
   const { session, templates, limit = 1, queueCapacity = 32 } = options;
   if (!Number.isInteger(limit) || limit < 1) throw new TypeError('limit must be an integer >= 1');
   if (!Number.isInteger(queueCapacity) || queueCapacity < 0) {
@@ -90,14 +101,15 @@ export async function createCoreRuntime(provider: SessionProvider, options: Runt
     throw new TypeError('templates is empty and no session was given');
   }
   // One warm base per template; key undefined = unnamed default. Fixed after creation.
-  const bases = new Map<string | undefined, Session>();
+  const bases = new Map<string | undefined, B>();
   try {
     // ponytail: sequential creation scales startup with template count; use Promise.allSettled
     // if startup latency matters.
     if (templates === undefined || session !== undefined) bases.set(undefined, await provider.create(session));
     for (const [name, config] of Object.entries(templates ?? {})) bases.set(name, await provider.create(config));
   } catch (e) {
-    for (const b of bases.values()) try { b.destroy(); } catch {}
+    // No close(): provider-wide resources are owned only once creation succeeds.
+    for (const b of bases.values()) try { await provider.destroy?.(b); } catch {}
     throw e;
   }
   const pick = (template?: string) => {
@@ -169,17 +181,15 @@ export async function createCoreRuntime(provider: SessionProvider, options: Runt
   const failure = (sig: AbortSignal, timing: TaskTiming, e: unknown) =>
     sig.aborted ? new TaskError('cancelled', timing, sig.reason) : new TaskError('failed', timing, e);
 
-  const acquire = async (base: Session, sig: AbortSignal, timing: TaskTiming) => {
+  const acquire = async (base: B, sig: AbortSignal, timing: TaskTiming) => {
     if (sig.aborted) throw new TaskError('cancelled', timing, sig.reason);
     if (state === 'broken') throw new TaskError('broken', timing); // broke while this task waited
     const t1 = performance.now();
     let task: Session;
     try {
-      task = await base.clone({ signal: sig });
+      task = await provider.start(base, { signal: sig });
     } catch (e) {
-      // ponytail: InvalidStateError = base no longer trusted (research R2); revisit if the
-      // Prompt API spec defines destroyed-session errors differently.
-      if (!sig.aborted && e instanceof DOMException && e.name === 'InvalidStateError') {
+      if (!sig.aborted && provider.broken(e)) {
         if (state === 'ready') {
           state = 'broken';
           drain('broken');
@@ -189,14 +199,21 @@ export async function createCoreRuntime(provider: SessionProvider, options: Runt
       throw failure(sig, timing, e);
     }
     timing.acquire = performance.now() - t1;
-    return task; // caller owns it before checking sig.aborted, so end() destroys a late clone
+    return task; // caller owns it before checking sig.aborted, so end() destroys a late task
   };
 
   // Destroy → release slot → total. Runs before the task's outcome settles (FR-009b).
-  const end = (task: Session | undefined, t0: number, timing: TaskTiming) => {
-    try { task?.destroy(); } catch {}
-    release();
-    timing.total = performance.now() - t0;
+  // A synchronous destroy() keeps the whole step synchronous (002: timing is published in the
+  // same turn as a paused consumer's abort); a returned promise is awaited, rejection swallowed.
+  const end = (task: Session | undefined, t0: number, timing: TaskTiming): Promise<void> | undefined => {
+    const done = () => {
+      release();
+      timing.total = performance.now() - t0;
+    };
+    let pending: void | Promise<void> = undefined;
+    try { pending = task?.destroy(); } catch {}
+    if (pending) return pending.then(done, done);
+    done();
   };
 
   return {
@@ -216,7 +233,8 @@ export async function createCoreRuntime(provider: SessionProvider, options: Runt
         timing.prompt = performance.now() - t2;
         return { output, timing };
       } finally {
-        end(task, t0, timing);
+        const pending = end(task, t0, timing);
+        if (pending) await pending;
       }
     },
 
@@ -240,7 +258,8 @@ export async function createCoreRuntime(provider: SessionProvider, options: Runt
           // Single-flight: every caller awaits the same cleanup.
           const cleanup = () => (cleaning ??= (async () => {
             if (onAbort) sig.removeEventListener('abort', onAbort);
-            end(task, t0, timing);
+            const pending = end(task, t0, timing);
+            if (pending) await pending;
             s.timing = timing;
           })());
           try {
@@ -274,7 +293,8 @@ export async function createCoreRuntime(provider: SessionProvider, options: Runt
         drain('closed');
         closer.abort(new DOMException('Runtime closed', 'AbortError'));
         if (running) await new Promise<void>((resolve) => { idle = resolve; });
-        for (const b of bases.values()) try { b.destroy(); } catch {}
+        for (const b of bases.values()) try { await provider.destroy?.(b); } catch {}
+        try { await provider.close?.(); } catch {}
       })());
     },
   };
