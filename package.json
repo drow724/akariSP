@@ -1,24 +1,34 @@
 {
   "name": "akarisp",
-  "version": "0.1.0",
-  "description": "Lightweight runtime for browser-native LLM sessions: warm base session, cloned isolated tasks",
+  "version": "0.1.0-alpha.0",
+  "description": "Lightweight lifecycle runtime for browser LLM sessions: bounded queue, cancellation, and deterministic cleanup for the Chrome Prompt API and WebLLM",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/drow724/akariSP.git"
+  },
   "type": "module",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
+    },
+    "./webllm": {
+      "types": "./dist/webllm.d.ts",
+      "default": "./dist/webllm.js"
     }
   },
   "files": [
     "dist"
   ],
-  "engines": {
-    "node": ">=22.18"
-  },
   "scripts": {
     "build": "tsc",
     "test": "node --test test/*.test.ts",
-    "test:browser": "playwright test"
+    "test:browser": "playwright test",
+    "prepack": "npm run build"
+  },
+  "publishConfig": {
+    "tag": "alpha"
   },
   "devDependencies": {
     "@playwright/test": "^1.63.0",
