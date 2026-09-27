@@ -49,6 +49,14 @@ await runtime.shutdown(); // cancels running tasks, rejects waiting ones, destro
 Each `run()` clones the base, prompts the clone, and destroys it. The task's promise settles
 only after its session is destroyed and its slot released.
 
+`createRuntime()` reports creation failures through its returned promise, and does not call
+`LanguageModel.availability()` before creation. If the Prompt API global is missing, the promise
+rejects with `ReferenceError: LanguageModel is not defined`. If `LanguageModel.create()` rejects,
+the provider's error is propagated without AkariSP-specific translation or conversion to
+`TaskError`, which is reserved for task execution. Applications that need a preflight check can
+first test `'LanguageModel' in globalThis` and, only when the global is present, use
+`LanguageModel.availability()`.
+
 ## Streaming
 
 ```js

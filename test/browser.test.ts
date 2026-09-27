@@ -41,6 +41,15 @@ test('no global: creating a runtime rejects with ReferenceError', async () => {
   await assert.rejects(createRuntime(), ReferenceError);
 });
 
+// 011: the provider's creation error reaches the public entry untranslated (not a TaskError).
+// Object identity is left to the core test "create rejection propagates unchanged".
+test('create rejection reaches the public entry without translation', async () => {
+  installGlobal({ async create() { throw new DOMException('no model', 'NotAllowedError'); } });
+  const { createRuntime, TaskError } = await entry();
+  await assert.rejects(createRuntime(), (e) =>
+    e instanceof DOMException && e.name === 'NotAllowedError' && e.message === 'no model' && !(e instanceof TaskError));
+});
+
 test('create receives the session and template config objects unchanged', async () => {
   const configs: unknown[] = [];
   installGlobal({ async create(config: unknown) { configs.push(config); return { destroy() {} }; } });
