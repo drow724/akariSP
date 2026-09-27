@@ -450,3 +450,38 @@ TypeScript (`moduleResolution: bundler`, strict).
 - **Mutation**: renaming `queueCapacity` to `queueCap` in the README Usage sample fails the test,
   and it passes again after the revert. The check fails whenever the README and the published
   API disagree.
+
+### First publish (observed registry behavior, 2026-09-27)
+
+The maintainer ran `npm publish` with `publishConfig.tag: alpha`. `npm dist-tag ls akarisp`
+afterwards:
+
+```text
+alpha: 0.1.0-alpha.0
+latest: 0.1.0-alpha.0
+```
+
+The registry matches the T015 audit: 13 files, 41,694 B unpacked, no dependencies, Apache-2.0.
+
+The assumption behind FR-813 ("`--tag alpha` → no `latest`", R5) did not hold for the first publish:
+
+- The npm CLI documentation says a custom publish tag normally avoids updating `latest`.
+- The npm registry package-metadata documentation states that every package has a `latest` tag.
+- The initial publication created `latest` on the first version. No official sentence was found
+  saying this happens on a first publish regardless of `--tag`, so this is recorded as
+  observed registry behavior, not documented behavior.
+
+Consequences:
+
+- `npm install akarisp` currently installs `0.1.0-alpha.0`. The README says so.
+- `latest` is left in place:
+  - bare installs default to `latest`;
+  - the registry expects every package to have one;
+  - there is no benefit in breaking that for the first alpha.
+
+  `npm dist-tag rm` itself supports removing tags. An earlier claim in this session that
+  `latest` could not be removed was wrong.
+- **Open policy, to decide before the next release:** by the documented behavior, publishing
+  `0.1.0-alpha.1` with the `alpha` tag would leave `latest` on `alpha.0`. The alternative is to
+  move `latest` together with each alpha (`npm dist-tag add akarisp@<version> latest`) until
+  the first stable release.
