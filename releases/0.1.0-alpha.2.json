@@ -1,0 +1,6 @@
+{
+  "version": "0.1.0-alpha.2",
+  "distTags": { "alpha": "0.1.0-alpha.2", "latest": "0.1.0-alpha.2" },
+  "dependencies": {},
+  "exports": [".", "./webllm"]
+}

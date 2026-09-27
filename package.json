@@ -1,6 +1,6 @@
 {
   "name": "akarisp",
-  "version": "0.1.0-alpha.1",
+  "version": "0.1.0-alpha.2",
   "description": "Lightweight lifecycle runtime for browser LLM sessions: bounded queue, cancellation, and deterministic cleanup for the Chrome Prompt API and WebLLM",
   "license": "Apache-2.0",
   "repository": {

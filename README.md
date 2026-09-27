@@ -15,8 +15,8 @@ Zero runtime dependencies. No framework, no agent abstraction.
 npm install akarisp@alpha
 ```
 
-For the `0.1.0-alpha.1` release, both `alpha` and `latest` are intended to point to
-`0.1.0-alpha.1`, so `npm install akarisp` and `npm install akarisp@alpha` install the same
+For the `0.1.0-alpha.2` release, both `alpha` and `latest` are intended to point to
+`0.1.0-alpha.2`, so `npm install akarisp` and `npm install akarisp@alpha` install the same
 version. This does not define a permanent dist-tag policy. Each release records its intended and
 verified tags under [`releases/`](releases/).
 
