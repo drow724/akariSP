@@ -1,0 +1,53 @@
+{
+  "recordedAt": "2026-09-27T05:54:04.396Z",
+  "runner": {
+    "kind": "manual",
+    "browser": "Chrome"
+  },
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+  "secureContext": true,
+  "capability": {
+    "languageModelPresent": true,
+    "availability": "available",
+    "classification": "MODEL_AVAILABLE",
+    "error": null
+  },
+  "tests": {
+    "import": {
+      "status": "PASS"
+    },
+    "run": {
+      "status": "PASS",
+      "durationMs": 2612
+    },
+    "streaming": {
+      "status": "PASS",
+      "durationMs": 2167
+    },
+    "earlyBreak": {
+      "status": "PASS",
+      "durationMs": 886
+    },
+    "callerAbort": {
+      "status": "PASS",
+      "durationMs": 879
+    },
+    "shutdownDuringStreaming": {
+      "status": "PASS",
+      "durationMs": 452
+    },
+    "lazyStream": {
+      "status": "PASS",
+      "durationMs": 590
+    },
+    "cloneIsolation": {
+      "status": "PASS",
+      "durationMs": 1854,
+      "info": {
+        "marker": "0b5add3c",
+        "markerObservedInOtherTask": false
+      }
+    }
+  },
+  "overall": "PASS"
+}

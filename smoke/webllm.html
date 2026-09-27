@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<title>AkariSP WebLLM validation (internal, 007)</title>
+<style>
+  body { font: 14px system-ui, sans-serif; margin: 2rem; max-width: 64rem; }
+  td { padding: 2px 12px 2px 0; }
+  button { margin: 0 6px 6px 0; }
+  .pass { color: #0a7d32; } .fail { color: #b3261e; }
+  pre { background: #f4f4f4; padding: .75rem; overflow: auto; white-space: pre-wrap; max-height: 28rem; }
+</style>
+<h1>AkariSP WebLLM validation (internal, 007)</h1>
+<p>Runs AkariSP's internal WebLLM integration on a real engine. <b>Load model</b> downloads the model
+once (cached by the browser) and only on click. Each check loads the cached model into a fresh
+engine, because every runtime unloads its engine at shutdown.</p>
+<table>
+  <tr><td>WebLLM</td><td id="version">…</td></tr>
+  <tr><td>Model</td><td id="model">…</td></tr>
+  <tr><td>WebGPU</td><td id="webgpu">…</td></tr>
+  <tr><td>Model cached</td><td id="cached">no (click Load model)</td></tr>
+  <tr><td>Progress</td><td id="progress">–</td></tr>
+</table>
+<div id="setup"></div>
+<div id="buttons"></div>
+<h2>Results</h2>
+<pre id="results"></pre>
+<h2>Result JSON</h2>
+<pre id="json"></pre>
+<h2>Log</h2>
+<pre id="log"></pre>
+<script type="module" src="./webllm.js"></script>
+</html>

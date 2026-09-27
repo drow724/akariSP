@@ -115,6 +115,9 @@ beforeEach(() => {
       if (fake.createError) throw fake.createError;
       return (fake.base = new FakeSession(true, [...(options?.initialPrompts ?? [])]));
     },
+    start: (base: FakeSession, options: { signal: AbortSignal }) => base.clone(options),
+    broken: (e: unknown) => e instanceof DOMException && e.name === 'InvalidStateError',
+    destroy: (base: FakeSession) => base.destroy(),
   };
 });
 
@@ -1682,4 +1685,213 @@ test('templates: 100 mixed run/stream tasks across 3 templates stay within globa
   assert.ok(codes.every((c) => ['ok', 'rejected', 'cancelled'].includes(c)), codes.join());
   assert.equal(peak, 6);
   assert.deepEqual([runtime.snapshot().active, runtime.snapshot().queued], [0, 0]);
+});
+
+// ---------------------------------------------------------------------------
+// 007 — provider seam: clone-less provider, broken delegation, async cleanup (T006–T011)
+// ---------------------------------------------------------------------------
+
+type Base = { tag?: string; hold?: boolean };
+/** Request-style provider: base = template config, one task object per task, no clone.
+ *  Owns no per-template or provider-wide resource, so it has neither destroy nor close. */
+function requestProvider() {
+  const tasks: { destroyed: number }[] = [];
+  const provider = {
+    starts: [] as Base[],
+    create: async (config: Base = {}) => config,
+    async start(base: Base) {
+      provider.starts.push(base);
+      const task = {
+        destroyed: 0,
+        async prompt(input: unknown, { signal }: { signal: AbortSignal }) {
+          if (base.hold) {
+            await new Promise((_, reject) => signal.addEventListener('abort', () => reject(signal.reason), { once: true }));
+          }
+          return `${base.tag}:${input}`;
+        },
+        async *promptStreaming(_input: unknown, { signal }: { signal: AbortSignal }) {
+          for (const c of ['a', 'b', 'c']) {
+            if (signal.aborted) throw signal.reason;
+            yield c;
+          }
+        },
+        destroy() { task.destroyed++; },
+      };
+      tasks.push(task);
+      return task;
+    },
+    broken: () => false,
+  };
+  return { provider, tasks };
+}
+
+test('clone-less provider: run and stream on the selected template base', async () => {
+  const { provider, tasks } = requestProvider();
+  const a = { tag: 'A' }, b = { tag: 'B' };
+  const runtime = await createCoreRuntime(provider, { templates: { a, b } });
+  assert.equal((await runtime.run('x', { template: 'a' })).output, 'A:x');
+  assert.equal(provider.starts[0], a);
+  assert.deepEqual(await collect(runtime.stream('y', { template: 'b' })), ['a', 'b', 'c']);
+  assert.equal(provider.starts[1], b);
+  assert.deepEqual(tasks.map((t) => t.destroyed), [1, 1]);
+  await runtime.shutdown();
+  assert.ok(!('clone' in provider));
+  assert.ok(tasks.every((t) => !('clone' in t)));
+});
+
+test('clone-less provider: caller abort, early break, shutdown', async () => {
+  const { provider, tasks } = requestProvider();
+  const runtime = await createCoreRuntime(provider, { templates: { held: { tag: 'H', hold: true }, s: { tag: 'S' } } });
+  const ctrl = new AbortController();
+  const p = runtime.run('x', { signal: ctrl.signal, template: 'held' });
+  await tick();
+  ctrl.abort();
+  assert.equal((await rejection(p)).code, 'cancelled');
+  const it = runtime.stream('y', { template: 's' })[Symbol.asyncIterator]();
+  await it.next();
+  await it.return(undefined);
+  assert.equal(tasks[1].destroyed, 1); // destroyed before the loop exit completed
+  await runtime.shutdown();
+  assert.equal(runtime.state, 'closed');
+});
+
+test('broken is delegated to provider.broken, consulted only for start rejections', async () => {
+  const err = new Error('resource gone');
+  let consulted = 0;
+  let failStart = false;
+  const gate = deferred<string>();
+  const provider = {
+    create: async (config: Base = {}) => config,
+    async start() {
+      if (failStart) throw err;
+      return { prompt: () => gate.promise, promptStreaming: async function* () {}, destroy() {} };
+    },
+    broken: (e: unknown) => { consulted++; return e === err; },
+  };
+  const runtime = await createCoreRuntime(provider, { limit: 1, queueCapacity: 2 });
+  const a = runtime.run('a');
+  await tick();
+  failStart = true;
+  const b = runtime.run('b');
+  const c = runtime.run('c');
+  gate.resolve('A');
+  assert.equal((await a).output, 'A');
+  const eb = await rejection(b);
+  assert.equal(eb.code, 'broken');
+  assert.equal(eb.cause, err);
+  assert.equal((await rejection(c)).code, 'broken');
+  assert.equal(runtime.state, 'broken');
+  assert.equal((await rejection(runtime.run('d'))).code, 'broken');
+  assert.equal(consulted, 1);
+});
+
+test('broken is not consulted when the task was aborted or when prompt fails', async () => {
+  const err = new Error('x');
+  let consulted = 0;
+  const startGate = deferred();
+  let mode: 'slow-reject' | 'prompt-reject' = 'slow-reject';
+  const provider = {
+    create: async (config: Base = {}) => config,
+    async start() {
+      if (mode === 'slow-reject') { await startGate.promise; throw err; }
+      return { prompt: async () => { throw err; }, promptStreaming: async function* () {}, destroy() {} };
+    },
+    broken: () => { consulted++; return true; },
+  };
+  const runtime = await createCoreRuntime(provider);
+  const ctrl = new AbortController();
+  const p = runtime.run('x', { signal: ctrl.signal });
+  await tick();
+  ctrl.abort();
+  startGate.resolve();
+  assert.equal((await rejection(p)).code, 'cancelled');
+  mode = 'prompt-reject';
+  const e = await rejection(runtime.run('y'));
+  assert.equal(e.code, 'failed');
+  assert.equal(runtime.state, 'ready');
+  assert.equal(consulted, 0);
+});
+
+/** Provider with async task destroy (test-released), async base destroy, async close. */
+function asyncCleanupProvider(events: string[]) {
+  const taskDestroy = deferred();
+  const provider = {
+    closes: 0,
+    create: async (config: Base = {}) => config,
+    async start() {
+      return {
+        prompt: (_: unknown, { signal }: { signal: AbortSignal }) =>
+          new Promise<string>((_, reject) => signal.addEventListener('abort', () => reject(signal.reason), { once: true })),
+        promptStreaming: async function* () {},
+        destroy() {
+          events.push('task-destroy-start');
+          return taskDestroy.promise.then(() => { events.push('task-destroy-end'); });
+        },
+      };
+    },
+    broken: () => false,
+    async destroy(base: Base) { await tick(); events.push(`base-destroy:${base.tag}`); },
+    async close() { provider.closes++; await tick(); events.push('close'); },
+  };
+  return { provider, releaseTaskDestroy: () => taskDestroy.resolve() };
+}
+
+test('shutdown awaits async task cleanup, then base cleanup, then close', async () => {
+  const events: string[] = [];
+  const { provider, releaseTaskDestroy } = asyncCleanupProvider(events);
+  const runtime = await createCoreRuntime(provider, { templates: { a: { tag: 'a' }, b: { tag: 'b' } } });
+  const run = track(runtime.run('x', { template: 'a' }));
+  await tick();
+  const shutdown = runtime.shutdown().then(() => { events.push('shutdown'); });
+  await tick();
+  assert.deepEqual(events, ['task-destroy-start']);
+  assert.equal(runtime.snapshot().active, 1); // slot held until the async destroy settles
+  assert.equal(run.settled, false); // cleanup before settle
+  releaseTaskDestroy();
+  await shutdown;
+  assert.deepEqual(events, ['task-destroy-start', 'task-destroy-end', 'base-destroy:a', 'base-destroy:b', 'close', 'shutdown']);
+  assert.equal((await rejection(run.promise)).code, 'cancelled');
+  assert.equal(provider.closes, 1);
+});
+
+test('async rollback: every created base destroyed, original error rethrown, no close', async () => {
+  const err = new Error('create c failed');
+  const destroyed: string[] = [];
+  let closes = 0;
+  const provider = {
+    async create(config: Base = {}) { if (config.tag === 'c') throw err; return config; },
+    async start(): Promise<never> { throw new Error('unused'); },
+    broken: () => false,
+    async destroy(base: Base) {
+      await tick();
+      destroyed.push(base.tag!);
+      if (base.tag === 'b') throw new Error('destroy b failed');
+    },
+    async close() { closes++; },
+  };
+  await assert.rejects(
+    createCoreRuntime(provider, { templates: { a: { tag: 'a' }, b: { tag: 'b' }, c: { tag: 'c' } } }),
+    (e) => e === err,
+  );
+  assert.deepEqual(destroyed, ['a', 'b']);
+  assert.equal(closes, 0);
+});
+
+test('shutdown: close runs once for concurrent calls and after rejecting cleanups', async () => {
+  const events: string[] = [];
+  let closes = 0;
+  const provider = {
+    create: async (config: Base = {}) => config,
+    async start(): Promise<never> { throw new Error('unused'); },
+    broken: () => false,
+    async destroy() { events.push('destroy'); throw new Error('destroy failed'); },
+    async close() { closes++; events.push('close'); throw new Error('close failed'); },
+  };
+  const runtime = await createCoreRuntime(provider);
+  const [s1, s2] = [runtime.shutdown(), runtime.shutdown()];
+  assert.equal(s1, s2);
+  await Promise.all([s1, s2]);
+  assert.equal(runtime.shutdown(), s1);
+  assert.equal(closes, 1);
+  assert.deepEqual(events, ['destroy', 'close']);
 });

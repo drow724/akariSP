@@ -1,0 +1,10 @@
+{
+  "source": "harness log line (the recorded result object, copied from the Log panel)",
+  "loggedAt": "04:04:51.837 (UTC, same day)",
+  "webllm": "0.2.85",
+  "model": "Qwen2.5-0.5B-Instruct-q4f16_1-MLC",
+  "userAgent": "Chrome/152 on macOS (same browser as run1 and run2)",
+  "experiments": {
+    "e6b_interrupt_drain": {"aChunks":3,"aFinish":"abort","aEnd":36653,"bFirst":36695,"bWaitMs":42,"bLength":39,"bFinish":"stop"}
+  }
+}

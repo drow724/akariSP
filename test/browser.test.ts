@@ -69,3 +69,22 @@ test('the native session is used by the core as returned', async () => {
   assert.equal(cloned, native);
   await runtime.shutdown();
 });
+
+test('Chrome broken rule: a DOMException named InvalidStateError from clone breaks the runtime', async () => {
+  const native = { async clone() { throw new DOMException('gone', 'InvalidStateError'); }, destroy() {} };
+  installGlobal({ create: async () => native });
+  const { createRuntime } = await entry();
+  const runtime = await createRuntime();
+  await assert.rejects(runtime.run('x'), (e: any) => e.code === 'broken');
+  assert.equal(runtime.state, 'broken');
+});
+
+test('Chrome broken rule: a lookalike error named InvalidStateError only fails the task', async () => {
+  const native = { async clone() { throw { name: 'InvalidStateError' }; }, destroy() {} };
+  installGlobal({ create: async () => native });
+  const { createRuntime } = await entry();
+  const runtime = await createRuntime();
+  await assert.rejects(runtime.run('x'), (e: any) => e.code === 'failed');
+  assert.equal(runtime.state, 'ready');
+  await runtime.shutdown();
+});

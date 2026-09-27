@@ -1,0 +1,197 @@
+{
+  "recordedAt": "2026-09-27T03:48:27.803Z",
+  "webllm": "0.2.85",
+  "model": "Qwen2.5-0.5B-Instruct-q4f16_1-MLC",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+  "experiments": {
+    "e1_isolation": {
+      "marker": "6f7fca2c",
+      "a": "OK",
+      "b": "NONE",
+      "c": "NONE",
+      "markerInB": false,
+      "markerInC": false
+    },
+    "e2_clone_necessity": {
+      "createRuntime": "ok",
+      "run": {
+        "name": "TaskError",
+        "constructor": "TaskError",
+        "isDOMException": false,
+        "message": "Task failed",
+        "code": "failed",
+        "causeName": "TypeError",
+        "causeConstructor": "TypeError"
+      },
+      "stream": {
+        "name": "TaskError",
+        "constructor": "TaskError",
+        "isDOMException": false,
+        "message": "Task failed",
+        "code": "failed",
+        "causeName": "TypeError",
+        "causeConstructor": "TypeError"
+      },
+      "shutdown": "resolved (base destroy() missing → swallowed by core)",
+      "stateAfter": "closed"
+    },
+    "e3_concurrency": {
+      "a": {
+        "submitted": 25331,
+        "first": 25445,
+        "end": 29439
+      },
+      "b": {
+        "submitted": 25331,
+        "first": 29499,
+        "end": 33686
+      },
+      "serialized": true
+    },
+    "e4_queued_cancel": {
+      "withInterruptGenerate": {
+        "tInterrupt": 42230,
+        "a": {
+          "submitted": 41818,
+          "first": 42179,
+          "end": 42233,
+          "chunks": 5,
+          "finish": "abort"
+        },
+        "b": {
+          "submitted": 42179,
+          "first": 42275,
+          "end": 42444,
+          "chunks": 14,
+          "length": 43,
+          "finish": "stop"
+        }
+      },
+      "withIteratorReturn": {
+        "tReturn": 43846,
+        "a": {
+          "submitted": 42444,
+          "first": 42501,
+          "end": 43846,
+          "chunks": 97,
+          "finish": "length"
+        },
+        "bFirstNext": {
+          "done": false,
+          "gotChunk": true
+        },
+        "bReturn": "resolved",
+        "tBSettled": 43888
+      }
+    },
+    "e5_active_cancel": {
+      "harnessError": {
+        "name": "HarnessTimeout",
+        "constructor": "Error",
+        "isDOMException": false,
+        "message": "no result within 120000 ms"
+      }
+    },
+    "e6_early_break": {
+      "harnessError": {
+        "name": "HarnessTimeout",
+        "constructor": "Error",
+        "isDOMException": false,
+        "message": "no result within 120000 ms"
+      }
+    },
+    "e7_unload": {
+      "interruptedStream": {
+        "chunks": 4,
+        "finish": "abort"
+      },
+      "unloadAwaitedMs": 68,
+      "requestAfterUnload": {
+        "name": "ModelNotLoadedError",
+        "constructor": "PE",
+        "isDOMException": false,
+        "message": "Model not loaded before trying to complete ChatCompletionRequest. Please ensure you have called MLCEngine.reload(model) to load the model before initiating APIs, or initialize your engine using Create"
+      },
+      "note": "engine unloaded; click Load model again before other experiments"
+    },
+    "e7b_unload_during_generation": {
+      "unload": "resolved",
+      "unloadMs": 40,
+      "stream": {
+        "name": "Error",
+        "constructor": "Error",
+        "isDOMException": false,
+        "message": "Object has already been disposed"
+      },
+      "note": "engine unloaded; click Load model again"
+    },
+    "e8_errors": {
+      "notLoaded": {
+        "name": "ModelNotLoadedError",
+        "constructor": "PE",
+        "isDOMException": false,
+        "message": "Model not loaded before trying to complete ChatCompletionRequest. Please ensure you have called MLCEngine.reload(model) to load the model before initiating APIs, or initialize your engine using Create"
+      },
+      "unknownModel": {
+        "name": "ModelNotFoundError",
+        "constructor": "dE",
+        "isDOMException": false,
+        "message": "Cannot find model record in appConfig for no-such-model-xyz. Please check if the model ID is correct and included in the model_list configuration."
+      },
+      "invalidConfig": {
+        "name": "NonNegativeError",
+        "constructor": "sw",
+        "isDOMException": false,
+        "message": "Make sure temperature >= 0."
+      },
+      "interruptOutcome": {
+        "threw": false,
+        "finish": "abort",
+        "chunks": 3
+      },
+      "afterUnload": {
+        "name": "ModelNotLoadedError",
+        "constructor": "PE",
+        "isDOMException": false,
+        "message": "Model not loaded before trying to complete ChatCompletionRequest. Please ensure you have called MLCEngine.reload(model) to load the model before initiating APIs, or initialize your engine using Create"
+      }
+    },
+    "e9_templates": [
+      {
+        "template": "risk",
+        "text": "",
+        "ttftS": 0.353,
+        "prefillTokS": 93.48441926345609,
+        "ms": 1
+      },
+      {
+        "template": "default",
+        "text": "",
+        "ttftS": 0.353,
+        "prefillTokS": 93.48441926345609,
+        "ms": 0
+      },
+      {
+        "template": "risk",
+        "text": "",
+        "ttftS": 0.353,
+        "prefillTokS": 93.48441926345609,
+        "ms": 0
+      },
+      {
+        "template": "default",
+        "text": "",
+        "ttftS": 0.353,
+        "prefillTokS": 93.48441926345609,
+        "ms": 0
+      },
+      {
+        "template": "default",
+        "text": "",
+        "ttftS": 0.353,
+        "prefillTokS": 93.48441926345609,
+        "ms": 0
+      }
+    ]
+  }
+}

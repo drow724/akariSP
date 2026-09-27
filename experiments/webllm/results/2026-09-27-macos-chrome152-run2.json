@@ -1,0 +1,75 @@
+{
+  "recordedAt": "2026-09-27T03:55:29.975Z",
+  "webllm": "0.2.85",
+  "model": "Qwen2.5-0.5B-Instruct-q4f16_1-MLC",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+  "experiments": {
+    "e5_active_cancel": {
+      "a": {
+        "chunks": 4,
+        "finish": "abort"
+      },
+      "bNonStreaming": {
+        "length": 0,
+        "finish": "abort"
+      },
+      "cStreaming": {
+        "length": 39,
+        "finish": "stop"
+      },
+      "dNonStreamingAfterIdleInterrupt": {
+        "length": 0,
+        "finish": "stop"
+      },
+      "eNonStreamingNext": {
+        "length": 0,
+        "finish": "stop"
+      },
+      "fStreamingReset": {
+        "length": 43,
+        "finish": "stop"
+      },
+      "gNonStreamingAfterReset": {
+        "length": 39,
+        "finish": "stop"
+      }
+    },
+    "e9_templates": [
+      {
+        "template": "risk",
+        "text": "I analyze and interpret data to identify trends, patterns, and potential risks.",
+        "ttftS": 0.06590000009536744,
+        "prefillTokS": 561.4567518430244,
+        "ms": 288
+      },
+      {
+        "template": "default",
+        "text": "I assist you by providing information, answering questions, and offering insights.",
+        "ttftS": 0.062200000047683716,
+        "prefillTokS": 594.8553050102104,
+        "ms": 256
+      },
+      {
+        "template": "risk",
+        "text": "I analyze and interpret data to identify trends, patterns, and potential risks.",
+        "ttftS": 0.05879999995231629,
+        "prefillTokS": 629.2517011905622,
+        "ms": 276
+      },
+      {
+        "template": "default",
+        "text": "I assist you by providing information, answering questions, and offering insights.",
+        "ttftS": 0.05790000009536743,
+        "prefillTokS": 639.0328141460636,
+        "ms": 261
+      },
+      {
+        "template": "default",
+        "text": "I assist you by providing information, answering questions, and offering insights.",
+        "ttftS": 0.05940000009536743,
+        "prefillTokS": 622.8956218955564,
+        "ms": 253
+      }
+    ]
+  }
+}

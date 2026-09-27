@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<title>WebLLM provider experiments (pre-007)</title>
+<style>
+  body { font: 14px system-ui, sans-serif; margin: 2rem; max-width: 70rem; }
+  button { margin: 0 6px 6px 0; }
+  td { padding: 2px 12px 2px 0; }
+  pre { background: #f4f4f4; padding: .75rem; overflow: auto; white-space: pre-wrap; max-height: 28rem; }
+</style>
+<h1>WebLLM provider experiments (pre-007)</h1>
+<p>Evidence for the 007 provider contract. Records what WebLLM actually does; nothing here is an
+AkariSP feature. <b>Load model</b> downloads the model once (hundreds of MB, cached by the
+browser) and only when you click it. Run each experiment by its own button.</p>
+
+<table>
+  <tr><td>WebLLM</td><td id="version">…</td></tr>
+  <tr><td>Model</td><td id="model">…</td></tr>
+  <tr><td>WebGPU</td><td id="webgpu">…</td></tr>
+  <tr><td>Engine</td><td id="engine">not loaded</td></tr>
+  <tr><td>Progress</td><td id="progress">–</td></tr>
+</table>
+
+<div id="setup"></div>
+<div id="buttons"></div>
+
+<h2>Result JSON</h2>
+<pre id="json"></pre>
+
+<h2>Log</h2>
+<pre id="log"></pre>
+
+<script type="module" src="./experiments.js"></script>
+</html>
