@@ -1,0 +1,26 @@
+{
+  "evidence": "REAL_BROWSER",
+  "date": "2026-09-27T13:43:52.038Z",
+  "browser": "Chrome 153.0.8010.53",
+  "profile": "fresh temporary user-data-dir (deleted afterwards)",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36",
+  "before": {
+    "secureContext": true,
+    "present": true,
+    "availability": "unavailable",
+    "userActivation": {
+      "isActive": true,
+      "hasBeenActive": true
+    }
+  },
+  "afterActivation": {
+    "secureContext": true,
+    "present": true,
+    "availability": "unavailable",
+    "userActivation": {
+      "isActive": true,
+      "hasBeenActive": true
+    }
+  },
+  "createCalled": false
+}
