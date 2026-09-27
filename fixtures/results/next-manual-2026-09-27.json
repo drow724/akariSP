@@ -1,0 +1,56 @@
+{
+  "environment": "next",
+  "mode": "manual",
+  "date": "2026-09-27",
+  "akarisp": "0.1.0-alpha.1",
+  "provider": "real Chrome Prompt API (Chrome, built-in model)",
+  "install": "PASS",
+  "dev": "PASS",
+  "browser": "PASS",
+  "versions": {
+    "akarisp": "0.1.0-alpha.1",
+    "next": "16.3.6",
+    "react": "19.3.0",
+    "react-dom": "19.3.0"
+  },
+  "steps": {
+    "A_initialLoad": {
+      "creates": 2,
+      "shutdowns": 0
+    },
+    "B_runStream": "PASS (real model output)",
+    "C_slowToggles": "PASS",
+    "D_quickToggles_cumulative": {
+      "creates": 6,
+      "shutdowns": 3
+    },
+    "E_hmrEdit": {
+      "before": {
+        "creates": 1
+      },
+      "after": "no new akarisp lines (Fast Refresh)"
+    },
+    "F_navigation": "PASS",
+    "F_serverCreate": "error overlay: \"LanguageModel is not defined\" at app/server-create/page.jsx (8:38) @ ServerCreate, line `const runtime = await createRuntime();`"
+  },
+  "devBehaviors": {
+    "doubleMount": "App Router development StrictMode: same as React (2 creates, 0 shutdowns on load)",
+    "hmr": "no runtime churn"
+  },
+  "next": {
+    "serverCreate": "ReferenceError: LanguageModel is not defined (expected observation, FR-1010)"
+  },
+  "observations": "Straightforward pattern: a runtime whose creation resolves after unmount/cleanup is never shut down. Same as React in development. The server-create probe result is an expected observation, not a failed check.",
+  "final": "PASS with the fixed pattern (straightforward pattern leaked, see observations)",
+  "fixedPattern": {
+    "A_initialLoad": {
+      "creates": 2,
+      "shutdowns": 1
+    },
+    "D_quickToggles_cumulative": {
+      "creates": 6,
+      "shutdowns": 6
+    },
+    "note": "Re-run after T015: the StrictMode first runtime is shut down on resolve; balanced when unmounted."
+  }
+}

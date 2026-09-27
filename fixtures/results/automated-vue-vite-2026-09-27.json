@@ -1,0 +1,31 @@
+{
+  "environment": "vue-vite",
+  "mode": "automated",
+  "date": "2026-09-27",
+  "akarisp": "0.1.0-alpha.1",
+  "versions": {
+    "akarisp": "0.1.0-alpha.1",
+    "vue": "3.5.43",
+    "@vitejs/plugin-vue": "6.0.9",
+    "vite": "8.3.1"
+  },
+  "install": "PASS",
+  "build": "PASS",
+  "serve": "PASS",
+  "browser": "PASS",
+  "ownership": {
+    "cycles": 3,
+    "creates": 3,
+    "destroys": 3,
+    "clones": 3,
+    "cloneDestroys": 3,
+    "logCreates": 3,
+    "logShutdowns": 3,
+    "errors": []
+  },
+  "pendingUnmount": {
+    "creates": 1,
+    "destroys": 1,
+    "leaked": 0
+  }
+}

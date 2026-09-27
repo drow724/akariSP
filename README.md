@@ -160,6 +160,48 @@ The returned runtime is the same `Runtime`: `run`, `stream`, `snapshot`, `shutdo
   a cast. This is verified with TypeScript `moduleResolution: "bundler"`. WebLLM 0.2.85's own
   declarations do not resolve under `node16`/`nodenext`, where its types become `any`.
 
+## Using with frameworks
+
+AkariSP needs no framework-specific package. The component (or page) that creates a runtime
+owns it and calls `shutdown()` when it goes away. One rule matters in every framework:
+**`createRuntime()` is asynchronous, so the owner can be unmounted before it resolves.** A runtime
+that resolves after unmount must still be shut down. Otherwise it is never cleaned up. This
+happens in production on a fast unmount, and on every mount under React's development
+StrictMode.
+
+React (`useEffect`; the same pattern works for a Next.js client component):
+
+```jsx
+useEffect(() => {
+  let rt;
+  let cancelled = false; // set by cleanup; a runtime resolving afterwards is shut down at once
+  createRuntime().then((r) => {
+    if (cancelled) {
+      r.shutdown();
+      return;
+    }
+    rt = r;
+    setRuntime(r);
+  });
+  return () => {
+    cancelled = true;
+    rt?.shutdown();
+  };
+}, []);
+```
+
+- **Vue**: create in `onMounted`, and in `onBeforeUnmount` set `cancelled = true` and shut down.
+  Then check `cancelled` after `await createRuntime()`.
+- **Svelte**: the same pattern as React, inside `onMount` and the cleanup function it returns.
+- **Next.js (App Router)**: importing `akarisp` from server components is safe. **Create the
+  runtime only in client code**: a component marked `"use client"`, inside an effect. Creating
+  it in server-evaluated code fails with `ReferenceError: LanguageModel is not defined`.
+
+Development module replacement (HMR) caused no leaks in the tested versions. Validated with
+React 19.3, Vue 3.5, Svelte 5.57, Vite 8.3, and Next.js 16.3. The full applications are in
+[`fixtures/`](fixtures/), and the evidence is in
+[`specs/010-framework-compatibility-validation`](specs/010-framework-compatibility-validation/research.md).
+
 ## Package
 
 - Entry points: `akarisp` (`createRuntime`, `TaskError`, and the types `Runtime`,
@@ -181,6 +223,7 @@ npm test       # node:test: core, browser and WebLLM adapters, boundary, packed-
 npm run build  # tsc → dist/
 npm run test:browser  # Playwright: compatibility page on Chromium / Firefox / WebKit engines
 RELEASE=<version> npm run test:registry  # on demand, needs the network: the published package vs releases/<version>.json
+npm run test:frameworks  # on demand, needs the network: React/Vue/Svelte + Vite and Next.js fixtures, installed from npm
 ```
 
 ### Browser compatibility

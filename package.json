@@ -26,7 +26,8 @@
     "test": "node --test test/*.test.ts",
     "test:browser": "playwright test",
     "prepack": "npm run build",
-    "test:registry": "node --test test/registry/registry.test.ts"
+    "test:registry": "node --test test/registry/registry.test.ts",
+    "test:frameworks": "playwright test -c playwright.frameworks.config.ts"
   },
   "devDependencies": {
     "@playwright/test": "^1.63.0",

@@ -1,0 +1,52 @@
+{
+  "environment": "react-vite",
+  "mode": "manual",
+  "date": "2026-09-27",
+  "akarisp": "0.1.0-alpha.1",
+  "provider": "real Chrome Prompt API (Chrome, built-in model)",
+  "install": "PASS",
+  "dev": "PASS",
+  "browser": "PASS",
+  "versions": {
+    "akarisp": "0.1.0-alpha.1",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "@vitejs/plugin-react": "6.1.1",
+    "vite": "8.3.1"
+  },
+  "steps": {
+    "A_initialLoad": {
+      "creates": 2,
+      "shutdowns": 0
+    },
+    "B_runStream": "PASS (real model output)",
+    "C_slowToggles": "PASS",
+    "D_quickToggles_cumulative": {
+      "creates": 6,
+      "shutdowns": 3
+    },
+    "E_hmrEdit": {
+      "before": {
+        "creates": 2
+      },
+      "after": "no new akarisp lines (Fast Refresh kept the component)"
+    }
+  },
+  "devBehaviors": {
+    "doubleMount": "StrictMode ran the effect twice on load: 2 creates, 0 shutdowns; the first runtime resolved after its cleanup and was never shut down",
+    "hmr": "no runtime churn"
+  },
+  "observations": "Straightforward pattern: a runtime whose creation resolves after unmount/cleanup is never shut down. After D, 6 created and 3 shut down, ending unmounted: 3 never shut down.",
+  "final": "PASS with the fixed pattern (straightforward pattern leaked, see observations)",
+  "fixedPattern": {
+    "A_initialLoad": {
+      "creates": 2,
+      "shutdowns": 1
+    },
+    "D_quickToggles_cumulative": {
+      "creates": 6,
+      "shutdowns": 6
+    },
+    "note": "Re-run after T015: the StrictMode first runtime is shut down on resolve; balanced when unmounted."
+  }
+}
