@@ -1,0 +1,12 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>AkariSP broken-state classification — real Prompt API</title>
+<style>body{font:14px system-ui;margin:24px;max-width:900px}pre{background:#f4f4f4;padding:12px;white-space:pre-wrap}</style>
+<h1>Broken-state classification (research only)</h1>
+<p>Requires <code>LanguageModel.availability() === "available"</code>. Refuses otherwise, so it never starts a model download.
+Creates and destroys a few native sessions and one disposable same-origin iframe. Touches no browser setting.</p>
+<p>Availability: <b id="avail">…</b></p>
+<button id="run">Run</button> <button id="copy">Copy JSON</button>
+<pre id="log"></pre>
+<pre id="json"></pre>
+<script type="module" src="./browser.js"></script>
