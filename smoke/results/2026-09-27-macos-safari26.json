@@ -1,0 +1,49 @@
+{
+  "recordedAt": "2026-09-27T02:54:25.063Z",
+  "runner": {
+    "kind": "manual",
+    "browser": null
+  },
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.3 Safari/605.1.15",
+  "secureContext": true,
+  "capability": {
+    "languageModelPresent": false,
+    "availability": null,
+    "classification": "API_ABSENT",
+    "error": null
+  },
+  "tests": {
+    "import": {
+      "status": "PASS"
+    },
+    "run": {
+      "status": "SKIPPED",
+      "reason": "LanguageModel API absent"
+    },
+    "streaming": {
+      "status": "SKIPPED",
+      "reason": "LanguageModel API absent"
+    },
+    "earlyBreak": {
+      "status": "SKIPPED",
+      "reason": "LanguageModel API absent"
+    },
+    "callerAbort": {
+      "status": "SKIPPED",
+      "reason": "LanguageModel API absent"
+    },
+    "shutdownDuringStreaming": {
+      "status": "SKIPPED",
+      "reason": "LanguageModel API absent"
+    },
+    "lazyStream": {
+      "status": "SKIPPED",
+      "reason": "LanguageModel API absent"
+    },
+    "cloneIsolation": {
+      "status": "SKIPPED",
+      "reason": "LanguageModel API absent"
+    }
+  },
+  "overall": "SKIPPED"
+}
