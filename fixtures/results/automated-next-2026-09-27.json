@@ -1,0 +1,53 @@
+{
+  "environment": "next",
+  "mode": "automated",
+  "date": "2026-09-27",
+  "akarisp": "0.1.0-alpha.1",
+  "versions": {
+    "akarisp": "0.1.0-alpha.1",
+    "next": "16.3.6",
+    "react": "19.3.0",
+    "react-dom": "19.3.0"
+  },
+  "install": "PASS",
+  "build": "PASS",
+  "serve": "PASS",
+  "browser": "PASS",
+  "ownership": {
+    "cycles": 3,
+    "creates": 3,
+    "destroys": 3,
+    "clones": 3,
+    "cloneDestroys": 3,
+    "logCreates": 3,
+    "logShutdowns": 3,
+    "errors": []
+  },
+  "next": {
+    "ssr": {
+      "status": 200,
+      "hasToggle": true,
+      "serverErrorInLog": false
+    },
+    "createsAfterHydration": 1,
+    "navigation": {
+      "creates": 2,
+      "destroys": 1
+    },
+    "serverImport": {
+      "status": 200,
+      "rendersFunction": true
+    },
+    "serverCreate": {
+      "status": 500,
+      "log": [
+        "⨯ ReferenceError: LanguageModel is not defined"
+      ]
+    }
+  },
+  "pendingUnmount": {
+    "creates": 1,
+    "destroys": 1,
+    "leaked": 0
+  }
+}
