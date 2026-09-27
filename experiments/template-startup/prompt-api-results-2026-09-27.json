@@ -1,0 +1,30 @@
+{
+  "evidence": "REAL_BROWSER",
+  "date": "2026-09-27T14:02:15.310Z",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+  "hardwareConcurrency": 8,
+  "deviceMemory": 16,
+  "availability": "available",
+  "warmup": "one create+destroy before measuring (model load excluded)",
+  "timing": "performance.now()",
+  "session": { "initialPrompts": [{ "role": "system", "content": "Answer in one word." }] },
+  "akarispSequential": [
+    { "bases": 1, "runs": 5,
+      "startupMs": { "median": 169.8, "min": 161.5, "max": 211.4, "samples": [211.4, 178.3, 168.2, 169.8, 161.5] },
+      "perCreateMs": { "median": 169.7, "min": 161.3, "max": 210.2, "samples": [210.2, 178.2, 168.2, 169.7, 161.3] },
+      "nonCreateMs": { "median": 0.1, "min": 0, "max": 1.2, "samples": [1.2, 0.1, 0, 0.1, 0.2] } },
+    { "bases": 2, "runs": 5,
+      "startupMs": { "median": 322, "min": 319.4, "max": 355.1, "samples": [355.1, 331.9, 322, 319.4, 319.4] },
+      "perCreateMs": { "median": 164.3, "min": 157.6, "max": 179.5, "samples": [175.5, 179.5, 166.7, 165.1, 164.3, 157.6, 161.6, 157.7, 158.4, 161] },
+      "nonCreateMs": { "median": 0.1, "min": 0, "max": 0.1, "samples": [0.1, 0.1, 0.1, 0.1, 0] } },
+    { "bases": 4, "runs": 5,
+      "startupMs": { "median": 676.9, "min": 637.1, "max": 758.5, "samples": [699.5, 758.5, 642.3, 637.1, 676.9] },
+      "perCreateMs": { "median": 162.6, "min": 155.2, "max": 236.4, "samples": [161.7, 162.6, 176.3, 198.6, 236.4, 192.8, 166.8, 162.4, 165, 162.9, 157.1, 157.1, 159.6, 155.2, 161, 161.3, 158.2, 157.9, 169, 191.7] },
+      "nonCreateMs": { "median": 0.1, "min": 0, "max": 0.3, "samples": [0.3, 0.1, 0.2, 0, 0.1] } }
+  ],
+  "nativeConcurrentCreateOutsideAkariSP": [
+    { "bases": 1, "runs": 5, "wallMs": { "median": 162.4, "min": 158.3, "max": 166.1, "samples": [162.4, 158.7, 163, 166.1, 158.3] } },
+    { "bases": 2, "runs": 5, "wallMs": { "median": 320.4, "min": 312, "max": 357.5, "samples": [316.6, 320.4, 328.1, 357.5, 312] } },
+    { "bases": 4, "runs": 5, "wallMs": { "median": 629.3, "min": 626.7, "max": 633.8, "samples": [630.6, 629.3, 633.8, 627.1, 626.7] } }
+  ]
+}
