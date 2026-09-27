@@ -245,8 +245,9 @@ public snapshot, and every public export is documented.
   use the `alpha` dist-tag, so a plain `npm install akarisp` does not select it. No release
   automation is added.
   *Post-publish note (2026-09-27):* the assumption "does not select it" did not hold for the
-  first publish. The registry also created `latest` → `0.1.0-alpha.0` (see research.md,
-  "First publish").
+  first publish. `latest` → `0.1.0-alpha.0` also appeared. The mechanism is undetermined:
+  either an unflagged CLI publish or registry behavior (see research.md, "First publish" and its
+  correction note; feature 009).
 
 **Verification**
 

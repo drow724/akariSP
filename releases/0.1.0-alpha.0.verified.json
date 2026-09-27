@@ -1,0 +1,31 @@
+{
+  "release": "0.1.0-alpha.0",
+  "registry": "https://registry.npmjs.org/",
+  "window": {
+    "intervalMs": 20000,
+    "maxMs": 600000
+  },
+  "attempts": [
+    {
+      "at": "2026-09-27T08:19:17.646Z",
+      "differences": []
+    }
+  ],
+  "installs": {
+    "akarisp": "0.1.0-alpha.0",
+    "akarisp@alpha": "0.1.0-alpha.0"
+  },
+  "checks": {
+    "runtimeDependencies": true,
+    "publicImports": true,
+    "internalPathsFail": true,
+    "types": {
+      "bundler": true,
+      "node16": true,
+      "nodenext": true
+    }
+  },
+  "verdict": "match",
+  "checkedAt": "2026-09-27T08:19:17.017Z",
+  "npm": "10.9.2"
+}

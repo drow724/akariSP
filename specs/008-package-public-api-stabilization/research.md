@@ -485,3 +485,19 @@ Consequences:
   `0.1.0-alpha.1` with the `alpha` tag would leave `latest` on `alpha.0`. The alternative is to
   move `latest` together with each alpha (`npm dist-tag add akarisp@<version> latest`) until
   the first stable release.
+
+**Correction note (2026-09-27, feature 009).** The "First publish" section above over-attributed
+the `latest` tag to registry behavior. The mechanism is **undetermined**:
+
+- **The first-publish command was not recorded.** Its npm log is no longer available.
+- **The configured tag was not applied.** With npm 10.9.2, `npm publish --dry-run` without
+  `--tag` announced `tag latest` although `publishConfig.tag` was `alpha`. `--tag alpha`
+  announced `alpha` (009 research G3). So an unflagged publish from the CLI and a
+  registry-created `latest` are both consistent with the evidence.
+- **Follow-up in 009:**
+  - `publishConfig` was removed.
+  - The release procedure always names the tag and verifies the result against a written
+    intent (`releases/`).
+  - The discrepancy record is in `specs/009-registry-consumer-validation/research.md`.
+
+The facts recorded above (the observed tags and registry contents) are unchanged.
