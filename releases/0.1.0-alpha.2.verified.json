@@ -1,0 +1,124 @@
+{
+  "release": "0.1.0-alpha.2",
+  "registry": "https://registry.npmjs.org/",
+  "window": {
+    "intervalMs": 20000,
+    "maxMs": 600000
+  },
+  "attempts": [
+    {
+      "at": "2026-09-27T09:40:53.692Z",
+      "differences": [
+        {
+          "field": "name",
+          "expected": "akarisp"
+        },
+        {
+          "field": "version",
+          "expected": "0.1.0-alpha.2"
+        },
+        {
+          "field": "exports",
+          "expected": [
+            ".",
+            "./webllm"
+          ],
+          "observed": []
+        },
+        {
+          "field": "distTags.alpha",
+          "expected": "0.1.0-alpha.2",
+          "observed": "0.1.0-alpha.1"
+        },
+        {
+          "field": "distTags.latest",
+          "expected": "0.1.0-alpha.2",
+          "observed": "0.1.0-alpha.1"
+        }
+      ]
+    },
+    {
+      "at": "2026-09-27T09:41:14.377Z",
+      "differences": [
+        {
+          "field": "name",
+          "expected": "akarisp"
+        },
+        {
+          "field": "version",
+          "expected": "0.1.0-alpha.2"
+        },
+        {
+          "field": "exports",
+          "expected": [
+            ".",
+            "./webllm"
+          ],
+          "observed": []
+        },
+        {
+          "field": "distTags.alpha",
+          "expected": "0.1.0-alpha.2",
+          "observed": "0.1.0-alpha.1"
+        },
+        {
+          "field": "distTags.latest",
+          "expected": "0.1.0-alpha.2",
+          "observed": "0.1.0-alpha.1"
+        }
+      ]
+    },
+    {
+      "at": "2026-09-27T09:41:35.063Z",
+      "differences": [
+        {
+          "field": "name",
+          "expected": "akarisp"
+        },
+        {
+          "field": "version",
+          "expected": "0.1.0-alpha.2"
+        },
+        {
+          "field": "exports",
+          "expected": [
+            ".",
+            "./webllm"
+          ],
+          "observed": []
+        },
+        {
+          "field": "distTags.alpha",
+          "expected": "0.1.0-alpha.2",
+          "observed": "0.1.0-alpha.1"
+        },
+        {
+          "field": "distTags.latest",
+          "expected": "0.1.0-alpha.2",
+          "observed": "0.1.0-alpha.1"
+        }
+      ]
+    },
+    {
+      "at": "2026-09-27T09:41:56.008Z",
+      "differences": []
+    }
+  ],
+  "installs": {
+    "akarisp": "0.1.0-alpha.2",
+    "akarisp@alpha": "0.1.0-alpha.2"
+  },
+  "checks": {
+    "runtimeDependencies": true,
+    "publicImports": true,
+    "internalPathsFail": true,
+    "types": {
+      "bundler": true,
+      "node16": true,
+      "nodenext": true
+    }
+  },
+  "verdict": "match",
+  "checkedAt": "2026-09-27T09:40:52.970Z",
+  "npm": "10.9.2"
+}
