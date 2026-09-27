@@ -1,0 +1,216 @@
+{
+  "akarisp": "0.1.0-alpha.2",
+  "date": "2026-09-27T12:57:54.997Z",
+  "node": "v23.9.0",
+  "env": {
+    "node:absent": {
+      "mode": "absent",
+      "reads": 0,
+      "calls": [],
+      "globalPresent": false,
+      "import": {
+        "ok": true,
+        "rootExports": [
+          "TaskError",
+          "createRuntime"
+        ],
+        "webllmExports": [
+          "createWebLLMRuntime"
+        ],
+        "readsAfterImport": 0
+      },
+      "create": {
+        "threwSynchronously": null,
+        "returnedPromise": true,
+        "result": {
+          "ok": false,
+          "constructor": "ReferenceError",
+          "name": "ReferenceError",
+          "message": "LanguageModel is not defined",
+          "isTaskError": false,
+          "isDOMException": false,
+          "stackTop": [
+            "ReferenceError: LanguageModel is not defined",
+            "at Object.create (file:///private/var/folders/6b/nm5bsd6d0hg6kw_qjh9vw8mm0000gn/T/akarisp-011-vyBgME/node_modules/akarisp/dist/browser/runtime.js:4:39)",
+            "at createCoreRuntime (file:///private/var/folders/6b/nm5bsd6d0hg6kw_qjh9vw8mm0000gn/T/akarisp-011-vyBgME/node_modules/akarisp/dist/core/runtime.js:27:49)",
+            "at Module.createRuntime (file:///private/var/folders/6b/nm5bsd6d0hg6kw_qjh9vw8mm0000gn/T/akarisp-011-vyBgME/node_modules/akarisp/dist/browser/runtime.js:14:12)"
+          ]
+        }
+      }
+    },
+    "node:unavailable": {
+      "mode": "unavailable",
+      "reads": 1,
+      "calls": [
+        "create"
+      ],
+      "globalPresent": true,
+      "import": {
+        "ok": true,
+        "rootExports": [
+          "TaskError",
+          "createRuntime"
+        ],
+        "webllmExports": [
+          "createWebLLMRuntime"
+        ],
+        "readsAfterImport": 0
+      },
+      "create": {
+        "threwSynchronously": null,
+        "returnedPromise": true,
+        "result": {
+          "ok": false,
+          "constructor": "DOMException",
+          "name": "NotSupportedError",
+          "message": "The model is not available.",
+          "isTaskError": false,
+          "code": 9,
+          "isDOMException": true,
+          "stackTop": [
+            "NotSupportedError: The model is not available.",
+            "at new DOMException (node:internal/per_context/domexception:53:5)",
+            "at Object.create (file:///private/var/folders/6b/nm5bsd6d0hg6kw_qjh9vw8mm0000gn/T/akarisp-011-vyBgME/[eval1]:9:56)",
+            "at Object.create (file:///private/var/folders/6b/nm5bsd6d0hg6kw_qjh9vw8mm0000gn/T/akarisp-011-vyBgME/node_modules/akarisp/dist/browser/runtime.js:4:39)"
+          ]
+        }
+      }
+    },
+    "node:available": {
+      "mode": "available",
+      "reads": 1,
+      "calls": [
+        "create",
+        "clone",
+        "task.destroy",
+        "base.destroy"
+      ],
+      "globalPresent": true,
+      "import": {
+        "ok": true,
+        "rootExports": [
+          "TaskError",
+          "createRuntime"
+        ],
+        "webllmExports": [
+          "createWebLLMRuntime"
+        ],
+        "readsAfterImport": 0
+      },
+      "create": {
+        "threwSynchronously": null,
+        "returnedPromise": true,
+        "result": {
+          "ok": true,
+          "output": "ok",
+          "stateAfterShutdown": "closed"
+        }
+      }
+    },
+    "chromium": {
+      "version": "153.0.8010.12",
+      "nativeLanguageModel": false
+    },
+    "browser:absent": {
+      "mode": "absent",
+      "reads": 0,
+      "calls": [],
+      "globalPresent": false,
+      "import": {
+        "ok": true,
+        "rootExports": [
+          "TaskError",
+          "createRuntime"
+        ],
+        "webllmExports": [
+          "createWebLLMRuntime"
+        ],
+        "readsAfterImport": 0
+      },
+      "create": {
+        "threwSynchronously": null,
+        "returnedPromise": true,
+        "result": {
+          "ok": false,
+          "constructor": "ReferenceError",
+          "name": "ReferenceError",
+          "message": "LanguageModel is not defined",
+          "isTaskError": false,
+          "isDOMException": false,
+          "stackTop": [
+            "ReferenceError: LanguageModel is not defined",
+            "at Object.create (http://akari.test/node_modules/akarisp/dist/browser/runtime.js:4:39)",
+            "at createCoreRuntime (http://akari.test/node_modules/akarisp/dist/core/runtime.js:27:49)",
+            "at Module.createRuntime (http://akari.test/node_modules/akarisp/dist/browser/runtime.js:14:12)"
+          ]
+        }
+      }
+    },
+    "browser:unavailable": {
+      "mode": "unavailable",
+      "reads": 1,
+      "calls": [
+        "create"
+      ],
+      "globalPresent": true,
+      "import": {
+        "ok": true,
+        "rootExports": [
+          "TaskError",
+          "createRuntime"
+        ],
+        "webllmExports": [
+          "createWebLLMRuntime"
+        ],
+        "readsAfterImport": 0
+      },
+      "create": {
+        "threwSynchronously": null,
+        "returnedPromise": true,
+        "result": {
+          "ok": false,
+          "constructor": "DOMException",
+          "name": "NotSupportedError",
+          "message": "The model is not available.",
+          "isTaskError": false,
+          "code": 9,
+          "isDOMException": true,
+          "stackTop": [
+            ""
+          ]
+        }
+      }
+    },
+    "browser:available": {
+      "mode": "available",
+      "reads": 1,
+      "calls": [
+        "create",
+        "clone",
+        "task.destroy",
+        "base.destroy"
+      ],
+      "globalPresent": true,
+      "import": {
+        "ok": true,
+        "rootExports": [
+          "TaskError",
+          "createRuntime"
+        ],
+        "webllmExports": [
+          "createWebLLMRuntime"
+        ],
+        "readsAfterImport": 0
+      },
+      "create": {
+        "threwSynchronously": null,
+        "returnedPromise": true,
+        "result": {
+          "ok": true,
+          "output": "ok",
+          "stateAfterShutdown": "closed"
+        }
+      }
+    }
+  }
+}
