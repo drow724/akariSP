@@ -219,7 +219,7 @@ The result is in `releases/0.1.0-alpha.0.verified.json`:
 | Observed (2026-09-27) | `alpha` → `0.1.0-alpha.0`; **`latest` → `0.1.0-alpha.0`**. Both install commands give the alpha |
 | Cause | **Undetermined.** The first-publish command was not recorded. npm 10.9.2 ignored `publishConfig.tag` in a dry-run (G3), so an unflagged publish would have used `latest`. The registry also documents that every package has `latest`. Both explanations fit, and neither is established |
 | Correction | `publishConfig` removed. The procedure always names the tag (README "Release"). Per-release intent files (`releases/`) record the tag state, starting with the retroactive `releases/0.1.0-alpha.0.json` (verified: `releases/0.1.0-alpha.0.verified.json`). The README install text is limited to the current release. The 008 research has a dated correction note |
-| Verified | Pending T014, the registry verification of `0.1.0-alpha.1` against `releases/0.1.0-alpha.1.json` |
+| Verified | 2026-09-27: `0.1.0-alpha.1` published with an explicit `--tag alpha`, and `latest` moved explicitly. The registry check matched `releases/0.1.0-alpha.1.json` (`releases/0.1.0-alpha.1.verified.json`, T014) |
 
 ### D2: the stale README on the npm package page
 
@@ -227,4 +227,42 @@ The result is in `releases/0.1.0-alpha.0.verified.json`:
 |---|---|
 | Observed | The npm page shows the README packed in `0.1.0-alpha.0`, which says a plain install selects nothing until a stable release |
 | Correction | `0.1.0-alpha.1` is a documentation and metadata correction release (FR-915) |
-| Verified | Pending T015 (V6) |
+| Verified | The registry README for `0.1.0-alpha.1` (`npm view akarisp@0.1.0-alpha.1 readme`) contains the corrected install text (T015) |
+
+### Publication and registry verification of `0.1.0-alpha.1` (T013, T014)
+
+**Maintainer steps** (authenticated, from the pushed 009 branch at `374f22f`):
+1. `npm publish --tag alpha`: the CLI announced `with tag alpha`, then printed
+   `+ akarisp@0.1.0-alpha.1` and "being processed and may take a few minutes".
+2. `npm dist-tag add akarisp@0.1.0-alpha.1 latest`: printed `+latest: akarisp@0.1.0-alpha.1`
+   and "may take a few minutes to take effect".
+
+**Propagation lag.** For about 2 minutes after both commands, `npm dist-tag ls` and direct
+registry reads (`/-/package/akarisp/dist-tags` and the packument) still showed only
+`0.1.0-alpha.0`. The version was absent too.
+
+**Registry check.** `RELEASE=0.1.0-alpha.1 npm run test:registry` passed 5/5 in 155 s with
+verdict `match` (`releases/0.1.0-alpha.1.verified.json`):
+
+- **Metadata:**
+  - Attempt 1, at 08:22:50Z, had 5 differences: version not found, and both tags still on
+    alpha.0.
+  - Attempt 8, at 08:25:16Z (≈ 2 min 26 s later), had none.
+  - The bounded re-check (FR-921) absorbed a real propagation delay instead of reporting a
+    false mismatch.
+- **Installs:** `akarisp` and `akarisp@alpha` both resolved to `0.1.0-alpha.1`, with no extra
+  packages.
+- **Imports:** the public imports passed and the 7 internal paths failed.
+- **Types:** bundler, node16, and nodenext all passed.
+
+### Final audit (T015)
+
+| Check | Result |
+|---|---|
+| Registry dist-tags | `alpha` and `latest` → `0.1.0-alpha.1` |
+| V6: npm page README | The registry README of `0.1.0-alpha.1` contains the corrected install text ("For the `0.1.0-alpha.1` release, both `alpha` and `latest` …") (SC-908) |
+| `publishConfig` in published metadata | none (`npm view akarisp@0.1.0-alpha.1 publishConfig` is empty) |
+| `git diff main -- src/` | empty (SC-907) |
+| Offline `npm test` | 145/145. The only assertion change is the version literal (T009) |
+| `npm run test:browser` | 21/21 |
+| V7 | The remaining attribution in 008 spec FR-813's post-publish note ("the registry also created `latest`") was reworded to "mechanism undetermined". The 008 research keeps its original text followed by the dated correction note. No README or record statement presents observed npm behavior as a universal rule (SC-905) |

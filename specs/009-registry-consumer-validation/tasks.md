@@ -199,7 +199,7 @@ registry, and a wrong intent makes it fail with the field, expected, and observe
 
 **⚠️ Needs the maintainer.** The agent stops here and hands over the exact commands.
 
-- [ ] T013 [US3] Publish `0.1.0-alpha.1` from the reviewed 009 branch. This is a single PR (U2):
+- [X] T013 [US3] Publish `0.1.0-alpha.1` from the reviewed 009 branch. This is a single PR (U2):
   there is no merge to main before publishing.
 
   **Preconditions**:
@@ -216,7 +216,7 @@ registry, and a wrong intent makes it fail with the field, expected, and observe
 
   **After publishing**: continue T014 and T015 on the same branch, and include the verification
   evidence in the same PR. Merge only after that.
-- [ ] T014 [US3] Run V5: `RELEASE=0.1.0-alpha.1 npm run test:registry`.
+- [X] T014 [US3] Run V5: `RELEASE=0.1.0-alpha.1 npm run test:registry`.
   - If the verdict is `match`: commit `releases/0.1.0-alpha.1.verified.json` and complete the
     discrepancy record's "verified" line.
   - If the verdict is `mismatch`:
@@ -230,7 +230,7 @@ registry, and a wrong intent makes it fail with the field, expected, and observe
 
 ## Phase 7: Polish & final audit
 
-- [ ] T015 Final audit, recorded in `research.md`:
+- [X] T015 Final audit, recorded in `research.md`:
   - V6: npm page https://www.npmjs.com/package/akarisp shows the corrected README (SC-908).
   - `npm view akarisp@0.1.0-alpha.1 publishConfig` is empty.
   - `git diff --stat main -- src/` is empty (SC-907).
