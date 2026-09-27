@@ -15,8 +15,10 @@ Zero runtime dependencies. No framework, no agent abstraction.
 npm install akarisp@alpha
 ```
 
-The first release, `0.1.0-alpha.0`, is published under the `alpha` dist-tag. A plain
-`npm install akarisp` installs the `latest` tag, which will exist only after a stable release.
+The initial alpha release, `0.1.0-alpha.0`, is available as both `alpha` and `latest`, so
+`npm install akarisp` currently installs the alpha release. Use `npm install akarisp@alpha` when
+you explicitly want the alpha channel. When a stable release is published, `latest` will move to
+the stable version.
 
 ## Usage
 
@@ -200,5 +202,9 @@ the diff.
 
 ### Release
 
-`npm publish` uses `publishConfig.tag` (`alpha`), so a pre-release never lands on `latest` by
-accident. `prepack` rebuilds `dist/` first.
+`npm publish` uses `publishConfig.tag` (`alpha`). `prepack` rebuilds `dist/` first.
+
+The first publish nevertheless also created `latest` (observed 2026-09-27; see
+`specs/008-package-public-api-stabilization/research.md`). According to the npm documentation,
+later publishes with a non-`latest` tag do not move `latest`. To move it explicitly, run
+`npm dist-tag add akarisp@<version> latest`.

@@ -244,6 +244,9 @@ public snapshot, and every public export is documented.
 - **FR-813**: The package version MUST be `0.1.0-alpha.0`, and the documented publish command MUST
   use the `alpha` dist-tag, so a plain `npm install akarisp` does not select it. No release
   automation is added.
+  *Post-publish note (2026-09-27):* the assumption "does not select it" did not hold for the
+  first publish. The registry also created `latest` → `0.1.0-alpha.0` (see research.md,
+  "First publish").
 
 **Verification**
 
