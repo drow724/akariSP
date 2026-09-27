@@ -1,0 +1,67 @@
+# akarisp
+function createRuntime(options?: RuntimeOptions): Promise<Runtime>;
+interface Runtime {
+    readonly state: 'ready' | 'broken' | 'closed';
+    run(input: Prompt, options?: {
+        signal?: AbortSignal;
+        template?: string;
+    }): Promise<TaskResult>;
+    stream(input: Prompt, options?: {
+        signal?: AbortSignal;
+        template?: string;
+    }): TaskStream;
+    snapshot(): RuntimeSnapshot;
+    shutdown(): Promise<void>;
+}
+interface RuntimeOptions {
+    session?: object;
+    templates?: Record<string, object>;
+    limit?: number;
+    queueCapacity?: number;
+}
+interface RuntimeSnapshot {
+    readonly state: Runtime['state'];
+    readonly active: number;
+    readonly queued: number;
+    readonly limit: number;
+    readonly queueCapacity: number;
+}
+class TaskError extends Error {
+    readonly code: 'failed' | 'cancelled' | 'rejected' | 'closed' | 'broken';
+    readonly timing: TaskTiming;
+    constructor(code: TaskError['code'], timing: TaskTiming, cause?: unknown);
+}
+interface TaskResult {
+    output: string;
+    timing: TaskTiming;
+}
+interface TaskStream extends AsyncIterable<string> {
+    readonly timing: TaskTiming | undefined;
+}
+interface TaskTiming {
+    queueWait?: number;
+    acquire?: number;
+    prompt?: number;
+    total: number;
+}
+# akarisp/webllm
+function createWebLLMRuntime(engine: WebLLMEngine, options?: RuntimeOptions): Promise<Runtime>;
+# local types (not importable)
+interface WebLLMEngine {
+    chat: {
+        completions: {
+            create(request: object): Promise<AsyncIterable<Chunk>>;
+        };
+    };
+    interruptGenerate(): void | Promise<void>;
+    getMessage(): Promise<string>;
+    unload(): Promise<void>;
+}
+type Chunk = {
+    choices: {
+        delta?: {
+            content?: string | null;
+        };
+    }[];
+};
+type Prompt = string | readonly object[];

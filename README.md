@@ -4,13 +4,19 @@ A small runtime for browser-native LLM sessions (Chrome's Prompt API). It keeps 
 **base session** and runs each task in its own **clone**, so repeated tasks don't pay session
 creation every time and never share conversational context.
 
+The same runtime also drives an application-created [WebLLM](#webllm) engine through
+`akarisp/webllm`.
+
 Zero runtime dependencies. No framework, no agent abstraction.
 
 ## Install
 
 ```bash
-npm install akarisp
+npm install akarisp@alpha
 ```
+
+The first release, `0.1.0-alpha.0`, is published under the `alpha` dist-tag. A plain
+`npm install akarisp` installs the `latest` tag, which will exist only after a stable release.
 
 ## Usage
 
@@ -103,8 +109,8 @@ only after its first pull). After `await runtime.shutdown()` it reports `closed`
 ## States
 
 - `ready`: accepts tasks.
-- `broken`: a clone failed with `InvalidStateError`, so the base can no longer be trusted for
-  new tasks. Waiting and new tasks are rejected; tasks already holding a clone finish normally.
+- `broken`: the provider's resource can no longer be trusted for new tasks. With the Prompt
+  API, this means a clone failed with `InvalidStateError`. For WebLLM, see [WebLLM](#webllm). Waiting and new tasks are rejected; tasks already holding a clone finish normally.
   Create a new runtime.
 - `closed`: after `shutdown()`. `shutdown()` is idempotent and never rejects.
 
@@ -115,10 +121,61 @@ The base session is created once (`createRuntime`), after which each task pays a
 of a full `LanguageModel.create()`. Measure it on your device with the benchmark in
 [bench/README.md](bench/README.md).
 
+## WebLLM
+
+```js
+import { CreateMLCEngine } from '@mlc-ai/web-llm'; // your dependency, not AkariSP's
+import { createWebLLMRuntime } from 'akarisp/webllm';
+
+const engine = await CreateMLCEngine('Qwen2.5-0.5B-Instruct-q4f16_1-MLC'); // you load the model
+const runtime = await createWebLLMRuntime(engine, {
+  session: { initialPrompts: [{ role: 'system', content: 'Answer in one sentence.' }], temperature: 0 },
+});
+const { output } = await runtime.run('What is HTTP?');
+await runtime.shutdown(); // also unloads the engine
+```
+
+The returned runtime is the same `Runtime`: `run`, `stream`, `snapshot`, `shutdown`, templates,
+`TaskError` codes, and timing behave as above. What differs:
+
+- **Engine**: your application creates the engine and loads the model. AkariSP never
+  downloads a model and does not depend on `@mlc-ai/web-llm`.
+- **Ownership**: once `createWebLLMRuntime` resolves, the runtime uses the engine exclusively
+  (run nothing else on it), and `shutdown()` unloads it after every task's cleanup. If creation
+  rejects, the engine is untouched.
+- **`limit` must be 1**: one engine generates one request at a time. `limit > 1` throws
+  `TypeError`. Extra tasks wait in AkariSP's queue, where cancelling one never affects another.
+- **Templates** are request configuration: `initialPrompts` plus request settings such as
+  `temperature`, all on the one engine. No per-template resource is created.
+- **Tasks**: each task is one streaming request, also for `run()`. Cancellation, timeout,
+  `break`, and shutdown interrupt the generation and drain it before the slot is released, so
+  the next task starts cleanly.
+- **`broken`**: the engine was unloaded or lost when a task started (`ModelNotLoadedError`,
+  `DeviceLostError`). Create a new engine and runtime.
+- **Validated**: with `@mlc-ai/web-llm` 0.2.85 and Qwen2.5-0.5B-Instruct in Chrome with WebGPU
+  ([smoke/README.md](smoke/README.md)). Other WebLLM versions are unverified.
+- **Types**: a `MLCEngine`, `WebWorkerMLCEngine`, or `MLCEngineInterface` is accepted without
+  a cast. This is verified with TypeScript `moduleResolution: "bundler"`. WebLLM 0.2.85's own
+  declarations do not resolve under `node16`/`nodenext`, where its types become `any`.
+
+## Package
+
+- Entry points: `akarisp` (`createRuntime`, `TaskError`, and the types `Runtime`,
+  `RuntimeOptions`, `RuntimeSnapshot`, `TaskStream`, `TaskResult`, `TaskTiming`) and
+  `akarisp/webllm` (`createWebLLMRuntime`). No other path is importable.
+- ESM only. On Node 23.9, `require('akarisp')` also returns the same exports through Node's
+  `require(esm)`; the package ships no CommonJS build.
+- TypeScript declarations are included and verified with `moduleResolution` `bundler`,
+  `node16`, and `nodenext`.
+- Zero runtime dependencies.
+
 ## Development
 
+Requires Node ≥ 22.18 (the test runner loads TypeScript directly). This is a development
+requirement only; the package itself runs in browsers.
+
 ```bash
-npm test       # node:test: core with a fake provider, browser adapter, boundary (Node ≥ 22.18)
+npm test       # node:test: core, browser and WebLLM adapters, boundary, packed-tarball consumer
 npm run build  # tsc → dist/
 npm run test:browser  # Playwright: compatibility page on Chromium / Firefox / WebKit engines
 ```
@@ -132,4 +189,16 @@ compatibility harness ([smoke/README.md](smoke/README.md)) to inspect the capabi
 lifecycle behavior of a specific browser and version.
 
 Source layout: `src/core/` is the provider-neutral runtime (no browser globals);
-`src/browser/` maps it to the Prompt API's `LanguageModel`; `src/index.ts` is the public entry.
+`src/browser/` maps it to the Prompt API's `LanguageModel`; `src/webllm/` maps it to an
+injected WebLLM engine; `src/index.ts` and `src/webllm.ts` are the two public entries.
+
+### Public API snapshot
+
+`api/akarisp.api.txt` records the public surface of the packed package. `npm test` fails if the
+surface changes. After an intentional public API change, run `UPDATE_API=1 npm test` and review
+the diff.
+
+### Release
+
+`npm publish` uses `publishConfig.tag` (`alpha`), so a pre-release never lands on `latest` by
+accident. `prepack` rebuilds `dist/` first.

@@ -53,13 +53,13 @@ export interface Runtime {
 }
 
 export interface RuntimeSnapshot {
-  state: Runtime['state'];
+  readonly state: Runtime['state'];
   /** Tasks holding a concurrency slot (task session started → prompt → task session destroyed). */
-  active: number;
+  readonly active: number;
   /** Tasks waiting for a slot. */
-  queued: number;
-  limit: number;
-  queueCapacity: number;
+  readonly queued: number;
+  readonly limit: number;
+  readonly queueCapacity: number;
 }
 
 export interface TaskStream extends AsyncIterable<string> {

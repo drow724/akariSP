@@ -1,7 +1,7 @@
 // Real WebLLM validation of AkariSP's internal WebLLM integration (007, FR-615).
 // Lifecycle only; the model is downloaded only by the explicit "Load model" click.
 import * as webllm from 'https://esm.run/@mlc-ai/web-llm@0.2.85';
-import { createWebLLMRuntime } from '../dist/webllm/runtime.js'; // internal module, not a public entry
+import { createWebLLMRuntime } from '../dist/webllm.js'; // the file the akarisp/webllm export points to
 
 const VERSION = '0.2.85';
 const MODEL = 'Qwen2.5-0.5B-Instruct-q4f16_1-MLC';

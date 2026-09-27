@@ -102,19 +102,19 @@ reads them.
 | 2 | Playwright Chromium 153 (engine) | PASS; native: API present, `downloadable` → lifecycle BLOCKED |
 | 2 | Playwright Firefox 155 (engine) | PASS; native: `API_ABSENT` → lifecycle SKIPPED |
 | 2 | Playwright WebKit 26.6 (engine, not Safari) | PASS; native: `API_ABSENT` → lifecycle SKIPPED |
-| 3 | Chrome 152 desktop (macOS 15.7; version from the recorded user agent) | 2026-09-27: import + 7 lifecycle PASS (real model), overall PASS; clone-isolation INFO: marker not observed in task B — [evidence](results/2026-09-27-macos-chrome152.json); re-run after 007 core change: 7/7 PASS — [evidence](results/2026-09-27-macos-chrome152-007.json) |
+| 3 | Chrome 152 desktop (macOS 15.7; version from the recorded user agent) | 2026-09-27: import + 7 lifecycle PASS (real model), overall PASS; clone-isolation INFO: marker not observed in task B — [evidence](results/2026-09-27-macos-chrome152.json); re-run after 007 core change: 7/7 PASS — [evidence](results/2026-09-27-macos-chrome152-007.json); re-run after 008 packaging: 7/7 PASS — [evidence](results/2026-09-27-macos-chrome152-008.json) |
 | 3 | Edge desktop | NOT TESTED (not installed) |
 | 3 | Firefox desktop | NOT TESTED (not installed) |
-| 3 | Chrome 152 desktop + WebLLM 0.2.85 (007 internal) | 2026-09-27: 9/9 PASS — [evidence](results/2026-09-27-macos-chrome152-webllm.json); final code after review: 9/9 PASS — [evidence](results/2026-09-27-macos-chrome152-webllm-final.json) |
+| 3 | Chrome 152 desktop + WebLLM 0.2.85 | 2026-09-27 (007 internal module): 9/9 PASS — [evidence](results/2026-09-27-macos-chrome152-webllm.json); final code after review: 9/9 PASS — [evidence](results/2026-09-27-macos-chrome152-webllm-final.json); 008 public entry `dist/webllm.js`: 9/9 PASS — [evidence](results/2026-09-27-macos-chrome152-webllm-008.json) |
 | 3 | Safari 26.3 desktop (macOS 15.7) | 2026-09-27: import PASS, `API_ABSENT`, 7 lifecycle SKIPPED, overall SKIPPED — [evidence](results/2026-09-27-macos-safari26.json) |
 
 Mobile browsers are out of scope.
 
-## WebLLM validation (internal, 007)
+## WebLLM validation
 
-`smoke/webllm.html` validates AkariSP's **internal** WebLLM integration
-(`dist/webllm/runtime.js`, not a package export; its public form is decided in 008) on a real
-engine: WebLLM 0.2.85 from `esm.run`, model `Qwen2.5-0.5B-Instruct-q4f16_1-MLC`, WebGPU browser.
+`smoke/webllm.html` validates AkariSP's WebLLM integration through `dist/webllm.js`, the file
+the public `akarisp/webllm` export points to (008; the 007 runs used the internal module) on a
+real engine: WebLLM 0.2.85 from `esm.run`, model `Qwen2.5-0.5B-Instruct-q4f16_1-MLC`, WebGPU browser.
 Click **Load model** once (download, then browser cache), then each check or **Run All**.
 
 Engine ownership: each check creates an engine from the cache and hands it to a runtime, which

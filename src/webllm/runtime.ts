@@ -9,7 +9,7 @@ type Chunk = { choices: { delta?: { content?: string | null } }[] };
 /** The subset of a WebLLM MLCEngine this module uses. */
 export interface WebLLMEngine {
   chat: { completions: { create(request: object): Promise<AsyncIterable<Chunk>> } };
-  interruptGenerate(): Promise<void>;
+  interruptGenerate(): void | Promise<void>;
   getMessage(): Promise<string>;
   unload(): Promise<void>;
 }
