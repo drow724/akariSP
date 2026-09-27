@@ -120,7 +120,16 @@ of a full `LanguageModel.create()`. Measure it on your device with the benchmark
 ```bash
 npm test       # node:test: core with a fake provider, browser adapter, boundary (Node ≥ 22.18)
 npm run build  # tsc → dist/
+npm run test:browser  # Playwright: compatibility page on Chromium / Firefox / WebKit engines
 ```
+
+### Browser compatibility
+
+AkariSP's browser integration uses the Prompt API exposed by the current browser. Importing
+AkariSP is safe in any browser, but that does not mean the browser can run a local model, and
+AkariSP cannot make the Prompt API available where the browser does not provide it. Use the
+compatibility harness ([smoke/README.md](smoke/README.md)) to inspect the capabilities and
+lifecycle behavior of a specific browser and version.
 
 Source layout: `src/core/` is the provider-neutral runtime (no browser globals);
 `src/browser/` maps it to the Prompt API's `LanguageModel`; `src/index.ts` is the public entry.

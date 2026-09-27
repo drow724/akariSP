@@ -1,6 +1,9 @@
-// Manual smoke test: real Chrome LanguageModel through AkariSP streaming.
-// Lifecycle only: no output-quality checks, no performance claims, no model download.
-import { createRuntime, TaskError } from '../dist/index.js';
+// Compatibility harness (spec 006): classifies the Prompt API capability this browser exposes and
+// runs AkariSP lifecycle checks where a model is available. Lifecycle only: no output-quality
+// checks, no performance claims, no model download. Decisions never use the user agent.
+import { classify, gate, outcomeOf, overall, diagnose, refused } from './report.js';
+
+let createRuntime, TaskError; // filled by importAkariSP(); the check bodies use these names
 
 const SESSION = {
   initialPrompts: [{ role: 'system', content: 'You are a helpful assistant.' }],
@@ -37,8 +40,15 @@ function withTimeout(promise, ms, label) {
 }
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-const describe = (e) =>
-  e instanceof TaskError
+// Errors observed by the running check (research C5): lets a refusal that a check body turned
+// into an assertion failure still be classified BLOCKED.
+let currentErrors;
+const describe = (e) => {
+  if (currentErrors && !(e instanceof SmokeFailure)) currentErrors.push(e);
+  return describeText(e);
+};
+const describeText = (e) =>
+  TaskError && e instanceof TaskError
     ? `TaskError(code=${e.code}, cause.name=${e.cause?.name}, cause.message=${e.cause?.message})`
     : `${e?.name}: ${e?.message}`;
 
@@ -49,6 +59,8 @@ function context() {
   return {
     lines,
     runtimes,
+    errors: [], // per check; never shared
+    info: undefined, // diagnostic evidence only; never affects the outcome
     note(text) { lines.push(text); log(text); },
     check(label, ok, expected, actual) {
       log(`${ok ? 'ok  ' : 'FAIL'} ${label} (expected ${expected}; actual ${actual})`);
@@ -76,6 +88,7 @@ async function consume(stream, ctx, { breakAfter, onChunk } = {}) {
     }
     return { chunks };
   } catch (error) {
+    ctx.errors.push(error);
     return { chunks, error };
   }
 }
@@ -83,6 +96,20 @@ async function consume(stream, ctx, { breakAfter, onChunk } = {}) {
 // ---------------------------------------------------------------------------
 // Tests
 // ---------------------------------------------------------------------------
+
+async function normalRun(ctx) {
+  const rt = await ctx.runtime({ limit: 1, queueCapacity: 0 });
+  const r = await rt.run(SHORT_PROMPT);
+  ctx.check('output is a non-empty string', typeof r.output === 'string' && r.output.length > 0, 'non-empty string', typeof r.output);
+  ctx.check('timing.total is a number', typeof r.timing.total === 'number', 'number', typeof r.timing.total);
+  ctx.check('timing.prompt is a number', typeof r.timing.prompt === 'number', 'number', typeof r.timing.prompt);
+  ctx.check('runtime still ready', rt.state === 'ready', 'ready', rt.state);
+  const again = await rt.run(SHORT_PROMPT).then(() => 'ok', (e) => describe(e));
+  ctx.check('runtime reusable', again === 'ok', 'second run() succeeds', again);
+  await withTimeout(rt.shutdown(), SHUTDOWN_TIMEOUT_MS, 'shutdown()');
+  ctx.check('state closed after shutdown', rt.state === 'closed', 'closed', rt.state);
+  ctx.note(`output length: ${r.output.length}`);
+}
 
 async function normalStreaming(ctx) {
   const rt = await ctx.runtime({ limit: 1, queueCapacity: 0 });
@@ -193,23 +220,91 @@ async function lazyStream(ctx) {
   ctx.note(`first consumption: TaskError(${code})`);
 }
 
+async function cloneIsolation(ctx) {
+  const marker = [...crypto.getRandomValues(new Uint8Array(4))].map((b) => b.toString(16).padStart(2, '0')).join('');
+  const rt = await ctx.runtime();
+  const a = await rt.run(`Remember the code word ${marker}. Reply with OK.`);
+  const b = await rt.run('If you were told a code word earlier in this conversation, repeat it. Otherwise reply NONE.');
+  const c = await rt.run(SHORT_PROMPT);
+  for (const [label, r] of [['A', a], ['B', b], ['C', c]]) {
+    ctx.check(`task ${label} output is a string`, typeof r.output === 'string', 'string', typeof r.output);
+  }
+  ctx.check('runtime still ready after 3 tasks', rt.state === 'ready', 'ready', rt.state);
+  await withTimeout(rt.shutdown(), SHUTDOWN_TIMEOUT_MS, 'shutdown()');
+  ctx.check('state closed after shutdown', rt.state === 'closed', 'closed', rt.state);
+  // INFO only, computed after every structural check passed: never decides PASS/FAIL.
+  ctx.info = { marker, markerObservedInOtherTask: b.output.includes(marker) };
+  ctx.note(`INFO: marker ${marker} observed in task B: ${ctx.info.markerObservedInOtherTask}`);
+}
+
 const TESTS = [
-  ['Normal streaming', normalStreaming],
-  ['Early break', earlyBreak],
-  ['Caller abort', callerAbort],
-  ['Shutdown during streaming', shutdownDuringStreaming],
-  ['Lazy stream', lazyStream],
+  ['run', 'Normal run', normalRun],
+  ['streaming', 'Normal streaming', normalStreaming],
+  ['earlyBreak', 'Early break', earlyBreak],
+  ['callerAbort', 'Caller abort', callerAbort],
+  ['shutdownDuringStreaming', 'Shutdown during streaming', shutdownDuringStreaming],
+  ['lazyStream', 'Lazy stream', lazyStream],
+  ['cloneIsolation', 'Clone isolation', cloneIsolation],
 ];
+const LIFECYCLE_KEYS = TESTS.map(([key]) => key);
 
 // ---------------------------------------------------------------------------
 // Harness
 // ---------------------------------------------------------------------------
 
-async function runTest([name, fn]) {
+const results = {}; // key → { status, reason?, durationMs?, error?, info? }
+const executed = new Set();
+let cap; // capability report, set by detectCapability()
+
+const params = new URLSearchParams(location.search);
+// Declared by whoever opens the page (research C3); never inferred from the user agent.
+const runner =
+  params.get('runner') === 'playwright' ? { kind: 'playwright', engine: params.get('engine') }
+  : params.get('runner') === 'ci-safari' ? { kind: 'ci-safari' }
+  : { kind: 'manual', browser: params.get('browser') };
+
+function record(key, name, result, body = result.reason ?? '') {
+  results[key] = result;
+  $('results').innerHTML += `<span class="${result.status.toLowerCase()}">[${result.status}] ${name}</span>\n${escape(body)}\n\n`;
+  render();
+}
+
+function resultDocument() {
+  return {
+    recordedAt: new Date().toISOString(),
+    runner,
+    userAgent: cap.userAgent,
+    secureContext: cap.secureContext,
+    capability: {
+      languageModelPresent: cap.present,
+      availability: cap.raw ?? null,
+      classification: cap.classification,
+      error: cap.error ? diagnose(cap.error) : null,
+    },
+    tests: results,
+    overall: overall(results, LIFECYCLE_KEYS),
+  };
+}
+
+function render() {
+  if (!cap) return;
+  $('overall').textContent = overall(results, LIFECYCLE_KEYS);
+  $('json').textContent = JSON.stringify(resultDocument(), null, 2);
+}
+
+async function runTest([key, name, fn]) {
+  const gated = gate(cap.classification, cap.secureContext, cap.raw);
+  if (gated) {
+    record(key, name, gated);
+    return gated.status;
+  }
+  executed.add(key);
   $('current').textContent = name;
   $('chunks').textContent = '';
   log(`=== ${name} ===`);
   const ctx = context();
+  currentErrors = ctx.errors;
+  const t0 = performance.now();
   let failure;
   try {
     await withTimeout(fn(ctx), TEST_TIMEOUT_MS, `${name} (harness watchdog)`);
@@ -223,14 +318,21 @@ async function runTest([name, fn]) {
         console.error('cleanup shutdown failed', e);
       });
     }
+    currentErrors = undefined;
   }
-  const header = `[${failure ? 'FAIL' : 'PASS'}] ${name}`;
-  const body = failure
-    ? failure instanceof SmokeFailure ? failure.message : `Unexpected error\nActual: ${describe(failure)}`
-    : ctx.lines.join('\n');
-  $('results').innerHTML += `<span class="${failure ? 'fail' : 'pass'}">${header}</span>\n${escape(body)}\n\n`;
+  const status = outcomeOf(failure, failure instanceof SmokeFailure, ctx.errors);
+  const result = { status, durationMs: Math.round(performance.now() - t0) };
+  let body = ctx.lines.join('\n');
+  if (failure) {
+    const detail = failure instanceof SmokeFailure ? failure.message : `Unexpected error\nActual: ${describeText(failure)}`;
+    result.reason = status === 'BLOCKED' ? 'native refusal: NotAllowedError' : detail.split('\n')[0];
+    result.error = diagnose(status === 'BLOCKED' ? [failure, ...ctx.errors].find(refused) : failure);
+    body = `${result.reason}\n${detail}`;
+  }
+  if (ctx.info !== undefined) result.info = ctx.info;
+  record(key, name, result, body);
   $('current').textContent = '–';
-  return !failure;
+  return status;
 }
 
 const escape = (s) => s.replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' })[c]);
@@ -243,42 +345,102 @@ async function guarded(fn) {
   }
 }
 
-function addButton(label, onClick) {
+function addButton(label, onClick, parent = 'buttons') {
   const b = document.createElement('button');
   b.textContent = label;
   b.onclick = () => guarded(onClick);
-  $('buttons').append(b);
+  $(parent).append(b);
+}
+
+async function importAkariSP() {
+  // Where the API is absent, a counting getter proves the import never touches it.
+  const absent = !('LanguageModel' in globalThis);
+  let reads = 0;
+  if (absent) Object.defineProperty(globalThis, 'LanguageModel', { configurable: true, get() { reads++; } });
+  try {
+    ({ createRuntime, TaskError } = await import('../dist/index.js'));
+    const ok = typeof createRuntime === 'function' && typeof TaskError === 'function';
+    record('import', 'Import AkariSP', ok && reads === 0
+      ? { status: 'PASS' }
+      : { status: 'FAIL', reason: reads ? 'import read LanguageModel' : 'createRuntime/TaskError missing' });
+  } catch (e) {
+    record('import', 'Import AkariSP', { status: 'FAIL', reason: `import failed: ${e?.name}`, error: diagnose(e) });
+  } finally {
+    if (absent) delete globalThis.LanguageModel;
+  }
+}
+
+async function detectCapability() {
+  const present = 'LanguageModel' in globalThis;
+  const hasAvailability = present && typeof LanguageModel.availability === 'function';
+  let raw = null;
+  let error;
+  // availability() only reports status; it never starts a download (create() would).
+  if (hasAvailability) {
+    try { raw = await LanguageModel.availability(); } catch (e) { error = e; }
+  }
+  cap = {
+    present, raw, error,
+    classification: classify({ present, hasAvailability, raw, error }),
+    secureContext: globalThis.isSecureContext === true,
+    userAgent: navigator.userAgent, // diagnostic only
+  };
+  $('ua').textContent = cap.userAgent;
+  $('secure').textContent = String(cap.secureContext);
+  $('exists').textContent = String(present);
+  $('availability').textContent = !hasAvailability ? 'n/a' : error ? `error: ${error?.name}` : String(raw);
+  $('classification').textContent = cap.classification;
+  const note =
+    cap.classification === 'API_ABSENT' ? 'LanguageModel is not available in this browser. Model checks are SKIPPED.'
+    : !cap.secureContext ? 'Not a secure context. Model checks are BLOCKED.'
+    : cap.classification !== 'MODEL_AVAILABLE'
+      ? 'LanguageModel exists, but model is not currently available.\n' +
+        'Install/download the browser model before running smoke tests. Model checks are BLOCKED.'
+    : '';
+  $('unavailable').textContent = note;
+  $('unavailable').hidden = !note;
+}
+
+// Records SKIPPED/BLOCKED for every check not executed yet; executable ones stay unrecorded.
+function gateAll() {
+  for (const [key, name] of TESTS) {
+    if (executed.has(key)) continue;
+    const gated = gate(cap.classification, cap.secureContext, cap.raw);
+    if (gated) record(key, name, gated);
+    else delete results[key];
+  }
+  render();
+}
+
+async function copyJson() {
+  try {
+    await navigator.clipboard.writeText($('json').textContent);
+    log('JSON copied');
+  } catch (e) {
+    log(`copy failed (${e?.name}); select the JSON block manually`);
+  }
 }
 
 async function main() {
-  const exists = 'LanguageModel' in globalThis;
-  $('exists').textContent = String(exists);
-  if (!exists) {
-    $('availability').textContent = 'n/a';
-    $('unavailable').textContent = 'LanguageModel is not available in this browser.';
-    $('unavailable').hidden = false;
-    return;
+  await importAkariSP();
+  await detectCapability();
+  if (results.import.status === 'PASS') {
+    gateAll();
+    for (const test of TESTS) addButton(test[1], () => runTest(test));
+    addButton('Run All', async () => {
+      let passed = 0;
+      for (const test of TESTS) if ((await runTest(test)) === 'PASS') passed++; // continue after failures
+      log(`Run All: ${passed}/${TESTS.length} passed`);
+    });
   }
-  // availability() only reports status; it never starts a download (create() would).
-  const availability = await LanguageModel.availability();
-  $('availability').textContent = availability;
-  if (availability !== 'available') {
-    $('unavailable').textContent =
-      'LanguageModel exists, but model is not currently available.\n' +
-      'Install/download the browser model before running smoke tests.';
-    $('unavailable').hidden = false;
-    return;
-  }
-  for (const test of TESTS) addButton(test[0], () => runTest(test));
-  addButton('Run All', async () => {
-    let passed = 0;
-    for (const test of TESTS) if (await runTest(test)) passed++; // continue after failures
-    log(`Run All: ${passed}/${TESTS.length} passed`);
-  });
+  addButton('Re-check availability', async () => { await detectCapability(); gateAll(); }, 'setup');
+  addButton('Copy JSON', copyJson, 'setup');
+  render();
+  document.body.dataset.ready = 'true';
 }
 
 main().catch((e) => {
   console.error(e);
-  $('unavailable').textContent = `Setup error: ${describe(e)}`;
+  $('unavailable').textContent = `Setup error: ${describeText(e)}`;
   $('unavailable').hidden = false;
 });
