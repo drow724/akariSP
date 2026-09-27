@@ -59,8 +59,10 @@ first test `'LanguageModel' in globalThis` and, only when the global is present,
 
 Options in `session` and in each template reach `LanguageModel.create()` unchanged and keep their
 platform-defined meaning. A `signal` passed there is not only a way to cancel `createRuntime()`:
-aborting it after the runtime is created may invalidate the native base session, so later tasks
-fail and the runtime becomes `broken`.
+the Prompt API specification says aborting it after creation destroys the native base session,
+although Chrome 152 was observed to keep the base usable. AkariSP does not turn that abort into a
+`broken` runtime; if the abort does destroy the base, later tasks fail with code `failed`. Call
+`shutdown()` to end the runtime.
 
 ## Streaming
 

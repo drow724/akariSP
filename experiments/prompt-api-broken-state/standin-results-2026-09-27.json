@@ -1,0 +1,392 @@
+{
+  "environment": {
+    "node": "v23.9.0",
+    "platform": "darwin",
+    "date": "2026-09-27"
+  },
+  "evidenceClass": "DETERMINISTIC_STAND_IN",
+  "cloneRejectionMatrix": {
+    "DOMException InvalidStateError": {
+      "task": {
+        "code": "broken",
+        "cause": {
+          "ctor": "DOMException",
+          "name": "InvalidStateError",
+          "message": "x"
+        }
+      },
+      "stateAfter": "broken",
+      "queuedTaskC": {
+        "code": "broken",
+        "cause": null,
+        "cloned": false
+      },
+      "laterTaskD": {
+        "code": "broken",
+        "cause": null,
+        "cloned": false
+      },
+      "baseDestroysBeforeShutdown": 0,
+      "shutdown": {
+        "resolved": true,
+        "baseDestroys": 1,
+        "state": "closed"
+      }
+    },
+    "DOMException AbortError": {
+      "task": {
+        "code": "failed",
+        "cause": {
+          "ctor": "DOMException",
+          "name": "AbortError",
+          "message": "x"
+        }
+      },
+      "stateAfter": "ready",
+      "queuedTaskC": {
+        "code": "failed",
+        "cause": {
+          "ctor": "DOMException",
+          "name": "AbortError",
+          "message": "x"
+        },
+        "cloned": true
+      },
+      "laterTaskD": {
+        "code": "failed",
+        "cause": {
+          "ctor": "DOMException",
+          "name": "AbortError",
+          "message": "x"
+        },
+        "cloned": true
+      },
+      "baseDestroysBeforeShutdown": 0,
+      "shutdown": {
+        "resolved": true,
+        "baseDestroys": 1,
+        "state": "closed"
+      }
+    },
+    "DOMException OperationError": {
+      "task": {
+        "code": "failed",
+        "cause": {
+          "ctor": "DOMException",
+          "name": "OperationError",
+          "message": "x"
+        }
+      },
+      "stateAfter": "ready",
+      "queuedTaskC": {
+        "code": "failed",
+        "cause": {
+          "ctor": "DOMException",
+          "name": "OperationError",
+          "message": "x"
+        },
+        "cloned": true
+      },
+      "laterTaskD": {
+        "code": "failed",
+        "cause": {
+          "ctor": "DOMException",
+          "name": "OperationError",
+          "message": "x"
+        },
+        "cloned": true
+      },
+      "baseDestroysBeforeShutdown": 0,
+      "shutdown": {
+        "resolved": true,
+        "baseDestroys": 1,
+        "state": "closed"
+      }
+    },
+    "DOMException NotSupportedError": {
+      "task": {
+        "code": "failed",
+        "cause": {
+          "ctor": "DOMException",
+          "name": "NotSupportedError",
+          "message": "x"
+        }
+      },
+      "stateAfter": "ready",
+      "queuedTaskC": {
+        "code": "failed",
+        "cause": {
+          "ctor": "DOMException",
+          "name": "NotSupportedError",
+          "message": "x"
+        },
+        "cloned": true
+      },
+      "laterTaskD": {
+        "code": "failed",
+        "cause": {
+          "ctor": "DOMException",
+          "name": "NotSupportedError",
+          "message": "x"
+        },
+        "cloned": true
+      },
+      "baseDestroysBeforeShutdown": 0,
+      "shutdown": {
+        "resolved": true,
+        "baseDestroys": 1,
+        "state": "closed"
+      }
+    },
+    "DOMException NetworkError": {
+      "task": {
+        "code": "failed",
+        "cause": {
+          "ctor": "DOMException",
+          "name": "NetworkError",
+          "message": "x"
+        }
+      },
+      "stateAfter": "ready",
+      "queuedTaskC": {
+        "code": "failed",
+        "cause": {
+          "ctor": "DOMException",
+          "name": "NetworkError",
+          "message": "x"
+        },
+        "cloned": true
+      },
+      "laterTaskD": {
+        "code": "failed",
+        "cause": {
+          "ctor": "DOMException",
+          "name": "NetworkError",
+          "message": "x"
+        },
+        "cloned": true
+      },
+      "baseDestroysBeforeShutdown": 0,
+      "shutdown": {
+        "resolved": true,
+        "baseDestroys": 1,
+        "state": "closed"
+      }
+    },
+    "Error": {
+      "task": {
+        "code": "failed",
+        "cause": {
+          "ctor": "Error",
+          "name": "Error",
+          "message": "x"
+        }
+      },
+      "stateAfter": "ready",
+      "queuedTaskC": {
+        "code": "failed",
+        "cause": {
+          "ctor": "Error",
+          "name": "Error",
+          "message": "x"
+        },
+        "cloned": true
+      },
+      "laterTaskD": {
+        "code": "failed",
+        "cause": {
+          "ctor": "Error",
+          "name": "Error",
+          "message": "x"
+        },
+        "cloned": true
+      },
+      "baseDestroysBeforeShutdown": 0,
+      "shutdown": {
+        "resolved": true,
+        "baseDestroys": 1,
+        "state": "closed"
+      }
+    },
+    "plain { name: InvalidStateError }": {
+      "task": {
+        "code": "failed",
+        "cause": {
+          "ctor": "Object",
+          "name": "InvalidStateError",
+          "message": "[object Object]"
+        }
+      },
+      "stateAfter": "ready",
+      "queuedTaskC": {
+        "code": "failed",
+        "cause": {
+          "ctor": "Object",
+          "name": "InvalidStateError",
+          "message": "[object Object]"
+        },
+        "cloned": true
+      },
+      "laterTaskD": {
+        "code": "failed",
+        "cause": {
+          "ctor": "Object",
+          "name": "InvalidStateError",
+          "message": "[object Object]"
+        },
+        "cloned": true
+      },
+      "baseDestroysBeforeShutdown": 0,
+      "shutdown": {
+        "resolved": true,
+        "baseDestroys": 1,
+        "state": "closed"
+      }
+    }
+  },
+  "taskLocalAbort": {
+    "aborted before run": {
+      "code": "cancelled",
+      "cause": {
+        "ctor": "DOMException",
+        "name": "AbortError",
+        "message": "This operation was aborted"
+      },
+      "stateAfter": "ready",
+      "nextTask": {
+        "code": null
+      }
+    },
+    "abort while queued": {
+      "code": "cancelled",
+      "cause": {
+        "ctor": "DOMException",
+        "name": "AbortError",
+        "message": "This operation was aborted"
+      },
+      "stateAfter": "ready",
+      "nextTask": {
+        "code": null
+      }
+    },
+    "abort during clone (clone rejects InvalidStateError)": {
+      "code": "cancelled",
+      "cause": {
+        "ctor": "DOMException",
+        "name": "AbortError",
+        "message": "This operation was aborted"
+      },
+      "stateAfter": "ready",
+      "nextTask": {
+        "code": null
+      }
+    }
+  },
+  "specModelledDestroyedBase": {
+    "create signal: controller.abort()": {
+      "beforeDestruction": {
+        "code": null
+      },
+      "runsAfter": [
+        {
+          "code": "failed",
+          "cause": {
+            "ctor": "DOMException",
+            "name": "AbortError",
+            "message": "This operation was aborted"
+          },
+          "stateAfter": "ready"
+        },
+        {
+          "code": "failed",
+          "cause": {
+            "ctor": "DOMException",
+            "name": "AbortError",
+            "message": "This operation was aborted"
+          },
+          "stateAfter": "ready"
+        },
+        {
+          "code": "failed",
+          "cause": {
+            "ctor": "DOMException",
+            "name": "AbortError",
+            "message": "This operation was aborted"
+          },
+          "stateAfter": "ready"
+        }
+      ],
+      "shutdownResolved": true
+    },
+    "create signal: custom reason": {
+      "beforeDestruction": {
+        "code": null
+      },
+      "runsAfter": [
+        {
+          "code": "failed",
+          "cause": {
+            "ctor": "Error",
+            "name": "Error",
+            "message": "app shutting down"
+          },
+          "stateAfter": "ready"
+        },
+        {
+          "code": "failed",
+          "cause": {
+            "ctor": "Error",
+            "name": "Error",
+            "message": "app shutting down"
+          },
+          "stateAfter": "ready"
+        },
+        {
+          "code": "failed",
+          "cause": {
+            "ctor": "Error",
+            "name": "Error",
+            "message": "app shutting down"
+          },
+          "stateAfter": "ready"
+        }
+      ],
+      "shutdownResolved": true
+    },
+    "base.destroy()": {
+      "beforeDestruction": {
+        "code": null
+      },
+      "runsAfter": [
+        {
+          "code": "failed",
+          "cause": {
+            "ctor": "DOMException",
+            "name": "AbortError",
+            "message": "destroyed"
+          },
+          "stateAfter": "ready"
+        },
+        {
+          "code": "failed",
+          "cause": {
+            "ctor": "DOMException",
+            "name": "AbortError",
+            "message": "destroyed"
+          },
+          "stateAfter": "ready"
+        },
+        {
+          "code": "failed",
+          "cause": {
+            "ctor": "DOMException",
+            "name": "AbortError",
+            "message": "destroyed"
+          },
+          "stateAfter": "ready"
+        }
+      ],
+      "shutdownResolved": true
+    }
+  }
+}

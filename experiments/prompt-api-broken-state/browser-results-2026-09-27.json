@@ -1,0 +1,60 @@
+{
+  "environment": { "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36", "date": "2026-09-27", "availability": "available" },
+  "nativeDestroy": {
+    "cloneBefore": { "ok": true, "value": "cloned" },
+    "cloneAfter1": { "error": { "ctor": "DOMException", "name": "InvalidStateError", "message": "Failed to execute 'clone' on 'LanguageModel': The model execution session has been destroyed." }, "isTaskError": false, "code": 11, "cause": null },
+    "cloneAfter2": { "error": { "ctor": "DOMException", "name": "InvalidStateError", "message": "Failed to execute 'clone' on 'LanguageModel': The model execution session has been destroyed." }, "isTaskError": false, "code": 11, "cause": null },
+    "promptAfter": { "error": { "ctor": "DOMException", "name": "InvalidStateError", "message": "Failed to execute 'prompt' on 'LanguageModel': The model execution session has been destroyed." }, "isTaskError": false, "code": 11, "cause": null }
+  },
+  "nativeCreateSignalAbort_default": {
+    "abortReason": { "ctor": "DOMException", "name": "AbortError", "message": "signal is aborted without reason" },
+    "cloneBefore": { "ok": true, "value": "cloned" },
+    "cloneAfter1": { "ok": true, "value": "cloned" },
+    "cloneAfter2": { "ok": true, "value": "cloned" }
+  },
+  "nativeCreateSignalAbort_custom": {
+    "abortReason": { "ctor": "Error", "name": "Error", "message": "app shutting down" },
+    "cloneBefore": { "ok": true, "value": "cloned" },
+    "cloneAfter1": { "ok": true, "value": "cloned" },
+    "cloneAfter2": { "ok": true, "value": "cloned" }
+  },
+  "akarispCreateSignalAbort_default": {
+    "abortReason": { "ctor": "DOMException", "name": "AbortError", "message": "signal is aborted without reason" },
+    "firstRun": { "ok": true, "value": "OK.\n\n\n\n" },
+    "stateBeforeAbort": "ready",
+    "runsAfterAbort": [
+      { "ok": true, "value": "Ok.", "stateAfter": "ready" },
+      { "ok": true, "value": "Ok.", "stateAfter": "ready" },
+      { "ok": true, "value": "Ok.", "stateAfter": "ready" }
+    ],
+    "shutdown": { "ok": true, "value": null },
+    "stateAfterShutdown": "closed"
+  },
+  "akarispCreateSignalAbort_custom": {
+    "abortReason": { "ctor": "Error", "name": "Error", "message": "app shutting down" },
+    "firstRun": { "ok": true, "value": "Ok." },
+    "stateBeforeAbort": "ready",
+    "runsAfterAbort": [
+      { "ok": true, "value": "Ok.", "stateAfter": "ready" },
+      { "ok": true, "value": "Ok.", "stateAfter": "ready" },
+      { "ok": true, "value": "Ok. \n", "stateAfter": "ready" }
+    ],
+    "shutdown": { "ok": true, "value": null },
+    "stateAfterShutdown": "closed"
+  },
+  "nativeDetachedDocument": {
+    "cloneBefore": { "ok": true, "value": "cloned" },
+    "cloneAfter1": { "error": { "ctor": "DOMException", "name": "InvalidStateError", "message": "Failed to execute 'clone' on 'LanguageModel': The execution context is not valid." }, "isTaskError": false, "code": 11, "cause": null },
+    "cloneAfter2": { "error": { "ctor": "DOMException", "name": "InvalidStateError", "message": "Failed to execute 'clone' on 'LanguageModel': The execution context is not valid." }, "isTaskError": false, "code": 11, "cause": null },
+    "destroyAfter": { "ctor": "DOMException", "name": "InvalidStateError", "message": "Failed to execute 'destroy' on 'LanguageModel': The execution context is not valid." }
+  },
+  "akarispDetachedDocument": {
+    "firstRun": { "ok": true, "value": "Ok. \n" },
+    "runsAfterDetach": [
+      { "error": { "ctor": "TaskError", "name": "TaskError", "message": "Task failed" }, "isTaskError": true, "code": "failed", "cause": { "ctor": "DOMException", "name": "InvalidStateError", "message": "Failed to execute 'clone' on 'LanguageModel': The execution context is not valid." }, "stateAfter": "ready" },
+      { "error": { "ctor": "TaskError", "name": "TaskError", "message": "Task failed" }, "isTaskError": true, "code": "failed", "cause": { "ctor": "DOMException", "name": "InvalidStateError", "message": "Failed to execute 'clone' on 'LanguageModel': The execution context is not valid." }, "stateAfter": "ready" }
+    ],
+    "shutdown": { "ok": true, "value": null },
+    "stateAfterShutdown": "closed"
+  }
+}
