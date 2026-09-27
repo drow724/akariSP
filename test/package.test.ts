@@ -46,7 +46,7 @@ test('tarball contains exactly the allow-listed files', () => {
 
 test('installed metadata: version, no dependencies, no engines', () => {
   const pkg = JSON.parse(readFileSync(join(consumer, 'node_modules/akarisp/package.json'), 'utf8'));
-  assert.equal(pkg.version, '0.1.0-alpha.1');
+  assert.equal(pkg.version, '0.1.0-alpha.2');
   assert.equal(pkg.dependencies, undefined);
   assert.equal(pkg.engines, undefined);
 });
