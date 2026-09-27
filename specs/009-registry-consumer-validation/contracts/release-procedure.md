@@ -14,6 +14,11 @@ RELEASE=<version> npm run test:registry
   the version inside the file does not match its file name.
 - It writes `releases/<RELEASE>.verified.json` (the result) and exits non-zero on any mismatch or
   failed check.
+- The result records one verification moment; it is not a golden file.
+  - A re-run for an older release, after its tags moved, overwrites the file with a mismatch
+    record.
+  - The committed release-time file is the evidence. Discard such a rewrite with
+    `git checkout -- releases/<version>.verified.json`.
 - It needs the public npm registry. It installs anonymously and never publishes or changes tags.
 - It is not part of `npm test`.
 

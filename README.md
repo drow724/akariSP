@@ -213,6 +213,9 @@ observed not to be applied, so the tag is always named on the command line.
 3. For every other tag in the intent: `npm dist-tag add akarisp@<version> <tag>`.
 4. Verify: `RELEASE=<version> npm run test:registry`. It re-reads the registry for up to 10
    minutes while metadata propagates, then installs from the registry into clean consumers.
-   Commit the resulting `releases/<version>.verified.json`.
+   Commit the resulting `releases/<version>.verified.json`. It records one verification moment
+   and is not a golden file. Re-running the check for an older release after the tags have moved
+   overwrites it with a (correct) mismatch record. The committed release-time file is the
+   evidence, so discard such a rewrite with `git checkout -- releases/<version>.verified.json`.
 5. On a mismatch, fix forward: correct a tag with `npm dist-tag add` and re-run the check, or
    publish the next version for a content defect. Never unpublish.

@@ -296,3 +296,9 @@ T001 → T002 → T003 → T004–T006 → T008 (mutation) → T007 (normal alph
 | SC-906 | T011 |
 | SC-907 | T015 |
 | SC-908 | T015 |
+
+---
+
+## Phase 8: Convergence
+
+- [X] T016 [US3] State in the README "Release" section and in `specs/009-registry-consumer-validation/contracts/release-procedure.md` that `releases/<version>.verified.json` records one verification moment and is not a golden file. Re-running the check for an older release after the tags moved overwrites it with a mismatch record. The committed release-time file is the evidence, so discard a later re-run's rewrite (`git checkout -- releases/<version>.verified.json`), per FR-911 (partial)
