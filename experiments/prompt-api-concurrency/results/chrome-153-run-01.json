@@ -1,0 +1,2283 @@
+{
+  "environment": {
+    "timestamp": "2026-09-28T03:11:37.912Z",
+    "akarispHead": "7e8202e",
+    "packageVersion": "0.1.0-alpha.2",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36",
+    "uaData": {
+      "architecture": "arm",
+      "brands": [
+        {
+          "brand": "Google Chrome",
+          "version": "153"
+        },
+        {
+          "brand": "Not_A Brand",
+          "version": "8"
+        },
+        {
+          "brand": "Chromium",
+          "version": "153"
+        }
+      ],
+      "fullVersionList": [
+        {
+          "brand": "Google Chrome",
+          "version": "153.0.8010.53"
+        },
+        {
+          "brand": "Not_A Brand",
+          "version": "8.0.0.0"
+        },
+        {
+          "brand": "Chromium",
+          "version": "153.0.8010.53"
+        }
+      ],
+      "mobile": false,
+      "platform": "macOS",
+      "platformVersion": "15.7.4"
+    },
+    "hardwareConcurrency": 8,
+    "deviceMemory": 16,
+    "promptApiAvailability": "available",
+    "flags": "none set by the harness (record manually if any)"
+  },
+  "config": {
+    "workload": "numbered-8-v1",
+    "prompts": [
+      "Write exactly 8 numbered short sentences about astronomy. No introduction and no conclusion.",
+      "Write exactly 8 numbered short sentences about geology. No introduction and no conclusion."
+    ],
+    "session": {
+      "initialPrompts": [
+        {
+          "role": "system",
+          "content": "You are a concise assistant."
+        }
+      ]
+    },
+    "cases": [
+      "NC",
+      "L1",
+      "L2"
+    ],
+    "concurrentTasks": 2,
+    "queueCapacity": 32,
+    "warmupRounds": 2,
+    "trialsPerCase": 10,
+    "order": "case order rotated per round",
+    "timeoutMs": 120000
+  },
+  "warmups": [
+    {
+      "round": 0,
+      "case": "NC",
+      "limit": null,
+      "batchStart": 8173.100000143051,
+      "batchEnd": 16522.200000047684,
+      "batchWallMs": 8349.099999904633,
+      "tasks": [
+        {
+          "submitAt": 8173.100000143051,
+          "outputChars": 425,
+          "settledAt": 12562.900000095367,
+          "native": {
+            "start": 8173.400000095367,
+            "end": 12562.900000095367
+          }
+        },
+        {
+          "submitAt": 8173.100000143051,
+          "outputChars": 353,
+          "settledAt": 16522.10000014305,
+          "native": {
+            "start": 8173.400000095367,
+            "end": 16522.10000014305
+          }
+        }
+      ],
+      "overlap": {
+        "ms": 4389.5,
+        "ratio": 1
+      }
+    },
+    {
+      "round": 0,
+      "case": "L1",
+      "limit": 1,
+      "batchStart": 16523.700000047684,
+      "batchEnd": 25787.5,
+      "batchWallMs": 9263.799999952316,
+      "tasks": [
+        {
+          "submitAt": 16523.700000047684,
+          "outputChars": 482,
+          "timing": {
+            "total": 5192.899999856949,
+            "queueWait": 0,
+            "acquire": 0.2999999523162842,
+            "prompt": 5191.700000047684
+          },
+          "settledAt": 21717,
+          "native": {
+            "start": 16524.700000047684,
+            "end": 21716.400000095367
+          }
+        },
+        {
+          "submitAt": 16523.900000095367,
+          "outputChars": 395,
+          "timing": {
+            "total": 9263.5,
+            "queueWait": 5192.799999952316,
+            "acquire": 0.5,
+            "prompt": 4069.9000000953674
+          },
+          "settledAt": 25787.400000095367,
+          "native": {
+            "start": 21717.299999952316,
+            "end": 25787.200000047684
+          }
+        }
+      ],
+      "snapshotAfterSubmit": {
+        "t": 16524,
+        "state": "ready",
+        "active": 1,
+        "queued": 1
+      },
+      "snapshots": [
+        {
+          "t": 16524,
+          "state": "ready",
+          "active": 1,
+          "queued": 1
+        },
+        {
+          "t": 21717,
+          "state": "ready",
+          "active": 1,
+          "queued": 0
+        },
+        {
+          "t": 25787.400000095367,
+          "state": "ready",
+          "active": 0,
+          "queued": 0
+        }
+      ],
+      "maxActive": 1,
+      "maxQueued": 1,
+      "stateAfter": "ready",
+      "overlap": {
+        "ms": 0,
+        "ratio": 0
+      }
+    },
+    {
+      "round": 0,
+      "case": "L2",
+      "limit": 2,
+      "batchStart": 25788.10000014305,
+      "batchEnd": 34340.200000047684,
+      "batchWallMs": 8552.099999904633,
+      "tasks": [
+        {
+          "submitAt": 25788.10000014305,
+          "outputChars": 443,
+          "timing": {
+            "total": 4356.299999952316,
+            "queueWait": 0,
+            "acquire": 0.7000000476837158,
+            "prompt": 4355.399999856949
+          },
+          "settledAt": 30144.5,
+          "native": {
+            "start": 25789.10000014305,
+            "end": 30144.400000095367
+          }
+        },
+        {
+          "submitAt": 25788.200000047684,
+          "outputChars": 455,
+          "timing": {
+            "total": 8551.900000095367,
+            "queueWait": 0,
+            "acquire": 0.7000000476837158,
+            "prompt": 8550.900000095367
+          },
+          "settledAt": 34340.10000014305,
+          "native": {
+            "start": 25789.200000047684,
+            "end": 34340.10000014305
+          }
+        }
+      ],
+      "snapshotAfterSubmit": {
+        "t": 25788.200000047684,
+        "state": "ready",
+        "active": 2,
+        "queued": 0
+      },
+      "snapshots": [
+        {
+          "t": 25788.200000047684,
+          "state": "ready",
+          "active": 2,
+          "queued": 0
+        },
+        {
+          "t": 30144.5,
+          "state": "ready",
+          "active": 1,
+          "queued": 0
+        },
+        {
+          "t": 34340.200000047684,
+          "state": "ready",
+          "active": 0,
+          "queued": 0
+        }
+      ],
+      "maxActive": 2,
+      "maxQueued": 0,
+      "stateAfter": "ready",
+      "overlap": {
+        "ms": 4355.200000047684,
+        "ratio": 0.9999770394910491
+      }
+    },
+    {
+      "round": 1,
+      "case": "L1",
+      "limit": 1,
+      "batchStart": 34340.40000009537,
+      "batchEnd": 43635.799999952316,
+      "batchWallMs": 9295.399999856949,
+      "tasks": [
+        {
+          "submitAt": 34340.40000009537,
+          "outputChars": 416,
+          "timing": {
+            "total": 4316.700000047684,
+            "queueWait": 0,
+            "acquire": 0.39999985694885254,
+            "prompt": 4315.600000143051
+          },
+          "settledAt": 38657.5,
+          "native": {
+            "start": 34341.299999952316,
+            "end": 38656.90000009537
+          }
+        },
+        {
+          "submitAt": 34340.5,
+          "outputChars": 563,
+          "timing": {
+            "total": 9295.299999952316,
+            "queueWait": 4316.700000047684,
+            "acquire": 1.5,
+            "prompt": 4976.800000190735
+          },
+          "settledAt": 43635.799999952316,
+          "native": {
+            "start": 38658.799999952316,
+            "end": 43635.60000014305
+          }
+        }
+      ],
+      "snapshotAfterSubmit": {
+        "t": 34340.5,
+        "state": "ready",
+        "active": 1,
+        "queued": 1
+      },
+      "snapshots": [
+        {
+          "t": 34340.5,
+          "state": "ready",
+          "active": 1,
+          "queued": 1
+        },
+        {
+          "t": 38657.5,
+          "state": "ready",
+          "active": 1,
+          "queued": 0
+        },
+        {
+          "t": 43635.799999952316,
+          "state": "ready",
+          "active": 0,
+          "queued": 0
+        }
+      ],
+      "maxActive": 1,
+      "maxQueued": 1,
+      "stateAfter": "ready",
+      "overlap": {
+        "ms": 0,
+        "ratio": 0
+      }
+    },
+    {
+      "round": 1,
+      "case": "L2",
+      "limit": 2,
+      "batchStart": 43636.200000047684,
+      "batchEnd": 52697.40000009537,
+      "batchWallMs": 9061.200000047684,
+      "tasks": [
+        {
+          "submitAt": 43636.200000047684,
+          "outputChars": 382,
+          "timing": {
+            "total": 3939.9000000953674,
+            "queueWait": 0,
+            "acquire": 1.7999999523162842,
+            "prompt": 3937.7000000476837
+          },
+          "settledAt": 47576.10000014305,
+          "native": {
+            "start": 43638.299999952316,
+            "end": 47576
+          }
+        },
+        {
+          "submitAt": 43636.200000047684,
+          "outputChars": 584,
+          "timing": {
+            "total": 9061.200000047684,
+            "queueWait": 0,
+            "acquire": 1.2999999523162842,
+            "prompt": 9059
+          },
+          "settledAt": 52697.40000009537,
+          "native": {
+            "start": 43638.299999952316,
+            "end": 52697.299999952316
+          }
+        }
+      ],
+      "snapshotAfterSubmit": {
+        "t": 43636.200000047684,
+        "state": "ready",
+        "active": 2,
+        "queued": 0
+      },
+      "snapshots": [
+        {
+          "t": 43636.200000047684,
+          "state": "ready",
+          "active": 2,
+          "queued": 0
+        },
+        {
+          "t": 47576.10000014305,
+          "state": "ready",
+          "active": 1,
+          "queued": 0
+        },
+        {
+          "t": 52697.40000009537,
+          "state": "ready",
+          "active": 0,
+          "queued": 0
+        }
+      ],
+      "maxActive": 2,
+      "maxQueued": 0,
+      "stateAfter": "ready",
+      "overlap": {
+        "ms": 3937.7000000476837,
+        "ratio": 1
+      }
+    },
+    {
+      "round": 1,
+      "case": "NC",
+      "limit": null,
+      "batchStart": 52698.299999952316,
+      "batchEnd": 60551.299999952316,
+      "batchWallMs": 7853,
+      "tasks": [
+        {
+          "submitAt": 52698.299999952316,
+          "outputChars": 371,
+          "settledAt": 56465.700000047684,
+          "native": {
+            "start": 52698.299999952316,
+            "end": 56465.700000047684
+          }
+        },
+        {
+          "submitAt": 52698.299999952316,
+          "outputChars": 461,
+          "settledAt": 60551.200000047684,
+          "native": {
+            "start": 52698.299999952316,
+            "end": 60551.200000047684
+          }
+        }
+      ],
+      "overlap": {
+        "ms": 3767.4000000953674,
+        "ratio": 1
+      }
+    }
+  ],
+  "trials": [
+    {
+      "trial": 0,
+      "round": 0,
+      "case": "L2",
+      "limit": 2,
+      "batchStart": 60551.90000009537,
+      "batchEnd": 69990,
+      "batchWallMs": 9438.099999904633,
+      "tasks": [
+        {
+          "submitAt": 60551.90000009537,
+          "outputChars": 470,
+          "timing": {
+            "total": 5181.099999904633,
+            "queueWait": 0,
+            "acquire": 1.0999999046325684,
+            "prompt": 5179
+          },
+          "settledAt": 65733,
+          "native": {
+            "start": 60553.299999952316,
+            "end": 65732.29999995232
+          }
+        },
+        {
+          "submitAt": 60552,
+          "outputChars": 410,
+          "timing": {
+            "total": 9438,
+            "queueWait": 0,
+            "acquire": 1.0999999046325684,
+            "prompt": 9436.600000143051
+          },
+          "settledAt": 69990,
+          "native": {
+            "start": 60553.299999952316,
+            "end": 69989.90000009537
+          }
+        }
+      ],
+      "snapshotAfterSubmit": {
+        "t": 60552,
+        "state": "ready",
+        "active": 2,
+        "queued": 0
+      },
+      "snapshots": [
+        {
+          "t": 60552,
+          "state": "ready",
+          "active": 2,
+          "queued": 0
+        },
+        {
+          "t": 65733,
+          "state": "ready",
+          "active": 1,
+          "queued": 0
+        },
+        {
+          "t": 69990,
+          "state": "ready",
+          "active": 0,
+          "queued": 0
+        }
+      ],
+      "maxActive": 2,
+      "maxQueued": 0,
+      "stateAfter": "ready",
+      "overlap": {
+        "ms": 5179,
+        "ratio": 1
+      }
+    },
+    {
+      "trial": 1,
+      "round": 0,
+      "case": "NC",
+      "limit": null,
+      "batchStart": 69991.10000014305,
+      "batchEnd": 81591.79999995232,
+      "batchWallMs": 11600.699999809265,
+      "tasks": [
+        {
+          "submitAt": 69991.10000014305,
+          "outputChars": 461,
+          "settledAt": 76244.79999995232,
+          "native": {
+            "start": 69991.10000014305,
+            "end": 76244.70000004768
+          }
+        },
+        {
+          "submitAt": 69991.10000014305,
+          "outputChars": 473,
+          "settledAt": 81591.79999995232,
+          "native": {
+            "start": 69991.29999995232,
+            "end": 81591.79999995232
+          }
+        }
+      ],
+      "overlap": {
+        "ms": 6253.400000095367,
+        "ratio": 0.9999680184518888
+      }
+    },
+    {
+      "trial": 2,
+      "round": 0,
+      "case": "L1",
+      "limit": 1,
+      "batchStart": 81592.79999995232,
+      "batchEnd": 91811.5,
+      "batchWallMs": 10218.700000047684,
+      "tasks": [
+        {
+          "submitAt": 81592.90000009537,
+          "outputChars": 493,
+          "timing": {
+            "total": 5735.700000047684,
+            "queueWait": 0,
+            "acquire": 1.2999999523162842,
+            "prompt": 5733.400000095367
+          },
+          "settledAt": 87328.70000004768,
+          "native": {
+            "start": 81595,
+            "end": 87328.40000009537
+          }
+        },
+        {
+          "submitAt": 81593.10000014305,
+          "outputChars": 424,
+          "timing": {
+            "total": 10218.299999952316,
+            "queueWait": 5735.399999856949,
+            "acquire": 0.5,
+            "prompt": 4482.199999809265
+          },
+          "settledAt": 91811.40000009537,
+          "native": {
+            "start": 87329.10000014305,
+            "end": 91811.29999995232
+          }
+        }
+      ],
+      "snapshotAfterSubmit": {
+        "t": 81593.20000004768,
+        "state": "ready",
+        "active": 1,
+        "queued": 1
+      },
+      "snapshots": [
+        {
+          "t": 81593.20000004768,
+          "state": "ready",
+          "active": 1,
+          "queued": 1
+        },
+        {
+          "t": 87328.70000004768,
+          "state": "ready",
+          "active": 1,
+          "queued": 0
+        },
+        {
+          "t": 91811.40000009537,
+          "state": "ready",
+          "active": 0,
+          "queued": 0
+        }
+      ],
+      "maxActive": 1,
+      "maxQueued": 1,
+      "stateAfter": "ready",
+      "overlap": {
+        "ms": 0,
+        "ratio": 0
+      }
+    },
+    {
+      "trial": 3,
+      "round": 1,
+      "case": "NC",
+      "limit": null,
+      "batchStart": 91813.40000009537,
+      "batchEnd": 100241.40000009537,
+      "batchWallMs": 8428,
+      "tasks": [
+        {
+          "submitAt": 91813.40000009537,
+          "outputChars": 434,
+          "settledAt": 96217.40000009537,
+          "native": {
+            "start": 91813.5,
+            "end": 96217.40000009537
+          }
+        },
+        {
+          "submitAt": 91813.40000009537,
+          "outputChars": 430,
+          "settledAt": 100241.40000009537,
+          "native": {
+            "start": 91813.5,
+            "end": 100241.29999995232
+          }
+        }
+      ],
+      "overlap": {
+        "ms": 4403.900000095367,
+        "ratio": 1
+      }
+    },
+    {
+      "trial": 4,
+      "round": 1,
+      "case": "L1",
+      "limit": 1,
+      "batchStart": 100241.79999995232,
+      "batchEnd": 108430.70000004768,
+      "batchWallMs": 8188.900000095367,
+      "tasks": [
+        {
+          "submitAt": 100241.79999995232,
+          "outputChars": 370,
+          "timing": {
+            "total": 3708.4000000953674,
+            "queueWait": 0,
+            "acquire": 0.7999999523162842,
+            "prompt": 3707.2999999523163
+          },
+          "settledAt": 103950.20000004768,
+          "native": {
+            "start": 100242.90000009537,
+            "end": 103950.20000004768
+          }
+        },
+        {
+          "submitAt": 100241.90000009537,
+          "outputChars": 424,
+          "timing": {
+            "total": 8188.700000047684,
+            "queueWait": 3708.2999999523163,
+            "acquire": 0.2999999523162842,
+            "prompt": 4480.100000143051
+          },
+          "settledAt": 108430.60000014305,
+          "native": {
+            "start": 103950.5,
+            "end": 108430.60000014305
+          }
+        }
+      ],
+      "snapshotAfterSubmit": {
+        "t": 100241.90000009537,
+        "state": "ready",
+        "active": 1,
+        "queued": 1
+      },
+      "snapshots": [
+        {
+          "t": 100241.90000009537,
+          "state": "ready",
+          "active": 1,
+          "queued": 1
+        },
+        {
+          "t": 103950.20000004768,
+          "state": "ready",
+          "active": 1,
+          "queued": 0
+        },
+        {
+          "t": 108430.60000014305,
+          "state": "ready",
+          "active": 0,
+          "queued": 0
+        }
+      ],
+      "maxActive": 1,
+      "maxQueued": 1,
+      "stateAfter": "ready",
+      "overlap": {
+        "ms": 0,
+        "ratio": 0
+      }
+    },
+    {
+      "trial": 5,
+      "round": 1,
+      "case": "L2",
+      "limit": 2,
+      "batchStart": 108431.29999995232,
+      "batchEnd": 118353.79999995232,
+      "batchWallMs": 9922.5,
+      "tasks": [
+        {
+          "submitAt": 108431.29999995232,
+          "outputChars": 435,
+          "timing": {
+            "total": 4435.299999952316,
+            "queueWait": 0,
+            "acquire": 1.3999998569488525,
+            "prompt": 4431.200000047684
+          },
+          "settledAt": 112866.70000004768,
+          "native": {
+            "start": 108435.5,
+            "end": 112866.70000004768
+          }
+        },
+        {
+          "submitAt": 108431.90000009537,
+          "outputChars": 576,
+          "timing": {
+            "total": 9921.799999952316,
+            "queueWait": 0,
+            "acquire": 1.3000001907348633,
+            "prompt": 9918
+          },
+          "settledAt": 118353.70000004768,
+          "native": {
+            "start": 108435.60000014305,
+            "end": 118353.60000014305
+          }
+        }
+      ],
+      "snapshotAfterSubmit": {
+        "t": 108431.90000009537,
+        "state": "ready",
+        "active": 2,
+        "queued": 0
+      },
+      "snapshots": [
+        {
+          "t": 108431.90000009537,
+          "state": "ready",
+          "active": 2,
+          "queued": 0
+        },
+        {
+          "t": 112866.70000004768,
+          "state": "ready",
+          "active": 1,
+          "queued": 0
+        },
+        {
+          "t": 118353.70000004768,
+          "state": "ready",
+          "active": 0,
+          "queued": 0
+        }
+      ],
+      "maxActive": 2,
+      "maxQueued": 0,
+      "stateAfter": "ready",
+      "overlap": {
+        "ms": 4431.099999904633,
+        "ratio": 0.9999774327173113
+      }
+    },
+    {
+      "trial": 6,
+      "round": 2,
+      "case": "L1",
+      "limit": 1,
+      "batchStart": 118354.70000004768,
+      "batchEnd": 127804.40000009537,
+      "batchWallMs": 9449.700000047684,
+      "tasks": [
+        {
+          "submitAt": 118354.70000004768,
+          "outputChars": 493,
+          "timing": {
+            "total": 4677.300000190735,
+            "queueWait": 0,
+            "acquire": 1.2999999523162842,
+            "prompt": 4674.900000095367
+          },
+          "settledAt": 123032.40000009537,
+          "native": {
+            "start": 118357,
+            "end": 123031.90000009537
+          }
+        },
+        {
+          "submitAt": 118355,
+          "outputChars": 452,
+          "timing": {
+            "total": 9449.400000095367,
+            "queueWait": 4677.100000143051,
+            "acquire": 0.5,
+            "prompt": 4771.599999904633
+          },
+          "settledAt": 127804.40000009537,
+          "native": {
+            "start": 123032.70000004768,
+            "end": 127804.29999995232
+          }
+        }
+      ],
+      "snapshotAfterSubmit": {
+        "t": 118355.10000014305,
+        "state": "ready",
+        "active": 1,
+        "queued": 1
+      },
+      "snapshots": [
+        {
+          "t": 118355.10000014305,
+          "state": "ready",
+          "active": 1,
+          "queued": 1
+        },
+        {
+          "t": 123032.40000009537,
+          "state": "ready",
+          "active": 1,
+          "queued": 0
+        },
+        {
+          "t": 127804.40000009537,
+          "state": "ready",
+          "active": 0,
+          "queued": 0
+        }
+      ],
+      "maxActive": 1,
+      "maxQueued": 1,
+      "stateAfter": "ready",
+      "overlap": {
+        "ms": 0,
+        "ratio": 0
+      }
+    },
+    {
+      "trial": 7,
+      "round": 2,
+      "case": "L2",
+      "limit": 2,
+      "batchStart": 127804.90000009537,
+      "batchEnd": 138798.40000009537,
+      "batchWallMs": 10993.5,
+      "tasks": [
+        {
+          "submitAt": 127804.90000009537,
+          "outputChars": 384,
+          "timing": {
+            "total": 4785.700000047684,
+            "queueWait": 0,
+            "acquire": 1.2000000476837158,
+            "prompt": 4783.400000095367
+          },
+          "settledAt": 132590.70000004768,
+          "native": {
+            "start": 127807.20000004768,
+            "end": 132590.60000014305
+          }
+        },
+        {
+          "submitAt": 127805.20000004768,
+          "outputChars": 504,
+          "timing": {
+            "total": 10993.200000047684,
+            "queueWait": 0,
+            "acquire": 1.0999999046325684,
+            "prompt": 10990.800000190735
+          },
+          "settledAt": 138798.40000009537,
+          "native": {
+            "start": 127807.29999995232,
+            "end": 138798.10000014305
+          }
+        }
+      ],
+      "snapshotAfterSubmit": {
+        "t": 127805.20000004768,
+        "state": "ready",
+        "active": 2,
+        "queued": 0
+      },
+      "snapshots": [
+        {
+          "t": 127805.20000004768,
+          "state": "ready",
+          "active": 2,
+          "queued": 0
+        },
+        {
+          "t": 132590.70000004768,
+          "state": "ready",
+          "active": 1,
+          "queued": 0
+        },
+        {
+          "t": 138798.40000009537,
+          "state": "ready",
+          "active": 0,
+          "queued": 0
+        }
+      ],
+      "maxActive": 2,
+      "maxQueued": 0,
+      "stateAfter": "ready",
+      "overlap": {
+        "ms": 4783.300000190735,
+        "ratio": 0.9999790943879603
+      }
+    },
+    {
+      "trial": 8,
+      "round": 2,
+      "case": "NC",
+      "limit": null,
+      "batchStart": 138806.70000004768,
+      "batchEnd": 151972.70000004768,
+      "batchWallMs": 13166,
+      "tasks": [
+        {
+          "submitAt": 138806.70000004768,
+          "outputChars": 488,
+          "settledAt": 146856.10000014305,
+          "native": {
+            "start": 138814,
+            "end": 146855.79999995232
+          }
+        },
+        {
+          "submitAt": 138806.70000004768,
+          "outputChars": 414,
+          "settledAt": 151969.90000009537,
+          "native": {
+            "start": 138814.5,
+            "end": 151969.5
+          }
+        }
+      ],
+      "overlap": {
+        "ms": 8041.299999952316,
+        "ratio": 0.9999378248650795
+      }
+    },
+    {
+      "trial": 9,
+      "round": 3,
+      "case": "L2",
+      "limit": 2,
+      "batchStart": 151989.79999995232,
+      "batchEnd": 160560.40000009537,
+      "batchWallMs": 8570.600000143051,
+      "tasks": [
+        {
+          "submitAt": 151989.79999995232,
+          "outputChars": 406,
+          "timing": {
+            "total": 3957.300000190735,
+            "queueWait": 0,
+            "acquire": 1.5,
+            "prompt": 3954.0999999046326
+          },
+          "settledAt": 155947.10000014305,
+          "native": {
+            "start": 151992.90000009537,
+            "end": 155947
+          }
+        },
+        {
+          "submitAt": 151990.10000014305,
+          "outputChars": 453,
+          "timing": {
+            "total": 8570.099999904633,
+            "queueWait": 0,
+            "acquire": 0.9000000953674316,
+            "prompt": 8567.099999904633
+          },
+          "settledAt": 160560.29999995232,
+          "native": {
+            "start": 151993.10000014305,
+            "end": 160560.20000004768
+          }
+        }
+      ],
+      "snapshotAfterSubmit": {
+        "t": 151990.10000014305,
+        "state": "ready",
+        "active": 2,
+        "queued": 0
+      },
+      "snapshots": [
+        {
+          "t": 151990.10000014305,
+          "state": "ready",
+          "active": 2,
+          "queued": 0
+        },
+        {
+          "t": 155947.10000014305,
+          "state": "ready",
+          "active": 1,
+          "queued": 0
+        },
+        {
+          "t": 160560.29999995232,
+          "state": "ready",
+          "active": 0,
+          "queued": 0
+        }
+      ],
+      "maxActive": 2,
+      "maxQueued": 0,
+      "stateAfter": "ready",
+      "overlap": {
+        "ms": 3953.899999856949,
+        "ratio": 0.9999494195777323
+      }
+    },
+    {
+      "trial": 10,
+      "round": 3,
+      "case": "NC",
+      "limit": null,
+      "batchStart": 160562.29999995232,
+      "batchEnd": 175369,
+      "batchWallMs": 14806.700000047684,
+      "tasks": [
+        {
+          "submitAt": 160562.29999995232,
+          "outputChars": 404,
+          "settledAt": 169746.20000004768,
+          "native": {
+            "start": 160562.29999995232,
+            "end": 169746
+          }
+        },
+        {
+          "submitAt": 160562.29999995232,
+          "outputChars": 486,
+          "settledAt": 175369,
+          "native": {
+            "start": 160562.40000009537,
+            "end": 175368.90000009537
+          }
+        }
+      ],
+      "overlap": {
+        "ms": 9183.599999904633,
+        "ratio": 0.9999891111269912
+      }
+    },
+    {
+      "trial": 11,
+      "round": 3,
+      "case": "L1",
+      "limit": 1,
+      "batchStart": 175370,
+      "batchEnd": 183992.60000014305,
+      "batchWallMs": 8622.600000143051,
+      "tasks": [
+        {
+          "submitAt": 175370,
+          "outputChars": 471,
+          "timing": {
+            "total": 4455.299999952316,
+            "queueWait": 0,
+            "acquire": 1.1000001430511475,
+            "prompt": 4453.5
+          },
+          "settledAt": 179825.5,
+          "native": {
+            "start": 175371.60000014305,
+            "end": 179825.10000014305
+          }
+        },
+        {
+          "submitAt": 175370.10000014305,
+          "outputChars": 402,
+          "timing": {
+            "total": 8622.299999952316,
+            "queueWait": 4455.199999809265,
+            "acquire": 0.8999998569488525,
+            "prompt": 4165.900000095367
+          },
+          "settledAt": 183992.40000009537,
+          "native": {
+            "start": 179826.29999995232,
+            "end": 183992.20000004768
+          }
+        }
+      ],
+      "snapshotAfterSubmit": {
+        "t": 175370.10000014305,
+        "state": "ready",
+        "active": 1,
+        "queued": 1
+      },
+      "snapshots": [
+        {
+          "t": 175370.10000014305,
+          "state": "ready",
+          "active": 1,
+          "queued": 1
+        },
+        {
+          "t": 179825.5,
+          "state": "ready",
+          "active": 1,
+          "queued": 0
+        },
+        {
+          "t": 183992.40000009537,
+          "state": "ready",
+          "active": 0,
+          "queued": 0
+        }
+      ],
+      "maxActive": 1,
+      "maxQueued": 1,
+      "stateAfter": "ready",
+      "overlap": {
+        "ms": 0,
+        "ratio": 0
+      }
+    },
+    {
+      "trial": 12,
+      "round": 4,
+      "case": "NC",
+      "limit": null,
+      "batchStart": 183999.10000014305,
+      "batchEnd": 197097,
+      "batchWallMs": 13097.899999856949,
+      "tasks": [
+        {
+          "submitAt": 183999.10000014305,
+          "outputChars": 388,
+          "settledAt": 188220.29999995232,
+          "native": {
+            "start": 183999.10000014305,
+            "end": 188220.29999995232
+          }
+        },
+        {
+          "submitAt": 183999.10000014305,
+          "outputChars": 450,
+          "settledAt": 197097,
+          "native": {
+            "start": 183999.29999995232,
+            "end": 197097
+          }
+        }
+      ],
+      "overlap": {
+        "ms": 4221,
+        "ratio": 0.999952620153209
+      }
+    },
+    {
+      "trial": 13,
+      "round": 4,
+      "case": "L1",
+      "limit": 1,
+      "batchStart": 197097.70000004768,
+      "batchEnd": 213821.10000014305,
+      "batchWallMs": 16723.400000095367,
+      "tasks": [
+        {
+          "submitAt": 197097.70000004768,
+          "outputChars": 472,
+          "timing": {
+            "total": 8770.600000143051,
+            "queueWait": 0,
+            "acquire": 4.199999809265137,
+            "prompt": 8765.400000095367
+          },
+          "settledAt": 205868.79999995232,
+          "native": {
+            "start": 197102.79999995232,
+            "end": 205868.20000004768
+          }
+        },
+        {
+          "submitAt": 197098.10000014305,
+          "outputChars": 405,
+          "timing": {
+            "total": 16723,
+            "queueWait": 8770.299999952316,
+            "acquire": 1.0999999046325684,
+            "prompt": 7951.200000047684
+          },
+          "settledAt": 213821.10000014305,
+          "native": {
+            "start": 205869.70000004768,
+            "end": 213820.90000009537
+          }
+        }
+      ],
+      "snapshotAfterSubmit": {
+        "t": 197098.20000004768,
+        "state": "ready",
+        "active": 1,
+        "queued": 1
+      },
+      "snapshots": [
+        {
+          "t": 197098.20000004768,
+          "state": "ready",
+          "active": 1,
+          "queued": 1
+        },
+        {
+          "t": 205868.79999995232,
+          "state": "ready",
+          "active": 1,
+          "queued": 0
+        },
+        {
+          "t": 213821.10000014305,
+          "state": "ready",
+          "active": 0,
+          "queued": 0
+        }
+      ],
+      "maxActive": 1,
+      "maxQueued": 1,
+      "stateAfter": "ready",
+      "overlap": {
+        "ms": 0,
+        "ratio": 0
+      }
+    },
+    {
+      "trial": 14,
+      "round": 4,
+      "case": "L2",
+      "limit": 2,
+      "batchStart": 213821.60000014305,
+      "batchEnd": 228203.20000004768,
+      "batchWallMs": 14381.599999904633,
+      "tasks": [
+        {
+          "submitAt": 213821.60000014305,
+          "outputChars": 598,
+          "timing": {
+            "total": 9878.799999952316,
+            "queueWait": 0,
+            "acquire": 2.6000001430511475,
+            "prompt": 9875.700000047684
+          },
+          "settledAt": 223700.70000004768,
+          "native": {
+            "start": 213824.90000009537,
+            "end": 223700.60000014305
+          }
+        },
+        {
+          "submitAt": 213822,
+          "outputChars": 410,
+          "timing": {
+            "total": 14381.200000047684,
+            "queueWait": 0,
+            "acquire": 7.6000001430511475,
+            "prompt": 14373
+          },
+          "settledAt": 228203.20000004768,
+          "native": {
+            "start": 213830.10000014305,
+            "end": 228203.10000014305
+          }
+        }
+      ],
+      "snapshotAfterSubmit": {
+        "t": 213822,
+        "state": "ready",
+        "active": 2,
+        "queued": 0
+      },
+      "snapshots": [
+        {
+          "t": 213822,
+          "state": "ready",
+          "active": 2,
+          "queued": 0
+        },
+        {
+          "t": 223700.70000004768,
+          "state": "ready",
+          "active": 1,
+          "queued": 0
+        },
+        {
+          "t": 228203.20000004768,
+          "state": "ready",
+          "active": 0,
+          "queued": 0
+        }
+      ],
+      "maxActive": 2,
+      "maxQueued": 0,
+      "stateAfter": "ready",
+      "overlap": {
+        "ms": 9870.5,
+        "ratio": 0.9994734550413987
+      }
+    },
+    {
+      "trial": 15,
+      "round": 5,
+      "case": "L1",
+      "limit": 1,
+      "batchStart": 228203.79999995232,
+      "batchEnd": 237016.70000004768,
+      "batchWallMs": 8812.900000095367,
+      "tasks": [
+        {
+          "submitAt": 228203.79999995232,
+          "outputChars": 411,
+          "timing": {
+            "total": 4495.599999904633,
+            "queueWait": 0,
+            "acquire": 6.900000095367432,
+            "prompt": 4487.200000047684
+          },
+          "settledAt": 232699.70000004768,
+          "native": {
+            "start": 228212.20000004768,
+            "end": 232699.40000009537
+          }
+        },
+        {
+          "submitAt": 228204.29999995232,
+          "outputChars": 426,
+          "timing": {
+            "total": 8812.300000190735,
+            "queueWait": 4495.200000047684,
+            "acquire": 0.7000000476837158,
+            "prompt": 4316.299999952316
+          },
+          "settledAt": 237016.60000014305,
+          "native": {
+            "start": 232700.20000004768,
+            "end": 237016.5
+          }
+        }
+      ],
+      "snapshotAfterSubmit": {
+        "t": 228204.40000009537,
+        "state": "ready",
+        "active": 1,
+        "queued": 1
+      },
+      "snapshots": [
+        {
+          "t": 228204.40000009537,
+          "state": "ready",
+          "active": 1,
+          "queued": 1
+        },
+        {
+          "t": 232699.70000004768,
+          "state": "ready",
+          "active": 1,
+          "queued": 0
+        },
+        {
+          "t": 237016.60000014305,
+          "state": "ready",
+          "active": 0,
+          "queued": 0
+        }
+      ],
+      "maxActive": 1,
+      "maxQueued": 1,
+      "stateAfter": "ready",
+      "overlap": {
+        "ms": 0,
+        "ratio": 0
+      }
+    },
+    {
+      "trial": 16,
+      "round": 5,
+      "case": "L2",
+      "limit": 2,
+      "batchStart": 237017.29999995232,
+      "batchEnd": 246857.60000014305,
+      "batchWallMs": 9840.300000190735,
+      "tasks": [
+        {
+          "submitAt": 237017.29999995232,
+          "outputChars": 491,
+          "timing": {
+            "total": 4666.900000095367,
+            "queueWait": 0,
+            "acquire": 2.6000001430511475,
+            "prompt": 4663.599999904633
+          },
+          "settledAt": 241684.20000004768,
+          "native": {
+            "start": 237020.60000014305,
+            "end": 241684.10000014305
+          }
+        },
+        {
+          "submitAt": 237017.60000014305,
+          "outputChars": 472,
+          "timing": {
+            "total": 9839.899999856949,
+            "queueWait": 0,
+            "acquire": 2.4000000953674316,
+            "prompt": 9836.899999856949
+          },
+          "settledAt": 246857.5,
+          "native": {
+            "start": 237020.60000014305,
+            "end": 246857.5
+          }
+        }
+      ],
+      "snapshotAfterSubmit": {
+        "t": 237017.60000014305,
+        "state": "ready",
+        "active": 2,
+        "queued": 0
+      },
+      "snapshots": [
+        {
+          "t": 237017.60000014305,
+          "state": "ready",
+          "active": 2,
+          "queued": 0
+        },
+        {
+          "t": 241684.20000004768,
+          "state": "ready",
+          "active": 1,
+          "queued": 0
+        },
+        {
+          "t": 246857.5,
+          "state": "ready",
+          "active": 0,
+          "queued": 0
+        }
+      ],
+      "maxActive": 2,
+      "maxQueued": 0,
+      "stateAfter": "ready",
+      "overlap": {
+        "ms": 4663.5,
+        "ratio": 1
+      }
+    },
+    {
+      "trial": 17,
+      "round": 5,
+      "case": "NC",
+      "limit": null,
+      "batchStart": 246866.79999995232,
+      "batchEnd": 257316.40000009537,
+      "batchWallMs": 10449.600000143051,
+      "tasks": [
+        {
+          "submitAt": 246866.79999995232,
+          "outputChars": 310,
+          "settledAt": 251267.70000004768,
+          "native": {
+            "start": 246866.79999995232,
+            "end": 251267.70000004768
+          }
+        },
+        {
+          "submitAt": 246866.79999995232,
+          "outputChars": 509,
+          "settledAt": 257316.40000009537,
+          "native": {
+            "start": 246867.40000009537,
+            "end": 257316.29999995232
+          }
+        }
+      ],
+      "overlap": {
+        "ms": 4400.299999952316,
+        "ratio": 0.9998636642179922
+      }
+    },
+    {
+      "trial": 18,
+      "round": 6,
+      "case": "L2",
+      "limit": 2,
+      "batchStart": 257316.90000009537,
+      "batchEnd": 274038.90000009537,
+      "batchWallMs": 16722,
+      "tasks": [
+        {
+          "submitAt": 257316.90000009537,
+          "outputChars": 475,
+          "timing": {
+            "total": 8612.099999904633,
+            "queueWait": 0,
+            "acquire": 2.200000047683716,
+            "prompt": 8609.200000047684
+          },
+          "settledAt": 265929,
+          "native": {
+            "start": 257319.5,
+            "end": 265928.7000000477
+          }
+        },
+        {
+          "submitAt": 257317,
+          "outputChars": 450,
+          "timing": {
+            "total": 16716.299999952316,
+            "queueWait": 0,
+            "acquire": 2.200000047683716,
+            "prompt": 16713.5
+          },
+          "settledAt": 274033.2999999523,
+          "native": {
+            "start": 257319.60000014305,
+            "end": 274033.10000014305
+          }
+        }
+      ],
+      "snapshotAfterSubmit": {
+        "t": 257317,
+        "state": "ready",
+        "active": 2,
+        "queued": 0
+      },
+      "snapshots": [
+        {
+          "t": 257317,
+          "state": "ready",
+          "active": 2,
+          "queued": 0
+        },
+        {
+          "t": 265929,
+          "state": "ready",
+          "active": 1,
+          "queued": 0
+        },
+        {
+          "t": 274033.2999999523,
+          "state": "ready",
+          "active": 0,
+          "queued": 0
+        }
+      ],
+      "maxActive": 2,
+      "maxQueued": 0,
+      "stateAfter": "ready",
+      "overlap": {
+        "ms": 8609.099999904633,
+        "ratio": 0.9999883845022708
+      }
+    },
+    {
+      "trial": 19,
+      "round": 6,
+      "case": "NC",
+      "limit": null,
+      "batchStart": 274127.7000000477,
+      "batchEnd": 296276.60000014305,
+      "batchWallMs": 22148.900000095367,
+      "tasks": [
+        {
+          "submitAt": 274127.7000000477,
+          "outputChars": 508,
+          "settledAt": 284428.5,
+          "native": {
+            "start": 274127.90000009537,
+            "end": 284428.2000000477
+          }
+        },
+        {
+          "submitAt": 274127.7000000477,
+          "outputChars": 482,
+          "settledAt": 296276.5,
+          "native": {
+            "start": 274128,
+            "end": 296276.5
+          }
+        }
+      ],
+      "overlap": {
+        "ms": 10300.200000047684,
+        "ratio": 0.9999902915541651
+      }
+    },
+    {
+      "trial": 20,
+      "round": 6,
+      "case": "L1",
+      "limit": 1,
+      "batchStart": 296277.2999999523,
+      "batchEnd": 317638.7999999523,
+      "batchWallMs": 21361.5,
+      "tasks": [
+        {
+          "submitAt": 296277.2999999523,
+          "outputChars": 580,
+          "timing": {
+            "total": 12984.5,
+            "queueWait": 0,
+            "acquire": 3.1999998092651367,
+            "prompt": 12979
+          },
+          "settledAt": 309262.7999999523,
+          "native": {
+            "start": 296281.7999999523,
+            "end": 309260.7999999523
+          }
+        },
+        {
+          "submitAt": 296277.60000014305,
+          "outputChars": 406,
+          "timing": {
+            "total": 21360.699999809265,
+            "queueWait": 12984.399999856949,
+            "acquire": 4.699999809265137,
+            "prompt": 8371.300000190735
+          },
+          "settledAt": 317638.2999999523,
+          "native": {
+            "start": 309266.7999999523,
+            "end": 317638.10000014305
+          }
+        }
+      ],
+      "snapshotAfterSubmit": {
+        "t": 296277.7999999523,
+        "state": "ready",
+        "active": 1,
+        "queued": 1
+      },
+      "snapshots": [
+        {
+          "t": 296277.7999999523,
+          "state": "ready",
+          "active": 1,
+          "queued": 1
+        },
+        {
+          "t": 309262.7999999523,
+          "state": "ready",
+          "active": 1,
+          "queued": 0
+        },
+        {
+          "t": 317638.2999999523,
+          "state": "ready",
+          "active": 0,
+          "queued": 0
+        }
+      ],
+      "maxActive": 1,
+      "maxQueued": 1,
+      "stateAfter": "ready",
+      "overlap": {
+        "ms": 0,
+        "ratio": 0
+      }
+    },
+    {
+      "trial": 21,
+      "round": 7,
+      "case": "NC",
+      "limit": null,
+      "batchStart": 317648.2999999523,
+      "batchEnd": 337028.7999999523,
+      "batchWallMs": 19380.5,
+      "tasks": [
+        {
+          "submitAt": 317648.2999999523,
+          "outputChars": 378,
+          "settledAt": 326334.2999999523,
+          "native": {
+            "start": 317648.2999999523,
+            "end": 326334.2999999523
+          }
+        },
+        {
+          "submitAt": 317648.2999999523,
+          "outputChars": 389,
+          "settledAt": 337028.7999999523,
+          "native": {
+            "start": 317648.7000000477,
+            "end": 337028.7999999523
+          }
+        }
+      ],
+      "overlap": {
+        "ms": 8685.599999904633,
+        "ratio": 0.999953948872281
+      }
+    },
+    {
+      "trial": 22,
+      "round": 7,
+      "case": "L1",
+      "limit": 1,
+      "batchStart": 337030,
+      "batchEnd": 356826.60000014305,
+      "batchWallMs": 19796.60000014305,
+      "tasks": [
+        {
+          "submitAt": 337030,
+          "outputChars": 483,
+          "timing": {
+            "total": 11270.299999952316,
+            "queueWait": 0,
+            "acquire": 3.0999999046325684,
+            "prompt": 11263
+          },
+          "settledAt": 348300.7000000477,
+          "native": {
+            "start": 337035.10000014305,
+            "end": 348297.5
+          }
+        },
+        {
+          "submitAt": 337030.7000000477,
+          "outputChars": 532,
+          "timing": {
+            "total": 19795.799999952316,
+            "queueWait": 11269.099999904633,
+            "acquire": 3.299999952316284,
+            "prompt": 8522.399999856949
+          },
+          "settledAt": 356826.5,
+          "native": {
+            "start": 348303.90000009537,
+            "end": 356826.2000000477
+          }
+        }
+      ],
+      "snapshotAfterSubmit": {
+        "t": 337031.2999999523,
+        "state": "ready",
+        "active": 1,
+        "queued": 1
+      },
+      "snapshots": [
+        {
+          "t": 337031.2999999523,
+          "state": "ready",
+          "active": 1,
+          "queued": 1
+        },
+        {
+          "t": 348300.7000000477,
+          "state": "ready",
+          "active": 1,
+          "queued": 0
+        },
+        {
+          "t": 356826.5,
+          "state": "ready",
+          "active": 0,
+          "queued": 0
+        }
+      ],
+      "maxActive": 1,
+      "maxQueued": 1,
+      "stateAfter": "ready",
+      "overlap": {
+        "ms": 0,
+        "ratio": 0
+      }
+    },
+    {
+      "trial": 23,
+      "round": 7,
+      "case": "L2",
+      "limit": 2,
+      "batchStart": 356827.2000000477,
+      "batchEnd": 377430.40000009537,
+      "batchWallMs": 20603.200000047684,
+      "tasks": [
+        {
+          "submitAt": 356827.2000000477,
+          "outputChars": 527,
+          "timing": {
+            "total": 11713.299999952316,
+            "queueWait": 0,
+            "acquire": 3.5999999046325684,
+            "prompt": 11708.700000047684
+          },
+          "settledAt": 368540.5,
+          "native": {
+            "start": 356831.5,
+            "end": 368540.2000000477
+          }
+        },
+        {
+          "submitAt": 356827.2999999523,
+          "outputChars": 507,
+          "timing": {
+            "total": 20603.10000014305,
+            "queueWait": 0,
+            "acquire": 3.6000001430511475,
+            "prompt": 20598.799999952316
+          },
+          "settledAt": 377430.40000009537,
+          "native": {
+            "start": 356831.60000014305,
+            "end": 377430.2999999523
+          }
+        }
+      ],
+      "snapshotAfterSubmit": {
+        "t": 356827.2999999523,
+        "state": "ready",
+        "active": 2,
+        "queued": 0
+      },
+      "snapshots": [
+        {
+          "t": 356827.2999999523,
+          "state": "ready",
+          "active": 2,
+          "queued": 0
+        },
+        {
+          "t": 368540.5,
+          "state": "ready",
+          "active": 1,
+          "queued": 0
+        },
+        {
+          "t": 377430.40000009537,
+          "state": "ready",
+          "active": 0,
+          "queued": 0
+        }
+      ],
+      "maxActive": 2,
+      "maxQueued": 0,
+      "stateAfter": "ready",
+      "overlap": {
+        "ms": 11708.599999904633,
+        "ratio": 0.999991459329981
+      }
+    },
+    {
+      "trial": 24,
+      "round": 8,
+      "case": "L1",
+      "limit": 1,
+      "batchStart": 377431.10000014305,
+      "batchEnd": 393097,
+      "batchWallMs": 15665.899999856949,
+      "tasks": [
+        {
+          "submitAt": 377431.10000014305,
+          "outputChars": 392,
+          "timing": {
+            "total": 9231,
+            "queueWait": 0,
+            "acquire": 1.4000000953674316,
+            "prompt": 9227.899999856949
+          },
+          "settledAt": 386663,
+          "native": {
+            "start": 377433.40000009537,
+            "end": 386661.2000000477
+          }
+        },
+        {
+          "submitAt": 377431.2999999523,
+          "outputChars": 430,
+          "timing": {
+            "total": 15665.100000143051,
+            "queueWait": 9230.600000143051,
+            "acquire": 5.400000095367432,
+            "prompt": 6428.299999952316
+          },
+          "settledAt": 393096.40000009537,
+          "native": {
+            "start": 386667.7000000477,
+            "end": 393095.90000009537
+          }
+        }
+      ],
+      "snapshotAfterSubmit": {
+        "t": 377431.40000009537,
+        "state": "ready",
+        "active": 1,
+        "queued": 1
+      },
+      "snapshots": [
+        {
+          "t": 377431.40000009537,
+          "state": "ready",
+          "active": 1,
+          "queued": 1
+        },
+        {
+          "t": 386663,
+          "state": "ready",
+          "active": 1,
+          "queued": 0
+        },
+        {
+          "t": 393096.40000009537,
+          "state": "ready",
+          "active": 0,
+          "queued": 0
+        }
+      ],
+      "maxActive": 1,
+      "maxQueued": 1,
+      "stateAfter": "ready",
+      "overlap": {
+        "ms": 0,
+        "ratio": 0
+      }
+    },
+    {
+      "trial": 25,
+      "round": 8,
+      "case": "L2",
+      "limit": 2,
+      "batchStart": 393101.2000000477,
+      "batchEnd": 409109.2999999523,
+      "batchWallMs": 16008.099999904633,
+      "tasks": [
+        {
+          "submitAt": 393101.2000000477,
+          "outputChars": 505,
+          "timing": {
+            "total": 10465.800000190735,
+            "queueWait": 0,
+            "acquire": 4.900000095367432,
+            "prompt": 10457.399999856949
+          },
+          "settledAt": 403567.10000014305,
+          "native": {
+            "start": 393109.60000014305,
+            "end": 403567
+          }
+        },
+        {
+          "submitAt": 393101.90000009537,
+          "outputChars": 435,
+          "timing": {
+            "total": 16007.299999952316,
+            "queueWait": 0,
+            "acquire": 4.799999952316284,
+            "prompt": 15998.799999952316
+          },
+          "settledAt": 409109.2000000477,
+          "native": {
+            "start": 393109.90000009537,
+            "end": 409108.60000014305
+          }
+        }
+      ],
+      "snapshotAfterSubmit": {
+        "t": 393101.90000009537,
+        "state": "ready",
+        "active": 2,
+        "queued": 0
+      },
+      "snapshots": [
+        {
+          "t": 393101.90000009537,
+          "state": "ready",
+          "active": 2,
+          "queued": 0
+        },
+        {
+          "t": 403567.10000014305,
+          "state": "ready",
+          "active": 1,
+          "queued": 0
+        },
+        {
+          "t": 409109.2000000477,
+          "state": "ready",
+          "active": 0,
+          "queued": 0
+        }
+      ],
+      "maxActive": 2,
+      "maxQueued": 0,
+      "stateAfter": "ready",
+      "overlap": {
+        "ms": 10457.099999904633,
+        "ratio": 0.9999713121854075
+      }
+    },
+    {
+      "trial": 26,
+      "round": 8,
+      "case": "NC",
+      "limit": null,
+      "batchStart": 409121.5,
+      "batchEnd": 429447.5,
+      "batchWallMs": 20326,
+      "tasks": [
+        {
+          "submitAt": 409121.5,
+          "outputChars": 438,
+          "settledAt": 419267.90000009537,
+          "native": {
+            "start": 409121.7000000477,
+            "end": 419267.90000009537
+          }
+        },
+        {
+          "submitAt": 409121.5,
+          "outputChars": 436,
+          "settledAt": 429447.40000009537,
+          "native": {
+            "start": 409121.90000009537,
+            "end": 429447.40000009537
+          }
+        }
+      ],
+      "overlap": {
+        "ms": 10146,
+        "ratio": 0.9999802881820107
+      }
+    },
+    {
+      "trial": 27,
+      "round": 9,
+      "case": "L2",
+      "limit": 2,
+      "batchStart": 429451.60000014305,
+      "batchEnd": 445270.7000000477,
+      "batchWallMs": 15819.099999904633,
+      "tasks": [
+        {
+          "submitAt": 429451.60000014305,
+          "outputChars": 539,
+          "timing": {
+            "total": 7380.800000190735,
+            "queueWait": 0,
+            "acquire": 17.299999952316284,
+            "prompt": 7358.600000143051
+          },
+          "settledAt": 436833.10000014305,
+          "native": {
+            "start": 429474.2999999523,
+            "end": 436832.90000009537
+          }
+        },
+        {
+          "submitAt": 429453.60000014305,
+          "outputChars": 438,
+          "timing": {
+            "total": 15817.099999904633,
+            "queueWait": 0,
+            "acquire": 17.100000143051147,
+            "prompt": 15795.900000095367
+          },
+          "settledAt": 445270.7000000477,
+          "native": {
+            "start": 429474.5,
+            "end": 445270.40000009537
+          }
+        }
+      ],
+      "snapshotAfterSubmit": {
+        "t": 429453.60000014305,
+        "state": "ready",
+        "active": 2,
+        "queued": 0
+      },
+      "snapshots": [
+        {
+          "t": 429453.60000014305,
+          "state": "ready",
+          "active": 2,
+          "queued": 0
+        },
+        {
+          "t": 436833.10000014305,
+          "state": "ready",
+          "active": 1,
+          "queued": 0
+        },
+        {
+          "t": 445270.7000000477,
+          "state": "ready",
+          "active": 0,
+          "queued": 0
+        }
+      ],
+      "maxActive": 2,
+      "maxQueued": 0,
+      "stateAfter": "ready",
+      "overlap": {
+        "ms": 7358.400000095367,
+        "ratio": 0.9999728209105427
+      }
+    },
+    {
+      "trial": 28,
+      "round": 9,
+      "case": "NC",
+      "limit": null,
+      "batchStart": 445272.7999999523,
+      "batchEnd": 461349,
+      "batchWallMs": 16076.200000047684,
+      "tasks": [
+        {
+          "submitAt": 445272.7999999523,
+          "outputChars": 491,
+          "settledAt": 455607.5,
+          "native": {
+            "start": 445272.7999999523,
+            "end": 455607.5
+          }
+        },
+        {
+          "submitAt": 445272.7999999523,
+          "outputChars": 405,
+          "settledAt": 461349,
+          "native": {
+            "start": 445272.90000009537,
+            "end": 461349
+          }
+        }
+      ],
+      "overlap": {
+        "ms": 10334.599999904633,
+        "ratio": 0.9999903238465508
+      }
+    },
+    {
+      "trial": 29,
+      "round": 9,
+      "case": "L1",
+      "limit": 1,
+      "batchStart": 461349.90000009537,
+      "batchEnd": 474734.2999999523,
+      "batchWallMs": 13384.399999856949,
+      "tasks": [
+        {
+          "submitAt": 461349.90000009537,
+          "outputChars": 366,
+          "timing": {
+            "total": 8243.399999856949,
+            "queueWait": 0,
+            "acquire": 5.800000190734863,
+            "prompt": 8236.399999856949
+          },
+          "settledAt": 469593.60000014305,
+          "native": {
+            "start": 461356.60000014305,
+            "end": 469593
+          }
+        },
+        {
+          "submitAt": 461350,
+          "outputChars": 463,
+          "timing": {
+            "total": 13384.299999952316,
+            "queueWait": 8243.299999952316,
+            "acquire": 0.5,
+            "prompt": 5140.100000143051
+          },
+          "settledAt": 474734.2999999523,
+          "native": {
+            "start": 469594,
+            "end": 474734.10000014305
+          }
+        }
+      ],
+      "snapshotAfterSubmit": {
+        "t": 461350.2999999523,
+        "state": "ready",
+        "active": 1,
+        "queued": 1
+      },
+      "snapshots": [
+        {
+          "t": 461350.2999999523,
+          "state": "ready",
+          "active": 1,
+          "queued": 1
+        },
+        {
+          "t": 469593.60000014305,
+          "state": "ready",
+          "active": 1,
+          "queued": 0
+        },
+        {
+          "t": 474734.2999999523,
+          "state": "ready",
+          "active": 0,
+          "queued": 0
+        }
+      ],
+      "maxActive": 1,
+      "maxQueued": 1,
+      "stateAfter": "ready",
+      "overlap": {
+        "ms": 0,
+        "ratio": 0
+      }
+    }
+  ],
+  "summary": [
+    {
+      "case": "NC",
+      "limit": null,
+      "tasks": 2,
+      "trials": 10,
+      "batchWallMedian": 13986.4,
+      "taskMedian": 10317.8,
+      "promptMedian": 10317.5,
+      "queueMedian": null,
+      "overlapMedianMs": 8363.4,
+      "overlapRatioMedian": 0.9999741533169497,
+      "errors": 0
+    },
+    {
+      "case": "L1",
+      "limit": 1,
+      "tasks": 2,
+      "trials": 10,
+      "batchWallMedian": 11801.5,
+      "taskMedian": 9022.1,
+      "promptMedian": 5436.8,
+      "queueMedian": 1854.1,
+      "overlapMedianMs": 0,
+      "overlapRatioMedian": 0,
+      "errors": 0
+    },
+    {
+      "case": "L2",
+      "limit": 2,
+      "tasks": 2,
+      "trials": 10,
+      "batchWallMedian": 12687.5,
+      "taskMedian": 9859.5,
+      "promptMedian": 9856.3,
+      "queueMedian": 0,
+      "overlapMedianMs": 6268.7,
+      "overlapRatioMedian": 0.9999782635526357,
+      "errors": 0
+    }
+  ]
+}
