@@ -138,6 +138,12 @@ The base session is created once (`createRuntime`), after which each task pays a
 of a full `LanguageModel.create()`. Measure it on your device with the benchmark in
 [bench/README.md](bench/README.md).
 
+A higher `limit` lets more tasks hold a slot, but it does not by itself make generation parallel.
+In one measured environment (Chrome 153, macOS), two concurrent prompts with `limit: 2` took about
+as long as with `limit: 1`: the browser appeared to finish one before the other, and the second
+task's wait showed up in its `prompt` timing and `active` count instead of `queued`/`queueWait`.
+See [experiments/prompt-api-concurrency/EVIDENCE.md](experiments/prompt-api-concurrency/EVIDENCE.md).
+
 ## WebLLM
 
 ```js
