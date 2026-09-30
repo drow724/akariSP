@@ -46,3 +46,16 @@ const partial = summarize([...Array.from({ length: 26 }, () => att('ok')), att('
 assert.deepEqual(decideGate({ r1: 'material improvement', control: partial, r3: { promptApi: 'C', webllm: 'C' } }), { gate: 5, outcome: 'NO_CHANGE' });
 assert.deepEqual(decideGate({ r1: 'material improvement', control: partial, r3: { promptApi: 'A', webllm: 'C' } }), { gate: null, outcome: 'REQUIRES_REVIEW' });
 console.log('stand-in rules: ok');
+
+// RegExp workload rules (regexp-rules.js)
+import { categorizeRef } from './regexp-rules.js';
+const K = ['D1', 'D2'];
+assert.equal(categorizeRef('Orders reached {D1} while returns were {D2}.', null, K), 'ok');
+assert.equal(categorizeRef('Orders reached 48213 while returns were {D2}.', null, K), 'bare_digit');
+assert.equal(categorizeRef('Orders were {D1} in Q3.', null, K), 'bare_digit');
+assert.equal(categorizeRef('Orders reached {D3}.', null, K), 'invalid_ref');
+assert.equal(categorizeRef('Orders reached {orders}.', null, K), 'invalid_ref');
+assert.equal(categorizeRef('Orders were strong this week.', null, K), 'no_ref');
+assert.equal(categorizeRef('  ', null, K), 'empty');
+assert.equal(categorizeRef(null, { name: 'SyntaxError' }, K), 'provider_error');
+console.log('stand-in regexp rules: ok');

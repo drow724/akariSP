@@ -27,7 +27,7 @@ Evidence labels (FR-1342): **CONTRACT** (documented contract), **IMPL** (impleme
     produce a matching response, the method errors with a `SyntaxError` `DOMException`. Any other
     value is a `TypeError`.
   - The IDL type is only `object`, so the specification body alone does not reveal this.
-  - Whether Chrome accepts and enforces RegExp constraints was **not** observed.
+  - Chrome 153 behavior was observed later; see "RegExp follow-up" in the decision record.
 - **Conclusion (CONTRACT)**: the constraint is **prompt-scoped** on both the prompt and the
   streaming path. Whether Chrome also honours it when it is placed in creation options is **not**
   in any contract. The creation-scope check in the R1 protocol observes it (OBS, pending).
@@ -210,9 +210,86 @@ What this does **not** say:
 - It does not say the native constraint is useless. It removed every fence in this run.
 - It does not say the workaround is always enough. Only the fence failure class was observed; the
   control had no `not_json` or `schema_mismatch` failure.
-- It says nothing about **RegExp constraints**. Only one JSON Schema was measured. The explainer's
-  RegExp form (R2) was not tested. A RegExp workload whose violations cannot be repaired after the
-  fact (for example "no bare digits") may not meet gate 4. That is revisit condition 2.
+- R1 measured only one JSON Schema. A RegExp workload whose violations are not all repairable
+  after the fact (for example "no bare digits") may not meet gate 4. That is revisit condition 2, checked
+  below.
+
+### RegExp follow-up (revisit condition 2, 2026-09-30)
+
+A separate run, `experiments/structured-output/results/chrome-153-2026-09-30-regexp-run-01.json`,
+used the same environment as R1 (Chrome 153.0.8010.53, macOS 15.7.4 arm).
+- **Workload**: two labelled numbers per prompt. The prompt says to write no digits and to refer to
+  values only as `{D1}` or `{D2}`.
+- **Treatment**: adds `responseConstraint: /^([^0-9{}]|\{D[0-9]+\})*$/`.
+- **Violation**: a digit outside a `{D<n>}` token (`regexp-rules.js` v1). No workaround was
+  defined for this run. That does not make every violation unrepairable:
+  - A bare number equal to exactly one known value could be mapped back to that value.
+  - Only numbers that were rounded, computed or invented, or that match more than one value, lose
+    their meaning.
+- **Design**: 3 warmup and 30 measured attempts per arm, ABBA.
+- **Verification**: recomputing every category from `attempts[]` gives 0 mismatches.
+
+| Question | Result | Label |
+|---|---|---|
+| Does Chrome accept a `RegExp`? | Yes. `/^(yes\|no)$/` returned `yes` with no error. The prompt also asked for yes or no, so this shows acceptance, not enforcement. | OBS |
+| Does Chrome reject a non-object value? | `42` threw `TypeError` during the options conversion, in 3 ms. | OBS |
+| Does the control reproduce bare digits? | **No: 0/30** (0/3 in warmup). Every control output also matched the treatment RegExp. | OBS |
+| Does the treatment reach 0, and at what cost? | 0/30 violations and no errors. `SyntaxError` was never seen. <br>Latency median: 2339 ms vs 2162 ms; paired ratio median 1.07×; the treatment was slower in 20/30 pairs. <br>Median output length: 88 vs 90.5 characters. <br>1 `no_ref` answer ("Revenue is significantly higher than refunds.") dropped both references. | OBS |
+| What are the limits of RegExp forms? | A lookahead `/^(?![\s\S]*[0-9])[\s\S]*$/` was rejected 3/3 with `NotSupportedError` ("The request is invalid"), asynchronously after 0.6–1.0 s. It did not throw `SyntaxError` or `TypeError`. A negated class with alternation and `*`, as in the treatment, was accepted. | OBS |
+
+- **Gate**: this workload stops at **gate 2** (the control did not reproduce the failure), so it gives
+  no reason to change the NO_CHANGE outcome.
+- **Why the model obeyed the prompt**: this is a hypothesis and was not examined. The task may be
+  too easy, or `{D1}`-style templating may suit this model.
+
+#### First consumer report: BrowserTradingAgents 013 (EXTERNAL, provisional, not reproduced here)
+
+BTA feature 013 ("numbers by reference", branch `013-numbers-by-reference`, uncommitted) reproduced
+the failure with the prompt only.
+
+**Setup**
+- Chrome Prompt API on the same Mac, used through `akarisp@0.1.0-alpha.2` with no AkariSP change.
+- No `responseConstraint`: AkariSP has no public path for it (BTA finding F-A).
+- The final role of an 8-role pipeline answers 25 Korean portfolio questions, 6 of them traps,
+  per holding. That gives 33 answers per repetition, and there were 3 repetitions.
+- **Input**: the facts carry a label after each number, for example `91,250,000 KRW {D1b}`.
+- **Instruction**: `REFS_ANSWER` in BTA `src/graph/trading-graph.ts`.
+
+**Violation rule** (BTA `src/analysis/references.ts`)
+- A number outside a reference. Numbers from the question are allowed, and counts ≤ 10 are
+  never extracted.
+- An unknown reference.
+- A label written without braces.
+
+**Results**
+- Answers with at least one violation: 81.8%, 69.7% and 84.8%, about 78 of 99. BTA reports these
+  numbers as still being measured.
+- In BTA's hand audit of 20 answers (`evidence/hand-audit-refs.json`), 16 have a violation. Only 1
+  holds a wrong number, and that one is a wrong reference (`{M1b}` for a 27.4% rise).
+- The hand audit names these failure types:
+  1. value and reference both written;
+  2. a bare number;
+  3. several labels in one pair of braces, such as `{M1a, D2}`;
+  4. a wrong reference.
+- Per-type counts are not recorded.
+
+**Assessment for this decision**
+- This is the consumer case that R1 lacked for this failure class, and it reaches gate 2.
+- It is a **candidate** for revisit condition 2, not a met condition.
+- Condition 2 needs a rerun of this protocol (control against constraint) that lands on a
+  different gate.
+- Gate 4 remains open:
+  - Type 1 can plausibly be repaired: drop a bare number equal to an adjacent reference's value.
+  - Type 3 can plausibly be repaired: split the braces.
+  - Type 2 can be repaired when the number equals exactly one known value.
+  - A constraint cannot prevent type 4.
+- A rerun therefore has to count violations by type and by whether they can be repaired.
+- **Not covered**:
+  - This is one workload, one device and one run.
+  - Chrome's supported RegExp subset was not mapped beyond the two forms above.
+  - `promptStreaming()` was not tested with a RegExp.
+  - Whether the lookahead rejection comes from the Prompt API or from the model backend is not
+    known; the error text does not say.
 
 ### Revisit conditions
 

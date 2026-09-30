@@ -19,7 +19,8 @@ Each finding carries a source class and an FR-1342 label.
 | Finding | Source class | FR-1342 label |
 |---|---|---|
 | The constraint is a prompt option (`prompt()`, `promptStreaming()`), not a creation option; the spec says it "should" guide output and gives no conformance guarantee | PLATFORM_SPECIFICATION (`prompt-api` `9fcb9a4`), Chrome docs | documented contract |
-| The constraint may also be a `RegExp`; a non-matching response errors with `SyntaxError` | Prompt API explainer (`README.md` at `9fcb9a4`), found after the run | documented contract (Chrome behavior not observed) |
+| The constraint may also be a `RegExp`; a non-matching response errors with `SyntaxError` | Prompt API explainer (`README.md` at `9fcb9a4`), found after the run | documented contract |
+| Chrome 153 accepts a `RegExp`, rejects a lookahead form, and the control did not reproduce bare digits | REAL_BROWSER (RegExp follow-up below) | experimental observation |
 | AkariSP prompts each task with `{ signal }` only; WebLLM templates reach every request | SOURCE | implementation behavior |
 | R1 counts, workaround recovery, creation-scope and streaming observations | REAL_BROWSER | experimental observation |
 | Calculation correctness of `rules.js` | DETERMINISTIC_STAND_IN (`standin.mjs`) | implementation behavior (harness only) |
@@ -83,9 +84,41 @@ Gates 5–8 were not reached. For the record:
 - It gives no rate claim and no conformance guarantee: the spec does not promise one.
 - The native constraint is not shown to be unnecessary. It removed every fence here.
 - The workaround is not shown to cover other failure classes. None were observed.
-- **RegExp constraints were not measured.** Only one JSON Schema was used. A RegExp constraint (for
-  example forbidding bare digits) targets violations that cannot be repaired after the fact, so
-  gate 4 may not apply. That is revisit condition 2.
+- R1 used only one JSON Schema. The RegExp follow-up below covers one RegExp workload.
+
+## RegExp follow-up (revisit condition 2)
+
+This run is `results/chrome-153-2026-09-30-regexp-run-01.json`, from `regexp.html`. It used the
+same environment.
+- **Workload**: two labelled numbers per prompt. The prompt says "Never write any digits" and to
+  refer to values only as `{D1}` or `{D2}`.
+- **Treatment**: adds `responseConstraint: /^([^0-9{}]|\{D[0-9]+\})*$/`.
+- **Violation**: a digit outside `{D<n>}` (`regexp-rules.js` v1). No workaround was defined for
+  this run. A bare number equal to exactly one known value could still be mapped back.
+
+| Arm | Attempts | Violations | Errors | `no_ref` | Latency median | Chars median |
+|---|---:|---:|---:|---:|---:|---:|
+| control (prompt-only) | 30 | **0** | 0 | 0 | 2162 ms | 90.5 |
+| treatment (RegExp) | 30 | 0 | 0 | 1 | 2339 ms | 88 |
+| lookahead probe | 3 | — | 3 `NotSupportedError` | — | 618 ms | — |
+
+- **Acceptance**: Chrome accepted `/^(yes|no)$/`. `responseConstraint: 42` threw `TypeError`.
+- **Cost**: the paired latency ratio median was 1.07×. One treatment answer dropped both
+  references. `SyntaxError` was never seen.
+- **Limits**: `/^(?![\s\S]*[0-9])[\s\S]*$/` (a lookahead) was rejected every time with
+  `NotSupportedError`. A negated class with alternation was accepted.
+- **Decision**: the control did not reproduce the failure, so this workload stops at gate 2. NO_CHANGE
+  stands.
+- **Hypothesis, not examined**: the prompt alone was enough for this task.
+- **First consumer report**: BrowserTradingAgents 013. This is an external report that has not
+  been reproduced here, and its numbers are provisional.
+  - The failure appeared with the prompt only, through AkariSP, with no constraint.
+  - About 79% of answers had a violation (about 78 of 99).
+  - In BTA's hand audit, most violations repeat a correct value next to its reference. One answer
+    has a wrong number, from a wrong reference, which no RegExp can prevent.
+  - This is a candidate for revisit condition 2. A rerun must count violations by type and by
+    whether they can be repaired. See
+    [research.md](../../specs/013-task-scoped-provider-options/research.md), "First consumer report".
 
 ## Revisit conditions
 
@@ -105,4 +138,5 @@ python3 -m http.server 8080
 # Chrome with the Prompt API model available:
 # http://localhost:8080/experiments/structured-output/index.html → Run → Copy JSON
 # Save unchanged as results/chrome-<major>-<run-date>-run-NN.json
+# RegExp follow-up: regexp.html → Run → Copy JSON → results/chrome-<major>-<run-date>-regexp-run-NN.json
 ```

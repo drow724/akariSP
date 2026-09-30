@@ -1,0 +1,1070 @@
+{
+  "environment": {
+    "date": "2026-09-30T00:05:21.830Z",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36",
+    "uaData": {
+      "architecture": "arm",
+      "brands": [
+        {
+          "brand": "Google Chrome",
+          "version": "153"
+        },
+        {
+          "brand": "Not_A Brand",
+          "version": "8"
+        },
+        {
+          "brand": "Chromium",
+          "version": "153"
+        }
+      ],
+      "fullVersionList": [
+        {
+          "brand": "Google Chrome",
+          "version": "153.0.8010.53"
+        },
+        {
+          "brand": "Not_A Brand",
+          "version": "8.0.0.0"
+        },
+        {
+          "brand": "Chromium",
+          "version": "153.0.8010.53"
+        }
+      ],
+      "mobile": false,
+      "platform": "macOS",
+      "platformVersion": "15.7.4"
+    },
+    "hardwareConcurrency": 8,
+    "deviceMemory": 16,
+    "availability": "available"
+  },
+  "protocol": {
+    "system": {
+      "role": "system",
+      "content": "You are a concise business analyst."
+    },
+    "data": [
+      [
+        [
+          "48213",
+          "orders this week"
+        ],
+        [
+          "312",
+          "returns this week"
+        ]
+      ],
+      [
+        [
+          "1207",
+          "active users"
+        ],
+        [
+          "88",
+          "new signups"
+        ]
+      ],
+      [
+        [
+          "3390",
+          "support tickets"
+        ],
+        [
+          "41",
+          "escalations"
+        ]
+      ],
+      [
+        [
+          "70516",
+          "page views"
+        ],
+        [
+          "57",
+          "bounce rate in percent"
+        ]
+      ],
+      [
+        [
+          "885104",
+          "revenue in dollars"
+        ],
+        [
+          "19",
+          "refunds"
+        ]
+      ]
+    ],
+    "prompt": "Here is data. Each value has a reference label.\nD1 = 48213 (orders this week)\nD2 = 312 (returns this week)\n\nWrite one short sentence comparing the two values. Never write any digits. Refer to a value only by its label in braces, like {D1} or {D2}.",
+    "treatment": "/^([^0-9{}]|\\{D[0-9]+\\})*$/",
+    "lookaheadProbe": "/^(?![\\s\\S]*[0-9])[\\s\\S]*$/",
+    "ruleVersion": 1,
+    "warmupPerArm": 3,
+    "measuredPerArm": 30,
+    "probe": 3,
+    "timeoutMs": 60000,
+    "order": "acceptance probes, then warmup and measured with ABBA per pair of rounds, then the lookahead probe"
+  },
+  "acceptance": {
+    "simpleRegExp": {
+      "output": "yes",
+      "error": null,
+      "latencyMs": 3192.4000000953674
+    },
+    "invalidValue": {
+      "output": null,
+      "error": {
+        "name": "TypeError",
+        "message": "Failed to execute 'prompt' on 'LanguageModel': Failed to read the 'responseConstraint' property from 'LanguageModelPromptOptions': Failed to convert value to 'object'."
+      },
+      "latencyMs": 3
+    }
+  },
+  "attempts": [
+    {
+      "phase": "warmup",
+      "arm": "control",
+      "round": 0,
+      "index": 0,
+      "data": "48213/312",
+      "output": "{D1} is significantly higher than {D2} this week.\n\n\n\n",
+      "error": null,
+      "latencyMs": 2097.7999997138977,
+      "category": "ok",
+      "violation": false,
+      "refs": 2
+    },
+    {
+      "phase": "warmup",
+      "arm": "treatment",
+      "round": 0,
+      "index": 1,
+      "data": "48213/312",
+      "output": "{D1} represents a significantly larger volume of orders compared to {D2}, which handles a smaller number of returns.",
+      "error": null,
+      "latencyMs": 2341.5999999046326,
+      "category": "ok",
+      "violation": false,
+      "refs": 2
+    },
+    {
+      "phase": "warmup",
+      "arm": "treatment",
+      "round": 1,
+      "index": 2,
+      "data": "1207/88",
+      "output": "{D1} represents a substantial user base, while {D2} indicates a recent influx of new customers. \n",
+      "error": null,
+      "latencyMs": 2728.2999997138977,
+      "category": "ok",
+      "violation": false,
+      "refs": 2
+    },
+    {
+      "phase": "warmup",
+      "arm": "control",
+      "round": 1,
+      "index": 3,
+      "data": "1207/88",
+      "output": "{D1} represents significantly more active users than new signups, indicating substantial user engagement compared to recent acquisition. \n\n\n\n",
+      "error": null,
+      "latencyMs": 2671.2000002861023,
+      "category": "ok",
+      "violation": false,
+      "refs": 1
+    },
+    {
+      "phase": "warmup",
+      "arm": "control",
+      "round": 2,
+      "index": 4,
+      "data": "3390/41",
+      "output": "{D1} represents a significantly larger volume of support requests compared to {D2}, which signifies a higher level of issue complexity.",
+      "error": null,
+      "latencyMs": 2699.699999809265,
+      "category": "ok",
+      "violation": false,
+      "refs": 2
+    },
+    {
+      "phase": "warmup",
+      "arm": "treatment",
+      "round": 2,
+      "index": 5,
+      "data": "3390/41",
+      "output": "{D1} represents significantly more instances than {D2}.\n\n\n\n",
+      "error": null,
+      "latencyMs": 1767.2000002861023,
+      "category": "ok",
+      "violation": false,
+      "refs": 2
+    },
+    {
+      "phase": "measured",
+      "arm": "control",
+      "round": 0,
+      "index": 6,
+      "data": "48213/312",
+      "output": "{D1} represents a significantly larger number of orders compared to {D2}, resulting in a substantial difference.\n\n\n\n",
+      "error": null,
+      "latencyMs": 2409.699999809265,
+      "category": "ok",
+      "violation": false,
+      "refs": 2
+    },
+    {
+      "phase": "measured",
+      "arm": "treatment",
+      "round": 0,
+      "index": 7,
+      "data": "48213/312",
+      "output": "{D1} significantly outpaced {D2} this week. ",
+      "error": null,
+      "latencyMs": 2021.5,
+      "category": "ok",
+      "violation": false,
+      "refs": 2
+    },
+    {
+      "phase": "measured",
+      "arm": "treatment",
+      "round": 1,
+      "index": 8,
+      "data": "1207/88",
+      "output": "{D1} represents a much larger existing user base than {D2}'s recent influx of new signups.",
+      "error": null,
+      "latencyMs": 2638.7000002861023,
+      "category": "ok",
+      "violation": false,
+      "refs": 2
+    },
+    {
+      "phase": "measured",
+      "arm": "control",
+      "round": 1,
+      "index": 9,
+      "data": "1207/88",
+      "output": "{D1} represents a significant quantity of established users, contrasted with a considerably smaller number of recent additions, {D2}. \n\n\n\n",
+      "error": null,
+      "latencyMs": 2748,
+      "category": "ok",
+      "violation": false,
+      "refs": 2
+    },
+    {
+      "phase": "measured",
+      "arm": "control",
+      "round": 2,
+      "index": 10,
+      "data": "3390/41",
+      "output": "{D1} represents considerably more requests for assistance compared to {D2}.\n\n\n\n",
+      "error": null,
+      "latencyMs": 1665.2000002861023,
+      "category": "ok",
+      "violation": false,
+      "refs": 2
+    },
+    {
+      "phase": "measured",
+      "arm": "treatment",
+      "round": 2,
+      "index": 11,
+      "data": "3390/41",
+      "output": "{D1} represents a significantly larger volume of requests than {D2}.\n\n\n\n",
+      "error": null,
+      "latencyMs": 1925.6999998092651,
+      "category": "ok",
+      "violation": false,
+      "refs": 2
+    },
+    {
+      "phase": "measured",
+      "arm": "treatment",
+      "round": 3,
+      "index": 12,
+      "data": "70516/57",
+      "output": "{D1} represents significantly more page views than {D2}, with a relatively low bounce rate.\n\n\n\n",
+      "error": null,
+      "latencyMs": 2366.5,
+      "category": "ok",
+      "violation": false,
+      "refs": 2
+    },
+    {
+      "phase": "measured",
+      "arm": "control",
+      "round": 3,
+      "index": 13,
+      "data": "70516/57",
+      "output": "{D1} represents significantly more page views than {D2} indicates in terms of user engagement.\n\n\n\n",
+      "error": null,
+      "latencyMs": 2038.7000002861023,
+      "category": "ok",
+      "violation": false,
+      "refs": 2
+    },
+    {
+      "phase": "measured",
+      "arm": "control",
+      "round": 4,
+      "index": 14,
+      "data": "885104/19",
+      "output": "{D1} generated significantly more revenue than {D2} in refunds.\n\n\n\n",
+      "error": null,
+      "latencyMs": 1820.9000000953674,
+      "category": "ok",
+      "violation": false,
+      "refs": 2
+    },
+    {
+      "phase": "measured",
+      "arm": "treatment",
+      "round": 4,
+      "index": 15,
+      "data": "885104/19",
+      "output": "{D1} represents substantially higher revenue than {D2} in refunds. \n\n\n\n",
+      "error": null,
+      "latencyMs": 2093.300000190735,
+      "category": "ok",
+      "violation": false,
+      "refs": 2
+    },
+    {
+      "phase": "measured",
+      "arm": "treatment",
+      "round": 5,
+      "index": 16,
+      "data": "48213/312",
+      "output": "{D1} significantly outpaced {D2} in terms of volume. \n\n\n\n",
+      "error": null,
+      "latencyMs": 1972.6999998092651,
+      "category": "ok",
+      "violation": false,
+      "refs": 2
+    },
+    {
+      "phase": "measured",
+      "arm": "control",
+      "round": 5,
+      "index": 17,
+      "data": "48213/312",
+      "output": "{D1} represents a significantly larger quantity of orders compared to {D2} in returns.\n\n\n\n",
+      "error": null,
+      "latencyMs": 2143,
+      "category": "ok",
+      "violation": false,
+      "refs": 2
+    },
+    {
+      "phase": "measured",
+      "arm": "control",
+      "round": 6,
+      "index": 18,
+      "data": "1207/88",
+      "output": "{D1} represents a significantly larger user base than {D2}, indicating ongoing user engagement whereas {D2} indicates a recent influx of new customers.\n\n\n\n",
+      "error": null,
+      "latencyMs": 3068.4000000953674,
+      "category": "ok",
+      "violation": false,
+      "refs": 3
+    },
+    {
+      "phase": "measured",
+      "arm": "treatment",
+      "round": 6,
+      "index": 19,
+      "data": "1207/88",
+      "output": "{D1} represents a larger established user base compared to the recent influx of new users reflected in {D2}.",
+      "error": null,
+      "latencyMs": 3547.8999996185303,
+      "category": "ok",
+      "violation": false,
+      "refs": 2
+    },
+    {
+      "phase": "measured",
+      "arm": "treatment",
+      "round": 7,
+      "index": 20,
+      "data": "3390/41",
+      "output": "{D1} represents a significantly larger volume of support requests compared to {D2}.\n\n\n\n",
+      "error": null,
+      "latencyMs": 2487,
+      "category": "ok",
+      "violation": false,
+      "refs": 2
+    },
+    {
+      "phase": "measured",
+      "arm": "control",
+      "round": 7,
+      "index": 21,
+      "data": "3390/41",
+      "output": "{D1} represents a considerably larger volume than {D2}, indicating a greater workload.\n\n\n\n",
+      "error": null,
+      "latencyMs": 2213.5,
+      "category": "ok",
+      "violation": false,
+      "refs": 2
+    },
+    {
+      "phase": "measured",
+      "arm": "control",
+      "round": 8,
+      "index": 22,
+      "data": "70516/57",
+      "output": "{D1} represents considerably more engagement than {D2}, indicating fewer repeat visits.\n\n\n\n",
+      "error": null,
+      "latencyMs": 2180.199999809265,
+      "category": "ok",
+      "violation": false,
+      "refs": 2
+    },
+    {
+      "phase": "measured",
+      "arm": "treatment",
+      "round": 8,
+      "index": 23,
+      "data": "70516/57",
+      "output": "{D1} represents significantly more engagement than {D2}, indicating a strong user interest. ",
+      "error": null,
+      "latencyMs": 2404.699999809265,
+      "category": "ok",
+      "violation": false,
+      "refs": 2
+    },
+    {
+      "phase": "measured",
+      "arm": "treatment",
+      "round": 9,
+      "index": 24,
+      "data": "885104/19",
+      "output": "{D1} generated significantly more revenue than refunds {D2}. \n",
+      "error": null,
+      "latencyMs": 1934.7999997138977,
+      "category": "ok",
+      "violation": false,
+      "refs": 2
+    },
+    {
+      "phase": "measured",
+      "arm": "control",
+      "round": 9,
+      "index": 25,
+      "data": "885104/19",
+      "output": "{D1} represents considerably more monetary activity than the amount of {D2} issued.\n\n\n\n",
+      "error": null,
+      "latencyMs": 2053.699999809265,
+      "category": "ok",
+      "violation": false,
+      "refs": 2
+    },
+    {
+      "phase": "measured",
+      "arm": "control",
+      "round": 10,
+      "index": 26,
+      "data": "48213/312",
+      "output": "{D1} represents significantly more customer orders than {D2} received in returns.\n\n\n\n",
+      "error": null,
+      "latencyMs": 2094.199999809265,
+      "category": "ok",
+      "violation": false,
+      "refs": 2
+    },
+    {
+      "phase": "measured",
+      "arm": "treatment",
+      "round": 10,
+      "index": 27,
+      "data": "48213/312",
+      "output": "{D1} represents orders, while {D2} indicates returns, suggesting a difference in outgoing and incoming transactions.\n\n\n\n",
+      "error": null,
+      "latencyMs": 2766.4000000953674,
+      "category": "ok",
+      "violation": false,
+      "refs": 2
+    },
+    {
+      "phase": "measured",
+      "arm": "treatment",
+      "round": 11,
+      "index": 28,
+      "data": "1207/88",
+      "output": "{D1} represents a larger current user base compared to newly acquired subscribers {D2}. \n",
+      "error": null,
+      "latencyMs": 2547.5,
+      "category": "ok",
+      "violation": false,
+      "refs": 2
+    },
+    {
+      "phase": "measured",
+      "arm": "control",
+      "round": 11,
+      "index": 29,
+      "data": "1207/88",
+      "output": "{D1} represents significantly more existing users than {D2}'s new user acquisition.\n\n\n\n",
+      "error": null,
+      "latencyMs": 2249.800000190735,
+      "category": "ok",
+      "violation": false,
+      "refs": 2
+    },
+    {
+      "phase": "measured",
+      "arm": "control",
+      "round": 12,
+      "index": 30,
+      "data": "3390/41",
+      "output": "{D1} represents significantly more incident handling than {D2}.\n\n\n\n",
+      "error": null,
+      "latencyMs": 1775.2999997138977,
+      "category": "ok",
+      "violation": false,
+      "refs": 2
+    },
+    {
+      "phase": "measured",
+      "arm": "treatment",
+      "round": 12,
+      "index": 31,
+      "data": "3390/41",
+      "output": "{D1} represents significantly more support ticket submissions compared to {D2}, which involves fewer escalations.",
+      "error": null,
+      "latencyMs": 2624.800000190735,
+      "category": "ok",
+      "violation": false,
+      "refs": 2
+    },
+    {
+      "phase": "measured",
+      "arm": "treatment",
+      "round": 13,
+      "index": 32,
+      "data": "70516/57",
+      "output": "{D1} represents substantially more page views than {D2} represents in bounce rate.\n\n\n\n",
+      "error": null,
+      "latencyMs": 2248.2999997138977,
+      "category": "ok",
+      "violation": false,
+      "refs": 2
+    },
+    {
+      "phase": "measured",
+      "arm": "control",
+      "round": 13,
+      "index": 33,
+      "data": "70516/57",
+      "output": "{D1} indicates significantly more visits than {D2} suggests a relatively high rate of immediate departures. \n\n\n\n",
+      "error": null,
+      "latencyMs": 2895.6000003814697,
+      "category": "ok",
+      "violation": false,
+      "refs": 2
+    },
+    {
+      "phase": "measured",
+      "arm": "control",
+      "round": 14,
+      "index": 34,
+      "data": "885104/19",
+      "output": "{D1} represents a significantly higher revenue figure than {D2}, which accounts for a comparatively small amount of refunds.\n\n\n\n",
+      "error": null,
+      "latencyMs": 2654.7999997138977,
+      "category": "ok",
+      "violation": false,
+      "refs": 2
+    },
+    {
+      "phase": "measured",
+      "arm": "treatment",
+      "round": 14,
+      "index": 35,
+      "data": "885104/19",
+      "output": "{D1} generated significantly more revenue than '{D2}' in refunds.\n\n\n\n",
+      "error": null,
+      "latencyMs": 2129.9000000953674,
+      "category": "ok",
+      "violation": false,
+      "refs": 2
+    },
+    {
+      "phase": "measured",
+      "arm": "treatment",
+      "round": 15,
+      "index": 36,
+      "data": "48213/312",
+      "output": "{D1} represents a substantially larger volume of orders compared to {D2}.\n\n\n\n",
+      "error": null,
+      "latencyMs": 2063.5,
+      "category": "ok",
+      "violation": false,
+      "refs": 2
+    },
+    {
+      "phase": "measured",
+      "arm": "control",
+      "round": 15,
+      "index": 37,
+      "data": "48213/312",
+      "output": "{D1} received orders considerably more than {D2} in returns.",
+      "error": null,
+      "latencyMs": 1961.5,
+      "category": "ok",
+      "violation": false,
+      "refs": 2
+    },
+    {
+      "phase": "measured",
+      "arm": "control",
+      "round": 16,
+      "index": 38,
+      "data": "1207/88",
+      "output": "{D1} represents significantly more ongoing engagement than {D2}, which represents newly acquired users.\n\n\n\n",
+      "error": null,
+      "latencyMs": 2226.5999999046326,
+      "category": "ok",
+      "violation": false,
+      "refs": 2
+    },
+    {
+      "phase": "measured",
+      "arm": "treatment",
+      "round": 16,
+      "index": 39,
+      "data": "1207/88",
+      "output": "{D1} represents a significantly established user base, contrasting with {D2}'s recent influx of new users.\n\n\n\n",
+      "error": null,
+      "latencyMs": 2756.5999999046326,
+      "category": "ok",
+      "violation": false,
+      "refs": 2
+    },
+    {
+      "phase": "measured",
+      "arm": "treatment",
+      "round": 17,
+      "index": 40,
+      "data": "3390/41",
+      "output": "{D1} represents a significantly larger volume compared to {D2} in terms of support requests.\n\n\n\n",
+      "error": null,
+      "latencyMs": 2311.2999997138977,
+      "category": "ok",
+      "violation": false,
+      "refs": 2
+    },
+    {
+      "phase": "measured",
+      "arm": "control",
+      "round": 17,
+      "index": 41,
+      "data": "3390/41",
+      "output": "{D1} represents significantly more support requests than {D2} does escalations. \n",
+      "error": null,
+      "latencyMs": 2105.2000002861023,
+      "category": "ok",
+      "violation": false,
+      "refs": 2
+    },
+    {
+      "phase": "measured",
+      "arm": "control",
+      "round": 18,
+      "index": 42,
+      "data": "70516/57",
+      "output": "{D1} represents significantly more visitors than {D2} indicates in terms of repeat visits.\n\n\n\n",
+      "error": null,
+      "latencyMs": 2192.699999809265,
+      "category": "ok",
+      "violation": false,
+      "refs": 2
+    },
+    {
+      "phase": "measured",
+      "arm": "treatment",
+      "round": 18,
+      "index": 43,
+      "data": "70516/57",
+      "output": "{D1} represents significantly more page views than {D2} indicates.\n\n\n\n",
+      "error": null,
+      "latencyMs": 2161.0999999046326,
+      "category": "ok",
+      "violation": false,
+      "refs": 2
+    },
+    {
+      "phase": "measured",
+      "arm": "treatment",
+      "round": 19,
+      "index": 44,
+      "data": "885104/19",
+      "output": "{D1} represents substantial income, while {D2} indicates a smaller amount of returned funds. \n\n\n\n",
+      "error": null,
+      "latencyMs": 2514.699999809265,
+      "category": "ok",
+      "violation": false,
+      "refs": 2
+    },
+    {
+      "phase": "measured",
+      "arm": "control",
+      "round": 19,
+      "index": 45,
+      "data": "885104/19",
+      "output": "{D1} represents a significant revenue volume compared to the small amount of refunds {D2} account for.",
+      "error": null,
+      "latencyMs": 1882.5999999046326,
+      "category": "ok",
+      "violation": false,
+      "refs": 2
+    },
+    {
+      "phase": "measured",
+      "arm": "control",
+      "round": 20,
+      "index": 46,
+      "data": "48213/312",
+      "output": "{D1} represents a significantly larger volume of outgoing orders compared to {D2}'s number of returns. \n\n\n\n",
+      "error": null,
+      "latencyMs": 2427.300000190735,
+      "category": "ok",
+      "violation": false,
+      "refs": 2
+    },
+    {
+      "phase": "measured",
+      "arm": "treatment",
+      "round": 20,
+      "index": 47,
+      "data": "48213/312",
+      "output": "{D1} received a significantly larger volume of orders this week compared to {D2}'s return rate.\n\n\n\n",
+      "error": null,
+      "latencyMs": 2624.4000000953674,
+      "category": "ok",
+      "violation": false,
+      "refs": 2
+    },
+    {
+      "phase": "measured",
+      "arm": "treatment",
+      "round": 21,
+      "index": 48,
+      "data": "1207/88",
+      "output": "{D1} represents a significantly larger user base, whereas {D2} signifies substantial recent growth.\n\n\n\n",
+      "error": null,
+      "latencyMs": 2500.800000190735,
+      "category": "ok",
+      "violation": false,
+      "refs": 2
+    },
+    {
+      "phase": "measured",
+      "arm": "control",
+      "round": 21,
+      "index": 49,
+      "data": "1207/88",
+      "output": "{D1} represents a significantly larger user base than {D2}. \n\n\n\n",
+      "error": null,
+      "latencyMs": 1883,
+      "category": "ok",
+      "violation": false,
+      "refs": 2
+    },
+    {
+      "phase": "measured",
+      "arm": "control",
+      "round": 22,
+      "index": 50,
+      "data": "3390/41",
+      "output": "{D1} represents significantly more support tickets than {D2} represents escalations.\n\n\n\n",
+      "error": null,
+      "latencyMs": 1616,
+      "category": "ok",
+      "violation": false,
+      "refs": 2
+    },
+    {
+      "phase": "measured",
+      "arm": "treatment",
+      "round": 22,
+      "index": 51,
+      "data": "3390/41",
+      "output": "{D1} represents significantly more support tickets than escalations.",
+      "error": null,
+      "latencyMs": 1711.5999999046326,
+      "category": "ok",
+      "violation": false,
+      "refs": 1
+    },
+    {
+      "phase": "measured",
+      "arm": "treatment",
+      "round": 23,
+      "index": 52,
+      "data": "70516/57",
+      "output": "{D1} has significantly more page views than {D2}, displaying a much lower bounce rate.\n\n\n\n",
+      "error": null,
+      "latencyMs": 3258,
+      "category": "ok",
+      "violation": false,
+      "refs": 2
+    },
+    {
+      "phase": "measured",
+      "arm": "control",
+      "round": 23,
+      "index": 53,
+      "data": "70516/57",
+      "output": "{D1} has significantly more page views than {D2} has bounce rate.\n\n\n\n",
+      "error": null,
+      "latencyMs": 2077.699999809265,
+      "category": "ok",
+      "violation": false,
+      "refs": 2
+    },
+    {
+      "phase": "measured",
+      "arm": "control",
+      "round": 24,
+      "index": 54,
+      "data": "885104/19",
+      "output": "{D1} generated considerably more revenue than {D2} in refunds. \n\n\n\n",
+      "error": null,
+      "latencyMs": 2128.300000190735,
+      "category": "ok",
+      "violation": false,
+      "refs": 2
+    },
+    {
+      "phase": "measured",
+      "arm": "treatment",
+      "round": 24,
+      "index": 55,
+      "data": "885104/19",
+      "output": "Revenue is significantly higher than refunds.\n\n\n\n",
+      "error": null,
+      "latencyMs": 1474.5,
+      "category": "no_ref",
+      "violation": false,
+      "refs": 0
+    },
+    {
+      "phase": "measured",
+      "arm": "treatment",
+      "round": 25,
+      "index": 56,
+      "data": "48213/312",
+      "output": "{D1} significantly outnumbers {D2} in transaction volume.\n\n\n\n",
+      "error": null,
+      "latencyMs": 2060,
+      "category": "ok",
+      "violation": false,
+      "refs": 2
+    },
+    {
+      "phase": "measured",
+      "arm": "control",
+      "round": 25,
+      "index": 57,
+      "data": "48213/312",
+      "output": "{D1} represents significantly more outgoing shipments than {D2} this week.\n\n\n\n",
+      "error": null,
+      "latencyMs": 1996.5999999046326,
+      "category": "ok",
+      "violation": false,
+      "refs": 2
+    },
+    {
+      "phase": "measured",
+      "arm": "control",
+      "round": 26,
+      "index": 58,
+      "data": "1207/88",
+      "output": "{D1} represents a significantly larger user base than {D2}, indicating substantial growth in account holders.",
+      "error": null,
+      "latencyMs": 2721.800000190735,
+      "category": "ok",
+      "violation": false,
+      "refs": 2
+    },
+    {
+      "phase": "measured",
+      "arm": "treatment",
+      "round": 26,
+      "index": 59,
+      "data": "1207/88",
+      "output": "{D1} represents a significantly larger base of users compared to the recent influx of new signups, {D2}.\n\n\n\n",
+      "error": null,
+      "latencyMs": 2897.9000000953674,
+      "category": "ok",
+      "violation": false,
+      "refs": 2
+    },
+    {
+      "phase": "measured",
+      "arm": "treatment",
+      "round": 27,
+      "index": 60,
+      "data": "3390/41",
+      "output": "{D1} represents significantly more support requests than {D2} represents escalations.",
+      "error": null,
+      "latencyMs": 2094.5999999046326,
+      "category": "ok",
+      "violation": false,
+      "refs": 2
+    },
+    {
+      "phase": "measured",
+      "arm": "control",
+      "round": 27,
+      "index": 61,
+      "data": "3390/41",
+      "output": "{D1} represents a significantly larger volume of issues than {D2}, which focuses on only a small subset of problems.\n\n\n\n",
+      "error": null,
+      "latencyMs": 2711.0999999046326,
+      "category": "ok",
+      "violation": false,
+      "refs": 2
+    },
+    {
+      "phase": "measured",
+      "arm": "control",
+      "round": 28,
+      "index": 62,
+      "data": "70516/57",
+      "output": "{D1} exhibits significantly higher page views compared to {D2}, resulting in a considerably lower bounce rate.",
+      "error": null,
+      "latencyMs": 2535.4000000953674,
+      "category": "ok",
+      "violation": false,
+      "refs": 2
+    },
+    {
+      "phase": "measured",
+      "arm": "treatment",
+      "round": 28,
+      "index": 63,
+      "data": "70516/57",
+      "output": "{D1} represents significantly more traffic than {D2}, indicating a higher per-visitor engagement.\n\n\n\n",
+      "error": null,
+      "latencyMs": 2550.5999999046326,
+      "category": "ok",
+      "violation": false,
+      "refs": 2
+    },
+    {
+      "phase": "measured",
+      "arm": "treatment",
+      "round": 29,
+      "index": 64,
+      "data": "885104/19",
+      "output": "{D1} generated significantly higher revenue than {D2} in refunds.",
+      "error": null,
+      "latencyMs": 1916.0999999046326,
+      "category": "ok",
+      "violation": false,
+      "refs": 2
+    },
+    {
+      "phase": "measured",
+      "arm": "control",
+      "round": 29,
+      "index": 65,
+      "data": "885104/19",
+      "output": "{D1} represents significantly higher revenue compared to {D2}, which signifies a relatively small amount of refunds.\n\n\n\n",
+      "error": null,
+      "latencyMs": 2316.9000000953674,
+      "category": "ok",
+      "violation": false,
+      "refs": 2
+    },
+    {
+      "phase": "probe",
+      "arm": "lookahead",
+      "round": 0,
+      "index": 66,
+      "data": "48213/312",
+      "output": null,
+      "error": {
+        "name": "NotSupportedError",
+        "message": "The request is invalid - the input or options could not be processed."
+      },
+      "latencyMs": 994.5,
+      "category": "provider_error",
+      "violation": false,
+      "refs": 0
+    },
+    {
+      "phase": "probe",
+      "arm": "lookahead",
+      "round": 1,
+      "index": 67,
+      "data": "1207/88",
+      "output": null,
+      "error": {
+        "name": "NotSupportedError",
+        "message": "The request is invalid - the input or options could not be processed."
+      },
+      "latencyMs": 617.8999996185303,
+      "category": "provider_error",
+      "violation": false,
+      "refs": 0
+    },
+    {
+      "phase": "probe",
+      "arm": "lookahead",
+      "round": 2,
+      "index": 68,
+      "data": "3390/41",
+      "output": null,
+      "error": {
+        "name": "NotSupportedError",
+        "message": "The request is invalid - the input or options could not be processed."
+      },
+      "latencyMs": 586.0999999046326,
+      "category": "provider_error",
+      "violation": false,
+      "refs": 0
+    }
+  ],
+  "summary": {
+    "control": {
+      "attempts": 30,
+      "counts": {
+        "ok": 30
+      },
+      "violations": 0,
+      "errors": [],
+      "latencyMedianMs": 2161.5999999046326,
+      "outputCharsMedian": 90.5
+    },
+    "treatment": {
+      "attempts": 30,
+      "counts": {
+        "ok": 29,
+        "no_ref": 1
+      },
+      "violations": 0,
+      "errors": [],
+      "latencyMedianMs": 2338.899999856949,
+      "outputCharsMedian": 88
+    },
+    "lookahead": {
+      "attempts": 3,
+      "counts": {
+        "provider_error": 3
+      },
+      "violations": 0,
+      "errors": [
+        "NotSupportedError",
+        "NotSupportedError",
+        "NotSupportedError"
+      ],
+      "latencyMedianMs": 617.8999996185303,
+      "outputCharsMedian": null
+    }
+  }
+}
