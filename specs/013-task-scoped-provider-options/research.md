@@ -299,11 +299,18 @@ the capture or any rerun output.
   `specs/013-numbers-by-reference/evidence/`.
 - sha1: `9468dafbb0e0ea20edff4d9a08c6f2e282a72313`.
 - It has 33 items, all filled, with 10–13 refs each. Every ref name fits the treatment RegExp.
+- **Correction (BTA, received after the protocol commit)**: these are **separately captured**
+  refs prompts, not repetition 1's. BTA ran refs a 4th time only to capture the upstream outputs.
+  - BTA reports the capture's prompt-only violation rate as 26/33 under BTA's rule. This is
+    EXTERNAL and was learned after the protocol was fixed.
+  - It changes nothing above, and it is not a gate input: the gates use this harness's own
+    control arm.
 
 **Scope and inputs**
 - The research is a rerun of R1's control-against-constraint comparison on the BTA workload.
 - The prompt set comes from BTA `scripts/harness-prompts.ts`: file `harness-prompts-refs.json`.
-  - It has 33 `items`, in the order of repetition 1 (25 questions × holdings).
+  - It has 33 `items` (25 questions × holdings). The original text said "in the order of
+    repetition 1"; see the correction above.
   - Each item has `finalPrompt`, `questionText` and `refs[]` (`name`, `factId`, `shown`).
   - The three upstream slots are filled from BTA's native capture.
   - The file is copied unchanged to `experiments/structured-output/inputs/`, and its sha1 is
