@@ -241,6 +241,12 @@ used the same environment as R1 (Chrome 153.0.8010.53, macOS 15.7.4 arm).
   no reason to change the NO_CHANGE outcome.
 - **Why the model obeyed the prompt**: this is a hypothesis and was not examined. The task may be
   too easy, or `{D1}`-style templating may suit this model.
+- **Not covered**:
+  - This is one workload, one device and one run.
+  - Chrome's supported RegExp subset was not mapped beyond the two forms above.
+  - `promptStreaming()` was not tested with a RegExp.
+  - Whether the lookahead rejection comes from the Prompt API or from the model backend is not
+    known; the error text does not say.
 
 #### First consumer report: BrowserTradingAgents 013 (EXTERNAL, provisional, not reproduced here)
 
@@ -383,12 +389,79 @@ the capture or any rerun output.
 **Known differences from BTA's rule, recorded rather than resolved**
 - The treatment RegExp also forbids the exempt numbers and dates, and lowercase or spaced labels.
 - The number parser is simpler than BTA `claims()`.
-- **Not covered**:
-  - This is one workload, one device and one run.
-  - Chrome's supported RegExp subset was not mapped beyond the two forms above.
-  - `promptStreaming()` was not tested with a RegExp.
-  - Whether the lookahead rejection comes from the Prompt API or from the model backend is not
-    known; the error text does not say.
+
+#### Consumer-workload rerun: results (2026-09-30)
+
+**Run and verification**
+- Raw file: `experiments/structured-output/results/chrome-153-2026-09-30-refs-run-01.json`.
+- Environment: Chrome 153.0.8010.53 on the same Mac, with 72 attempts and no abort.
+- The file was saved with `pbpaste` under a UTF-8 locale. The first save under `LC_CTYPE=C`
+  corrupted Korean text and was replaced; the saved file is byte-identical to the clipboard.
+- Recomputing every violation from `attempts[]` with `refs-rules.js` v1 gives 0 mismatches.
+- The earlier results files decode as valid UTF-8.
+
+**Pre-registered metrics** (OBS)
+
+| Arm | Answers with a violation | With an unrepairable violation | Violations by type | Errors | `no_ref` | Latency median / p90 / max |
+|---|---:|---:|---|---:|---:|---|
+| control | **25/33** | **8/33** | bare 64 (9 unrepairable), duplicate 14, unknown_ref 2 | 0 | 10 | 4091 / 4974 / 5730 ms |
+| treatment | 0/33 | 0/33 | none | 0 | 7 | 4516 / 15547 / 73719 ms |
+
+- The paired latency ratio median is 1.07×, and the treatment was slower in 20/33 pairs.
+- 4 treatment attempts took longer than 15 s: 36.0, 15.5, 25.8 and 73.7 s. No control attempt did.
+
+**Pre-registered gates**
+1. Available, not aborted.
+2. The control reproduced the failure: 25 answers.
+3. FR-1304 is met: the treatment has 0 answers with a violation (≤ 12) and no new error name.
+4. **Not met**: 8 control answers have an unrepairable violation.
+5. → **REQUIRES_REVIEW**. No API change follows automatically.
+
+**Post-hoc review** (hand review of every measured output by the implementer, one reviewer,
+defined after the outputs were seen; exploratory, not a gate input)
+- **Unrepairable control answers**: 4 of the 8 are parser artifacts of rule v1, not model errors.
+  - Korean-form dates (`2026년 9월 24일`) are tokenized, and `2026` matches several date refs:
+    #10, #49, #58.
+  - An ISO date (`2026-09-24`) does not match a `shown` date written in Korean: #57.
+  - A holding code (`900001`, `900006`) is read as a number: #46, #49. BTA excludes tickers.
+- **Genuinely unrepairable control answers: 4 of 33.**
+  - `{M1}` where only `M1a` and `M1b` exist: #30 and #66.
+  - Wrong amounts: `9만 5천만 원` and `9억 1천 2백만 원` for 9,500만 and 9,125만 (#42).
+  - `15조 달러` for 150억 달러 (#58).
+  - Gate 4 remains not met even at this count.
+- **Treatment output quality**: the constraint removed ASCII digits, but not the underlying
+  problem.
+  - **9/33 answers degenerated**. The control had none.
+    - repetition loops of `過去` or `헬리터럴로`, 15–74 s each: #7, #16, #47, #55;
+    - `₩` placeholders or empty phrasing in place of the numbers: #11, #23, #52;
+    - a truncation at a name that contains digits (`Zeta S&P ` for "S&P 500"): #24;
+    - an invented non-answer to a date question, since the date could not be written: #56.
+  - **Numbers moved into other forms that the RegExp does not see**.
+    - Spelled-out wrong amounts: `십오십억 달러` (#27) and `십육조 천만 달러` (#59), both for
+      150억 달러.
+    - Circled digits: `⑳⑲⑳⑳` (#63).
+  - This gives 2 treatment answers with a wrong amount, against 2 in the control (#42, #58).
+  - **Other defects**: 2 answers leaked an English `Final Decision:` paragraph (#59, #68). Some
+    references were used in the wrong place, which is type 4, for example `지난 ₩{D2} 동안`
+    (#20).
+- **Why degenerated answers pass the gates** (HYP): forbidding every digit leaves the model no
+  legal way to write names, dates and counts that it needs, so it substitutes other text. The
+  pre-registered metrics count only ASCII-digit violations, so these answers count as clean.
+
+**Review against gates 5–8** (proposed; the decision is the maintainer's)
+- **Gate 5**: not all providers are class C or D. The Prompt API is class A (R3), so this gate does
+  not decide.
+- **Gate 6**, "cost exceeds value", decides the proposed outcome for this workload.
+  - Value: in 33 answers, no ASCII digits, and repairable format violations gone.
+  - Cost: 9 degenerated answers, a latency tail up to 74 s, the same number of wrong amounts,
+    and the RegExp's inability to express BTA's allowed numbers (question numbers and counts ≤ 10)
+    or to prevent type 4.
+  - Proposed outcome: **NO_CHANGE**. The Prompt API constraint is not recommended as a product
+    default for this workload.
+- **What would reopen this**:
+  - a constraint that allows the needed numbers and whose treatment does not degenerate, tested
+    under a new fixed protocol;
+  - a consumer workload in which the constraint's cost is low.
 
 ### Revisit conditions
 

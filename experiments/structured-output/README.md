@@ -120,6 +120,24 @@ same environment.
     whether they can be repaired. See
     [research.md](../../specs/013-task-scoped-provider-options/research.md), "First consumer report".
 
+## BTA-workload rerun (consumer case)
+
+This run is `results/chrome-153-2026-09-30-refs-run-01.json`, from `refs.html`. It used 33 BTA
+final-role prompts from `inputs/`. The protocol was fixed before the run; see research.md,
+"Consumer-workload rerun".
+
+| Arm | Answers with a violation | With an unrepairable violation | Degenerated (post-hoc) | Latency median / max |
+|---|---:|---:|---:|---|
+| control (prompt-only) | 25/33 | 8/33 (4 after removing parser artifacts) | 0 | 4091 / 5730 ms |
+| treatment (`/^([^0-9{}]\|\{[A-Z][0-9]+[a-z]?\})*$/`) | 0/33 | 0/33 | 9 | 4516 / 73719 ms |
+
+- The pre-registered gates stop at gate 5 → REQUIRES_REVIEW.
+- The proposed review outcome is **NO_CHANGE** (gate 6: cost exceeds value).
+  - The treatment's degenerated answers were repetition loops, `₩` placeholders, a truncation and
+    an invented non-answer.
+  - Wrong amounts moved into spelled-out Korean (2 answers, the same count as the control), and
+    one answer used circled digits.
+
 ## Revisit conditions
 
 1. Control failures that one-fence removal does not recover, for example prose around the JSON, a

@@ -1,0 +1,1358 @@
+{
+  "environment": {
+    "date": "2026-09-30T02:01:44.096Z",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36",
+    "uaData": {
+      "architecture": "arm",
+      "brands": [
+        {
+          "brand": "Google Chrome",
+          "version": "153"
+        },
+        {
+          "brand": "Not_A Brand",
+          "version": "8"
+        },
+        {
+          "brand": "Chromium",
+          "version": "153"
+        }
+      ],
+      "fullVersionList": [
+        {
+          "brand": "Google Chrome",
+          "version": "153.0.8010.53"
+        },
+        {
+          "brand": "Not_A Brand",
+          "version": "8.0.0.0"
+        },
+        {
+          "brand": "Chromium",
+          "version": "153.0.8010.53"
+        }
+      ],
+      "mobile": false,
+      "platform": "macOS",
+      "platformVersion": "15.7.4"
+    },
+    "hardwareConcurrency": 8,
+    "deviceMemory": 16,
+    "availability": "available"
+  },
+  "protocol": {
+    "promptSet": {
+      "file": "./inputs/harness-prompts-refs.json",
+      "sha1": "9468dafbb0e0ea20edff4d9a08c6f2e282a72313",
+      "fixture": "portfolio-fixture@1",
+      "generatedAt": "2026-09-30T01:29:37.885Z",
+      "items": 33
+    },
+    "treatment": "/^([^0-9{}]|\\{[A-Z][0-9]+[a-z]?\\})*$/",
+    "ruleVersion": 1,
+    "warmupPerArm": 3,
+    "measuredPerArm": 33,
+    "timeoutMs": 120000,
+    "session": "LanguageModel.create() with no options; one clone per attempt; one user message",
+    "order": "warmup on items 0-2, then each item once per arm, ABBA over pairs of items"
+  },
+  "attempts": [
+    {
+      "phase": "warmup",
+      "arm": "control",
+      "index": 0,
+      "key": "q01|KR:900001",
+      "output": "현재 삼성테스트전자의 주가가 전 20일 동안 {M1a} 하락했고, 이동평균선 {M2a}보다 낮은 수준입니다. 최근의 주가 하락으로 인해 현재 실현된 손실이 {D2} 백분율이고, 최근 최고가 {M3b}보다 현재 주가 {D1b}이 낮습니다.  낮은 전망과 시장 상황을 고려할 때 추가 하락 가능성이 있다는 점 때문에 현재 보유량을 줄이는 것이 좋습니다.",
+      "error": null,
+      "latencyMs": 7109.200000286102,
+      "refs": 5,
+      "violations": [
+        {
+          "type": "bare",
+          "text": "20",
+          "repairable": true
+        }
+      ]
+    },
+    {
+      "phase": "warmup",
+      "arm": "treatment",
+      "index": 1,
+      "key": "q01|KR:900001",
+      "output": "삼성테스트전자의 최근 주가는 {D1b} KRW까지 떨어졌고 지난 며칠 동안 {M1a} 수율의 하락을 보였습니다. 현재 주가는 {M2b} KRW 미만의 이동평균 가격에 있습니다. 따라서 현재 상황은 우려스러운 측면이 있습니다.",
+      "error": null,
+      "latencyMs": 3506.300000190735,
+      "refs": 3,
+      "violations": []
+    },
+    {
+      "phase": "warmup",
+      "arm": "treatment",
+      "index": 2,
+      "key": "q02|KR:900001",
+      "output": "현재 주가인 {D1b} 기준으로 삼성테스트전자 주식의 평단 가격은 알 수 없습니다. 현재 보유하고 있는 주식은 {H2} 주이며, 매수 당시 가격을 고려했을 때 현재까지의 실질적인 손실 금액은 {D2}입니다. 종합적인 시장 상황 및 기업의 재무 전망을 고려했을 때 정확한 평단 가격을 산출하기에는 충분한 정보가 없습니다.",
+      "error": null,
+      "latencyMs": 5105.199999809265,
+      "refs": 3,
+      "violations": []
+    },
+    {
+      "phase": "warmup",
+      "arm": "control",
+      "index": 3,
+      "key": "q02|KR:900001",
+      "output": "삼성테스트전자의 현재 평단 대비 손실을 정확히 파악하려면 현재 주가 대비 평균 매수가를 알아야 합니다. 현재 주가는 65,320 KRW이며, 평균 매수가는 71,000 KRW입니다. 따라서 현재까지 발생한 손실은 평균 매수가 대비 8.00%입니다 {D2}.",
+      "error": null,
+      "latencyMs": 4331.599999904633,
+      "refs": 1,
+      "violations": [
+        {
+          "type": "bare",
+          "text": "65,320",
+          "repairable": true
+        },
+        {
+          "type": "bare",
+          "text": "71,000",
+          "repairable": true
+        },
+        {
+          "type": "duplicate",
+          "text": "8.00%",
+          "repairable": true
+        }
+      ]
+    },
+    {
+      "phase": "warmup",
+      "arm": "control",
+      "index": 4,
+      "key": "q03|KR:900006",
+      "output": "테스트바이오는 최근 20 거래일 동안 {M1a}만큼 올랐습니다. 20 거래일 평균 거래량의 3.2배 {M2a}였던 2026-09-24 {M2c}에 거래량이 증가했으므로, 최근 주가 상승세가 뚜렷합니다. 현재 테스트바이오의 최근 주가는 {D1b}입니다.",
+      "error": null,
+      "latencyMs": 4605.300000190735,
+      "refs": 4,
+      "violations": [
+        {
+          "type": "bare",
+          "text": "20",
+          "repairable": true
+        },
+        {
+          "type": "bare",
+          "text": "20",
+          "repairable": true
+        },
+        {
+          "type": "duplicate",
+          "text": "3.2",
+          "repairable": true
+        },
+        {
+          "type": "bare",
+          "text": "2026-09-24",
+          "repairable": false
+        }
+      ]
+    },
+    {
+      "phase": "warmup",
+      "arm": "treatment",
+      "index": 5,
+      "key": "q03|KR:900006",
+      "output": "테스트바이오는 지난 훈련 기간 동안  впечатляющий {M1a} 변동을 보였습니다. 최근 훈련 동안 주가가 크게 상승했고 {D1b}, 훈련 횟수를 기준으로 했을 때 평소보다 훈련 횟수가 멀어지고 있습니다 {M2}. 테스트바이오 주식의 최근 오른 금액은 {D2}입니다.",
+      "error": null,
+      "latencyMs": 4427.099999904633,
+      "refs": 3,
+      "violations": [
+        {
+          "type": "unknown_ref",
+          "text": "{M2}",
+          "repairable": false
+        }
+      ]
+    },
+    {
+      "phase": "measured",
+      "arm": "control",
+      "index": 6,
+      "key": "q01|KR:900001",
+      "output": "삼성테스트전자 주가가 계속 하락하고 있고, 최근 20일 동안 현재가 대비 {M1a}%, 절하되었습니다. 현재 주가는 {D1b} KRW 로 50일 이동평균선 {M2b} KRW 보다 낮고, 52주 저가 {M3b} KRW 보다 높지 않습니다. 최근 실적 전망 역시 좋지 않아 더욱 위험하다고 판단됩니다.",
+      "error": null,
+      "latencyMs": 3530.4000000953674,
+      "refs": 4,
+      "violations": [
+        {
+          "type": "bare",
+          "text": "20",
+          "repairable": true
+        },
+        {
+          "type": "bare",
+          "text": "50",
+          "repairable": true
+        },
+        {
+          "type": "bare",
+          "text": "52",
+          "repairable": true
+        }
+      ]
+    },
+    {
+      "phase": "measured",
+      "arm": "treatment",
+      "index": 7,
+      "key": "q01|KR:900001",
+      "output": "삼성테스트전자의 주가가 계속 하락하고 있는 점이 चिंता스럽습니다. 최근 며칠 동안 {M1a} 달러 감소했고, 으뜸은 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 해왔습니다. \n\n",
+      "error": null,
+      "latencyMs": 36001.300000190735,
+      "refs": 1,
+      "violations": []
+    },
+    {
+      "phase": "measured",
+      "arm": "treatment",
+      "index": 8,
+      "key": "q02|KR:900001",
+      "output": "지금 삼성테스트전자 주식당 평단 대비 손실을 계산해 보겠습니다. 현재 주가는 {D1b} KRW이고, 평균 매수 가격은 {H3} KRW입니다. 따라서 현재 손실 금액을 계산해 보면 {D2} 입니다.\n\n\n\n",
+      "error": null,
+      "latencyMs": 3737.9000000953674,
+      "refs": 3,
+      "violations": []
+    },
+    {
+      "phase": "measured",
+      "arm": "control",
+      "index": 9,
+      "key": "q02|KR:900001",
+      "output": "삼성테스트전자 평단 대비 지금 손실을 정확히 알 수는 없습니다. 현재 주가는 65,320 KRW이고 원래 구매 가격은 71,000 KRW이므로 현재까지의 손실은 달러 표현으로 알려져 있지 않습니다. 52주 저평가 대비 손실 규모는 알려져 있지 않습니다.",
+      "error": null,
+      "latencyMs": 4091.300000190735,
+      "refs": 0,
+      "violations": [
+        {
+          "type": "bare",
+          "text": "65,320",
+          "repairable": true
+        },
+        {
+          "type": "bare",
+          "text": "71,000",
+          "repairable": true
+        },
+        {
+          "type": "bare",
+          "text": "52",
+          "repairable": true
+        }
+      ]
+    },
+    {
+      "phase": "measured",
+      "arm": "control",
+      "index": 10,
+      "key": "q03|KR:900006",
+      "output": "테스트바이오는 최근 20 거래일 동안 27.4% 상승했습니다. 최근 20 거래일 전반적으로 주가가 상승했음을 알 수 있습니다. 20 거래일 평균 거래량의 3.2배에 달하는 거래량이 2026년 9월 24일에 발생했습니다.",
+      "error": null,
+      "latencyMs": 3885.7999997138977,
+      "refs": 0,
+      "violations": [
+        {
+          "type": "bare",
+          "text": "20",
+          "repairable": true
+        },
+        {
+          "type": "bare",
+          "text": "27.4%",
+          "repairable": true
+        },
+        {
+          "type": "bare",
+          "text": "20",
+          "repairable": true
+        },
+        {
+          "type": "bare",
+          "text": "20",
+          "repairable": true
+        },
+        {
+          "type": "bare",
+          "text": "3.2",
+          "repairable": true
+        },
+        {
+          "type": "bare",
+          "text": "2026",
+          "repairable": false
+        },
+        {
+          "type": "bare",
+          "text": "24",
+          "repairable": true
+        }
+      ]
+    },
+    {
+      "phase": "measured",
+      "arm": "treatment",
+      "index": 11,
+      "key": "q03|KR:900006",
+      "output": "테스트바이오는 최근 지난 훈련 기간 동안 ₩분당 ₩ 자율 ₩ 상승했습니다. 이는 지난 훈련 기간 동안 ₩분당 ₩ 자율 ₩ 상승률 {M1a}으로 나타납니다. 따라서 테스트바이오의 최근 주가 상승률은 ₩분당 ₩ 증가한 것으로 보여집니다 {M1a}.\n\n",
+      "error": null,
+      "latencyMs": 4546.199999809265,
+      "refs": 2,
+      "violations": []
+    },
+    {
+      "phase": "measured",
+      "arm": "treatment",
+      "index": 12,
+      "key": "q04|KR:900006",
+      "output": "테스트바이오 {D1b} 주가는 최근 기간 동안 강한 상승세를 보였으며, 거래량 또한 평균보다 높았습니다. 현재 시점에서는 신약 개발 결과 불확실성이 크므로 비중을 줄여야 할 필요성은 없어 보입니다. 다만, 늦어도 다음 달 {N1}에는 중요한 임상 시험 결과가 발표될 예정이므로 추세를 지속적으로 관찰해야 합니다.\n\n\n\n",
+      "error": null,
+      "latencyMs": 4880.300000190735,
+      "refs": 2,
+      "violations": []
+    },
+    {
+      "phase": "measured",
+      "arm": "control",
+      "index": 13,
+      "key": "q04|KR:900006",
+      "output": "테스트바이오 주식을 줄일 필요는 없습니다. 최근 주가 상승 및 전월 차이 {M1b} 증가 {M1a}와 같은 긍정적인 신호가 있습니다. 그러나 임상 시험 결과 {N1}은 아직 알려지지 않았으므로 변동성을 주의 깊게 주시해야 합니다. 현재 상황을 고려하여 기존 보유량을 유지하고 임상 시험 결과를 기다리는 것이 적절합니다.",
+      "error": null,
+      "latencyMs": 4544.400000095367,
+      "refs": 3,
+      "violations": []
+    },
+    {
+      "phase": "measured",
+      "arm": "control",
+      "index": 14,
+      "key": "q05|BTC",
+      "output": "네, 현재 비트코인 보유도 괜찮습니다. 지난 7일 동안 가격이 {M1} 하락했지만, {D2}의 실현된 손실은 감소했습니다. 최근 {N1}과 같은 거래소의 불안정한 상황을 모니터링하면서 장기적인 성장 전망을 유지하는 것이 좋습니다.",
+      "error": null,
+      "latencyMs": 3831.300000190735,
+      "refs": 3,
+      "violations": []
+    },
+    {
+      "phase": "measured",
+      "arm": "treatment",
+      "index": 15,
+      "key": "q05|BTC",
+      "output": "지속적인 장기 성장 가능성을 고려할 때 비트코인 보유 계획을 유지하는 것이 합리적입니다. 다만, 최근 챗봇 모델 업데이트 이후 시장 변동성이 큰 폭으로 나타난 점과 함께 최근 주요 거래소에서 인출 중단을 발표한 점을 고려하여 거래소 안정성을 모니터링하고 포지션을 재평가하는 것이 좋습니다. 현재 보유 중인 비트코인의 가치는 {D3}이며, 구매 가격은 {H3}였습니다.",
+      "error": null,
+      "latencyMs": 5493,
+      "refs": 2,
+      "violations": []
+    },
+    {
+      "phase": "measured",
+      "arm": "treatment",
+      "index": 16,
+      "key": "q06|BTC",
+      "output": "비트코인 보유량은 헬리터럴로 헬리터럴로 헬리터럴로 헬리터럴로 헬리터럴로 헬리터럴로 헬리터럴로 헬리터럴로 헬리터럴로 헬리터럴로 헬리터럴로 헬리터럴로 헬리터럴로 헬리터럴로 헬리터럴로 헬리터럴로 헬리터럴로 헬리터럴로 헬리터럴로 헬리터럴로 헬리터럴로 헬리터럴로 헬리터럴로 헬리터럴로 헬리터럴로 헬리터럴로 헬리터럴로 헬리터럴로 헬리터럴로 헬리터럴로 헬리터럴로 헬리터럴로 헬리터럴로 헬리터럴로 헬리터럴로 헬리터럴로 헬리터럴로 헬리터럴로 헬리터럴로 헬리터럴로 헬리터럴로 헬리터럴로 헬리터럴로 헬리터럴로 헬리터럴로 헬리터럴로 헬리터럴로 헬리터럴로 헬리터럴로 헬리터럴로 헬리터럴로 헬리터럴로 헬리터럴로 있습니다. 현재 비트코인 가격은 {D1b}이며, 평균 구매 가격 대비 {D2}의 unrealized change가 있습니다.  이는 {D3}의 현재 가치입니다.\n\n\n\n",
+      "error": null,
+      "latencyMs": 15547,
+      "refs": 3,
+      "violations": []
+    },
+    {
+      "phase": "measured",
+      "arm": "control",
+      "index": 17,
+      "key": "q06|BTC",
+      "output": "현재 비트코인 보유량은 {H2} BTC이며, 구입 당시 평균 가격 대비 현재 가격은 {D1b-{D2}}% 하락했습니다. 최근 7일 동안 비트코인이 {M1}% 하락했으며, {M2-{M2b}}의 최고가를 기록했습니다. 현재 거래소에서 인출 중단이 발생하여 추가적인 위험 요소가 제시되고 있습니다.",
+      "error": null,
+      "latencyMs": 4330.699999809265,
+      "refs": 4,
+      "violations": []
+    },
+    {
+      "phase": "measured",
+      "arm": "control",
+      "index": 18,
+      "key": "q07|KRX-GOLD",
+      "output": "금현물 금현물 수익률은 현재가 {D1b}와 평균 매수 가격 {H3} 비교했을 때 {D2}입니다. 시가 기준으로 보유한 금의 가치는 {D3} KRW입니다. 최근 30일 동안 금 가격은 2.3% 상승했습니다 {M1a}.",
+      "error": null,
+      "latencyMs": 3871.5999999046326,
+      "refs": 5,
+      "violations": [
+        {
+          "type": "bare",
+          "text": "30",
+          "repairable": true
+        },
+        {
+          "type": "duplicate",
+          "text": "2.3%",
+          "repairable": true
+        }
+      ]
+    },
+    {
+      "phase": "measured",
+      "arm": "treatment",
+      "index": 19,
+      "key": "q07|KRX-GOLD",
+      "output": "금현물 수익률은 현재 가격 대비 평균 구매 가격의 변화분을 나타냅니다. 현재 획득한 가격은 {D1b}이고 평균 구매 가격은 {H3}입니다. 따라서 수익률은 {D2}입니다.\n",
+      "error": null,
+      "latencyMs": 3322.7999997138977,
+      "refs": 3,
+      "violations": []
+    },
+    {
+      "phase": "measured",
+      "arm": "treatment",
+      "index": 20,
+      "key": "q08|KRX-GOLD",
+      "output": "현재 KRX 금현물 보유량은 ₩{D3}이며, 지난 ₩{D2} 동안 가격이 ₩{D1b}으로 상승했습니다. ₩{D2}의 unrealized 이익이 ₩{D3}이며, 최근 ₩{D1a}에 달했습니다. 데이터를 고려할 때 현재 position을 유지하는 것이 좋다고 판단됩니다.",
+      "error": null,
+      "latencyMs": 4490.699999809265,
+      "refs": 6,
+      "violations": []
+    },
+    {
+      "phase": "measured",
+      "arm": "control",
+      "index": 21,
+      "key": "q08|KRX-GOLD",
+      "output": "현재 KRX 금 현물 보유량은 {H2} 그램이며, 마지막 거래일인 2026년 9월 25일 {D1b}의 가격은 {D1b} KRW입니다. 최근 30일 동안 KRX 금 가격은 {M1a}%, 그리고 마지막 거래일의 보유 가치는 {D3} KRW입니다. 따라서 현재 KRX 금 보유를 유지하는 것은 바람직하다고 판단됩니다.\n",
+      "error": null,
+      "latencyMs": 4744.599999904633,
+      "refs": 5,
+      "violations": [
+        {
+          "type": "bare",
+          "text": "2026",
+          "repairable": true
+        },
+        {
+          "type": "bare",
+          "text": "25",
+          "repairable": true
+        },
+        {
+          "type": "bare",
+          "text": "30",
+          "repairable": true
+        }
+      ]
+    },
+    {
+      "phase": "measured",
+      "arm": "control",
+      "index": 22,
+      "key": "q09|US:ZZSP",
+      "output": "계속 보유하는 것이 적절하다고 판단됩니다. 최근 주가 변동으로 인해 보유한 음모의 가치는 {D3} 달러입니다. 다만, 세 번째 분기 일정의 혼합된 지침 때문에 장기적으로 추세를 확인해야 합니다.",
+      "error": null,
+      "latencyMs": 3186.9000000953674,
+      "refs": 1,
+      "violations": []
+    },
+    {
+      "phase": "measured",
+      "arm": "treatment",
+      "index": 23,
+      "key": "q09|US:ZZSP",
+      "output": "계속 보유하는 것은 권장됩니다. 최신 가격 {D1b}은 이전 평균 매수 가격 {H3}보다 ₩ ₩ ₩ ₩ ₩ 증가했으며 현재 자산 가치는 ₩ ₩ ₩ ₩ ₩입니다. 최근 ₩ ₩ ₩ ₩ ₩의 상승과 상승률 {M1b}은 ₩ ₩ ₩ ₩ ₩ 아래로 떨어졌음에도 불구하고 상승세를 유지 중입니다. ",
+      "error": null,
+      "latencyMs": 5209.900000095367,
+      "refs": 3,
+      "violations": []
+    },
+    {
+      "phase": "measured",
+      "arm": "treatment",
+      "index": 24,
+      "key": "q10|US:ZZSP",
+      "output": "Zeta S&P ",
+      "error": null,
+      "latencyMs": 1558.0999999046326,
+      "refs": 0,
+      "violations": []
+    },
+    {
+      "phase": "measured",
+      "arm": "control",
+      "index": 25,
+      "key": "q10|US:ZZSP",
+      "output": "알려진 정보만으로는 Zeta S&P 500 Test ETF Trust (ZZSP)의 평가액을 정확히 알 수 없습니다. 현재 보유량은 2.5주이고, 평균 매수 가격은 480.00 USD입니다. 최신 가격은 512.30 USD이며 {D2}의 unrealised 변동으로 인해 6.73%의 unrealised 이익을 얻고 있습니다.",
+      "error": null,
+      "latencyMs": 4688.5,
+      "refs": 1,
+      "violations": [
+        {
+          "type": "bare",
+          "text": "2.5",
+          "repairable": true
+        },
+        {
+          "type": "bare",
+          "text": "480.00",
+          "repairable": true
+        },
+        {
+          "type": "bare",
+          "text": "512.30",
+          "repairable": true
+        },
+        {
+          "type": "bare",
+          "text": "6.73%",
+          "repairable": true
+        }
+      ]
+    },
+    {
+      "phase": "measured",
+      "arm": "control",
+      "index": 26,
+      "key": "q11|US:ZZAP",
+      "output": "징후는 주가가 떨어져 팔아야 할지 여부를 결정하도록 합니다. 본질적인 문제, 특히 주가 {M2}배 그럴듯한 수익에 대해 우려하고 있었지만 최근 발표된 150억 달러 규모의 주식 매입 계획은 양상을 바꾸었습니다. 추가 조사와 입증된 획기적인 개선이 없으면 매수한 것을 유지하는 것이 좋습니다.",
+      "error": null,
+      "latencyMs": 4315.699999809265,
+      "refs": 1,
+      "violations": [
+        {
+          "type": "bare",
+          "text": "150억",
+          "repairable": true
+        }
+      ]
+    },
+    {
+      "phase": "measured",
+      "arm": "treatment",
+      "index": 27,
+      "key": "q11|US:ZZAP",
+      "output": "현재 주가는 {D1b} USD이며, 지난 며칠 동안 주가가 좁은 범위 내에서 변동되었습니다. 최근 발표된 십오십억 달러 규모의 자사주 매입 계획은 현재의 가치 문제를 해결할 수 있는 기회가 될 수도 있습니다. 더 조사하고 전략을 조정하는 것이 좋습니다.",
+      "error": null,
+      "latencyMs": 4045.199999809265,
+      "refs": 1,
+      "violations": []
+    },
+    {
+      "phase": "measured",
+      "arm": "treatment",
+      "index": 28,
+      "key": "q12|US:ZZAP",
+      "output": "ZZAP의 PER은 최근 trailing earnings을 기준으로 {M2}배 입니다. 이 정보에서 ZZAP의 PER이 높은 편인지 여부는 명확하게 알 수 없습니다. PER이 높은 편인지 판단하려면 다른 요소를 고려해야 합니다.",
+      "error": null,
+      "latencyMs": 3237,
+      "refs": 1,
+      "violations": []
+    },
+    {
+      "phase": "measured",
+      "arm": "control",
+      "index": 29,
+      "key": "q12|US:ZZAP",
+      "output": "알려진 정보에 따르면 ZZAP의 주가수익비율(PER)은 24.3입니다. 이 수치는 과거 20회의 거래 기간 동안의 주가 변동률인 6.5%보다 높은 편입니다. 현재 시장의 주가수익비율에 대한 정확한 판단을 내리기 위해서는 더 많은 정보가 필요할 수 있습니다.",
+      "error": null,
+      "latencyMs": 4048.5,
+      "refs": 0,
+      "violations": [
+        {
+          "type": "bare",
+          "text": "24.3",
+          "repairable": true
+        },
+        {
+          "type": "bare",
+          "text": "20",
+          "repairable": true
+        },
+        {
+          "type": "bare",
+          "text": "6.5%",
+          "repairable": true
+        }
+      ]
+    },
+    {
+      "phase": "measured",
+      "arm": "control",
+      "index": 30,
+      "key": "q13|KR:900001",
+      "output": "삼성테스트전자의 최근 20일 동안 주가가 {M1} 11.2% 하락했고, 현재 주가는 {D1b} 65,320 KRW입니다. 또한, 최근 20일 동안 금액상으로는 {D2} -8%의 unrealized 손실을 보았습니다. 따라서 두 회사 중 어느 쪽이 더 위험한지 결정하기에는 현재 정보가 충분하지 않습니다.\n\n\n\n",
+      "error": null,
+      "latencyMs": 4555.599999904633,
+      "refs": 2,
+      "violations": [
+        {
+          "type": "unknown_ref",
+          "text": "{M1}",
+          "repairable": false
+        },
+        {
+          "type": "bare",
+          "text": "20",
+          "repairable": true
+        },
+        {
+          "type": "bare",
+          "text": "11.2%",
+          "repairable": true
+        },
+        {
+          "type": "duplicate",
+          "text": "65,320",
+          "repairable": true
+        },
+        {
+          "type": "bare",
+          "text": "20",
+          "repairable": true
+        },
+        {
+          "type": "duplicate",
+          "text": "8%",
+          "repairable": true
+        }
+      ]
+    },
+    {
+      "phase": "measured",
+      "arm": "treatment",
+      "index": 31,
+      "key": "q13|KR:900001",
+      "output": "제공된 정보만으로는 삼성테스트전자와 테스트바이오 중 어느 쪽이 더 위험한지 판단할 수 없습니다. 현재 삼성테스트전자의 주가 하락 추세와 예상보다 낮은 셋째 분기 이익 전망은 위험 요소를 나타냅니다. 하지만 테스트바이오에 대한 정보는 제공되지 않았습니다.",
+      "error": null,
+      "latencyMs": 4016.2000002861023,
+      "refs": 0,
+      "violations": []
+    },
+    {
+      "phase": "measured",
+      "arm": "treatment",
+      "index": 32,
+      "key": "q13|KR:900006",
+      "output": "데이터에 따르면 테스트바이오의 주가는 지난 훈련 기간 동안 상당한 상승을 보였고 현재 주가는 {D1b} KRW입니다. 삼성테스트전자의 정보는 데이터에서 확인할 수 없습니다. 테스트바이오의 최근 상승과 임상 시험 계획을 고려할 때 삼성테스트전자와 비교해서 위험도가 높은지 판단하기 어렵습니다.",
+      "error": null,
+      "latencyMs": 4214.200000286102,
+      "refs": 1,
+      "violations": []
+    },
+    {
+      "phase": "measured",
+      "arm": "control",
+      "index": 33,
+      "key": "q13|KR:900006",
+      "output": "현재의 정보만으로는 삼성테스트전자와 테스트바이오 중 어느 쪽이 더 위험한지 판단하기 어렵습니다. 테스트바이오의 지난 20일 동안의 주가가 상승했으며, upcoming Phase 2 trial 결과에 따라 가치가 변동될 수 있습니다. 삼성테스트전자의 주가 및 관련 정보는 현재 제공된 사실에 포함되어 있지 않습니다.",
+      "error": null,
+      "latencyMs": 4043,
+      "refs": 0,
+      "violations": [
+        {
+          "type": "bare",
+          "text": "20",
+          "repairable": true
+        }
+      ]
+    },
+    {
+      "phase": "measured",
+      "arm": "control",
+      "index": 34,
+      "key": "q14|BTC",
+      "output": "제공된 사실에 비트코인과 금 현물의 비교는 없습니다. 현재 비트코인 보유량은 {H2}이고, 평균 매수 가격은 {H3}이며, 최신 가격은 {D1b}입니다. 마지막 7일 동안 비트코인 가격은 {M1} 감소했습니다.",
+      "error": null,
+      "latencyMs": 4012.7000002861023,
+      "refs": 4,
+      "violations": []
+    },
+    {
+      "phase": "measured",
+      "arm": "treatment",
+      "index": 35,
+      "key": "q14|BTC",
+      "output": "주어진 정보에는 비트코인과 금 현물에 대한 비교가 포함되어 있지 않습니다. 비트코인 보유량은 뉘앙스를 잃지 않고 있습니다. 비트코인의 보유 가격은 {H3}이고 최근 가격은 {D1b}이며, 過去 주일 동안 가격이 뉘앙스를 잃었으며, 지난 過去 개월 동안 높은 뉘앙스가 {M2b}입니다.",
+      "error": null,
+      "latencyMs": 5186.10000038147,
+      "refs": 3,
+      "violations": []
+    },
+    {
+      "phase": "measured",
+      "arm": "treatment",
+      "index": 36,
+      "key": "q14|KRX-GOLD",
+      "output": "제공된 정보만으로는 비트코인과 금 현물 간의 비교를 할 수 없습니다. 현재 KRX 금현물 보유량은 {H2}개이고, 최근 며칠 동안 거래된 금 현물의 일일 거래량은 {M2a}kg입니다.  가격 변동은 {D2}만큼 발생했으며, 평균 매입 가격은 {H3}원입니다.",
+      "error": null,
+      "latencyMs": 4750.39999961853,
+      "refs": 4,
+      "violations": []
+    },
+    {
+      "phase": "measured",
+      "arm": "control",
+      "index": 37,
+      "key": "q14|KRX-GOLD",
+      "output": "KRX 금현물(KRX-GOLD)은 {D1b} 148,500 KRW라는 최근 가격과 20일 동안 {M2b} 310 kg의 평균 거래량을 보여주는 금 현물로 보유하고 있습니다.  향후 금 현물의 전망은 밝아 보이며, {D2} 12.50%의 unrealised gain을 가지고 있습니다. 비트코인은 현재 정보에 포함되어 있지 않습니다.",
+      "error": null,
+      "latencyMs": 5056,
+      "refs": 3,
+      "violations": [
+        {
+          "type": "duplicate",
+          "text": "148,500",
+          "repairable": true
+        },
+        {
+          "type": "duplicate",
+          "text": "20",
+          "repairable": true
+        },
+        {
+          "type": "bare",
+          "text": "310",
+          "repairable": true
+        },
+        {
+          "type": "duplicate",
+          "text": "12.50%",
+          "repairable": true
+        }
+      ]
+    },
+    {
+      "phase": "measured",
+      "arm": "control",
+      "index": 38,
+      "key": "q15|US:ZZSP",
+      "output": "제가 느끼기에는 현재 ZZSP는 괜찮은 상태로 보입니다. 제공된 정보에 따르면 ZZSP는 {D2}만큼의 unrealized 이익을 가지고 있으며, 최근 20일 동안 {M1b}만큼 상승했습니다. ZZAP에 대한 정보는 제공되지 않았습니다.",
+      "error": null,
+      "latencyMs": 3524.300000190735,
+      "refs": 2,
+      "violations": [
+        {
+          "type": "duplicate",
+          "text": "20",
+          "repairable": true
+        }
+      ]
+    },
+    {
+      "phase": "measured",
+      "arm": "treatment",
+      "index": 39,
+      "key": "q15|US:ZZSP",
+      "output": "이 사실만으로는 ZZSP와 ZZAP 중 어느 것이 더 괜찮은지 판단할 수 없습니다. ZZSP는 현재 미국 주식 시장 내 S&P  산업 지수를 추종하는 ETF {H1}, 보유량은 쉼표로 표시된 팩터 {H2}, 평균 매수 가격은 쉼표로 표시된 팩터 {H3}, 최근 가격은 쉼표로 표시된 팩터 {D1b}, 보유 가치는 쉼표로 표시된 팩터 {D3}, 마지막 팩터 {D2}와 마지막 팩터 {M1a}로 보여줍니다. ZZAP에 대한 정보는 제공되지 않았습니다.",
+      "error": null,
+      "latencyMs": 7101,
+      "refs": 7,
+      "violations": []
+    },
+    {
+      "phase": "measured",
+      "arm": "treatment",
+      "index": 40,
+      "key": "q15|US:ZZAP",
+      "output": "제트 애플 테스터 인시티(ZZAP)는 훌륭한 기업으로서 현재 주식 보유량은 몫 {H2}이고, 주식 거래 가격은 {D1b}입니다. 텍스트에는 ZZSP와 같은 종목에 대한 정보는 포함되어 있지 않습니다. 제공된 정보로는 ZZSP와 ZZAP에 대해 판단하기 어렵습니다.",
+      "error": null,
+      "latencyMs": 4356,
+      "refs": 2,
+      "violations": []
+    },
+    {
+      "phase": "measured",
+      "arm": "control",
+      "index": 41,
+      "key": "q15|US:ZZAP",
+      "output": "주어진 정보만으로는 ZZSP와 ZZAP를 각각 괜찮은지 판단할 수 없습니다. 특히 ZZSP에 대한 정보는 제공되지 않았습니다. ZZAP의 주식은 지난 20일 동안 {M1a} 감소했고 현재 시가총액은 {D3}입니다.",
+      "error": null,
+      "latencyMs": 3406.2000002861023,
+      "refs": 2,
+      "violations": [
+        {
+          "type": "bare",
+          "text": "20",
+          "repairable": true
+        }
+      ]
+    },
+    {
+      "phase": "measured",
+      "arm": "control",
+      "index": 42,
+      "key": "q16|BTC",
+      "output": "전체 포트폴리오 검토에 대한 정보는 현재 소지하지 않습니다. 비트코인 보유량은 0.25 BTC이고, 평균 매수 가격은 9만 5천만 원입니다.  últimas 거래일의 가격은 9억 1천 2백만 원이고, 평균 매수 가격 대비 실현 가치 변동률은 -3.95% 입니다.",
+      "error": null,
+      "latencyMs": 4409.900000095367,
+      "refs": 0,
+      "violations": [
+        {
+          "type": "bare",
+          "text": "0.25",
+          "repairable": true
+        },
+        {
+          "type": "bare",
+          "text": "9만 5",
+          "repairable": false
+        },
+        {
+          "type": "bare",
+          "text": "9억 1",
+          "repairable": false
+        },
+        {
+          "type": "bare",
+          "text": "3.95%",
+          "repairable": true
+        }
+      ]
+    },
+    {
+      "phase": "measured",
+      "arm": "treatment",
+      "index": 43,
+      "key": "q16|BTC",
+      "output": "저는 전체 포트폴리오 점검 요청에 대한 최종 결정입니다. 현재 비트코인 보유량은 {H2}개이며, 평균 구매 가격은 {H3}원입니다. 최근 {M1}퍼센트 하락과 함께 특정 거래소에서 일시적인 출금 중단이 발생했으며, 이는 포트폴리오에 영향을 미칠 수 있습니다.",
+      "error": null,
+      "latencyMs": 4420.39999961853,
+      "refs": 3,
+      "violations": []
+    },
+    {
+      "phase": "measured",
+      "arm": "treatment",
+      "index": 44,
+      "key": "q16|KRX-GOLD",
+      "output": "폴리폴리오 전체 점검 결과, 현재 보유량은 닫힌 KRX-금 현물을 닫는 것을 권고합니다. 최근 며칠간 거래량은 {M2a} kg으로 보여주었고, 가장 최근 가격은 {D1b} KRW입니다. 닫으면 전체 투자 가치는 {D3} KRW가 됩니다.",
+      "error": null,
+      "latencyMs": 4264.800000190735,
+      "refs": 3,
+      "violations": []
+    },
+    {
+      "phase": "measured",
+      "arm": "control",
+      "index": 45,
+      "key": "q16|KRX-GOLD",
+      "output": "전체 포트폴리오 점검에는 어떤 정보를 더 필요한지 알 수 없습니다. 현재 보유량은 {H2}g이고 매입가당량은 {D3}KRW입니다. 최근 30일 동안 가격은 {D1b}KRW로 상승했으며, 지난 20일 동안 일일 거래량은 {M2a}kg입니다.",
+      "error": null,
+      "latencyMs": 4159,
+      "refs": 4,
+      "violations": [
+        {
+          "type": "bare",
+          "text": "30",
+          "repairable": true
+        },
+        {
+          "type": "bare",
+          "text": "20",
+          "repairable": true
+        }
+      ]
+    },
+    {
+      "phase": "measured",
+      "arm": "control",
+      "index": 46,
+      "key": "q16|KR:900001",
+      "output": "현재 삼성테스트전자(900001) 포트폴리오의 보유량은 {H2} 주이며, 매입 가격은 {H3} KRW었습니다. 최신 가격은 {D1b} KRW이고, 현재 가치는 {D3} KRW입니다.  최근 20일 동안 주가 하락률이 {M1a} %이며, 52주 저가 대비 {M3b} KRW 저가보다 아래에 있습니다.",
+      "error": null,
+      "latencyMs": 5077.599999904633,
+      "refs": 6,
+      "violations": [
+        {
+          "type": "bare",
+          "text": "900001",
+          "repairable": false
+        },
+        {
+          "type": "bare",
+          "text": "20",
+          "repairable": true
+        },
+        {
+          "type": "bare",
+          "text": "52",
+          "repairable": true
+        }
+      ]
+    },
+    {
+      "phase": "measured",
+      "arm": "treatment",
+      "index": 47,
+      "key": "q16|KR:900001",
+      "output": "Hold 삼성테스트전자 (삼성테스트전자 텍스트 주식) 주식을 유지하되, 지난 過去 며칠 동안 {M1a} 주가가 {M1b} 동안 감소했습니다. 현재 주가는 {D1b} KRW로, 과거 평균 구매 가격인 {H3} KRW보다 약 {D2}% 전하했습니다. 현재 주가는 過去 過去  과거 過去 過去 過去 过去 过去 过去 过去 过去 过去 过去 过去 过去 过去 过去 过去 过去 过去 过去 过去 过去 过去 过去 过去 过去 过去 过去 过去 过去 过去 过去 过去 过去 过去 过去 过去 过去 过去 过去 过去 过去 过去 过去 过去 过去 过去 过去 过去 过去 过去 过去 过去 过去 过去 过去 过去 过去 过去 过去 过去 过去 过去 过去 过去 过去 过去 过去 过去 过去 过去 过去 过去 过去 过去 过去 过去 过去 过去 过去 过去 过去 过去 过去 过去 过去 过去 过去 过去 过去 过去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 해달라고 요청하셨습니다. 해당 요구를 수행할 수 있는 정보는 현재 주가에 대한 언급뿐입니다. 주식 포트폴리오에 대한 자세한 분석 또는 추가 정보를 요청하시려면 더 자세한 정보가 필요합니다.",
+      "error": null,
+      "latencyMs": 25827.800000190735,
+      "refs": 5,
+      "violations": []
+    },
+    {
+      "phase": "measured",
+      "arm": "treatment",
+      "index": 48,
+      "key": "q16|KR:900006",
+      "output": "테스트바이오 (테스트바이오 텍스트) 주식을 현재 보유하고 있습니다. 주식 수량은 ₩ {H2} 주이며, 평균 매수 가격은 ₩ {H3} 입니다. 최근 며칠 동안 주가는 ₩ {D2} 상승했으며, ₩ {D3} 가치가 있습니다. ",
+      "error": null,
+      "latencyMs": 4737.400000095367,
+      "refs": 4,
+      "violations": []
+    },
+    {
+      "phase": "measured",
+      "arm": "control",
+      "index": 49,
+      "key": "q16|KR:900006",
+      "output": "테스트바이오(900006)는 현재 40주를 보유하고 있으며, 평균 매수 가격은 15,000 KRW입니다. 최근 20일 동안 주가가 27.4% 상승했으며, 해당 날짜의 거래량이 20일 평균 거래량의 3.2배였습니다. 2026년 9월 25일 현재 주가는 18,450 KRW입니다.",
+      "error": null,
+      "latencyMs": 4974.39999961853,
+      "refs": 0,
+      "violations": [
+        {
+          "type": "bare",
+          "text": "900006",
+          "repairable": false
+        },
+        {
+          "type": "bare",
+          "text": "40",
+          "repairable": true
+        },
+        {
+          "type": "bare",
+          "text": "15,000",
+          "repairable": true
+        },
+        {
+          "type": "bare",
+          "text": "20",
+          "repairable": true
+        },
+        {
+          "type": "bare",
+          "text": "27.4%",
+          "repairable": true
+        },
+        {
+          "type": "bare",
+          "text": "20",
+          "repairable": true
+        },
+        {
+          "type": "bare",
+          "text": "3.2",
+          "repairable": true
+        },
+        {
+          "type": "bare",
+          "text": "2026",
+          "repairable": false
+        },
+        {
+          "type": "bare",
+          "text": "25",
+          "repairable": true
+        },
+        {
+          "type": "bare",
+          "text": "18,450",
+          "repairable": true
+        }
+      ]
+    },
+    {
+      "phase": "measured",
+      "arm": "control",
+      "index": 50,
+      "key": "q16|US:ZZSP",
+      "output": "ZZSP ETF 포지션은 {H2} 주식을 보유 중이며, 평균 매수 가격은 {H3} USD였습니다. 현재 시장 가격은 {D1b} USD이며, 현재 가치는 {D3} USD입니다. 최근 20일 동안 {M1a} 상승했으며, 모두의 third quarter guidance는 혼합적이었습니다.",
+      "error": null,
+      "latencyMs": 4023.5,
+      "refs": 5,
+      "violations": [
+        {
+          "type": "bare",
+          "text": "20",
+          "repairable": true
+        }
+      ]
+    },
+    {
+      "phase": "measured",
+      "arm": "treatment",
+      "index": 51,
+      "key": "q16|US:ZZSP",
+      "output": "현재 포트폴리오에서 보유하고 있는 ETF는 {H1}에 따르면 Zeta S&P 헬스케어 ETF Trust (ZZSP)이며, 보유 주식은 {H2}, 평균 매입 가격은 {H3}입니다. 최근 며칠 동안 ETF는 {M1a} 상승했으며, 최근 시장 상황은 변동성이 있다는 보고서와 현재 고수익률을 고려해야 합니다. 다만, 목표 가격 설정이나 수익 실현 전략을 추가적으로 고려하여 위험 관리 접근 방식을 점검해야 합니다.",
+      "error": null,
+      "latencyMs": 5958.299999713898,
+      "refs": 4,
+      "violations": []
+    },
+    {
+      "phase": "measured",
+      "arm": "treatment",
+      "index": 52,
+      "key": "q16|US:ZZAP",
+      "output": "현재 보유하고 있는 주식은 괄호 안에 있는 정보에 따르면 괄호 안에 있는 수량만큼 보유하고 있습니다. 가장 최근 주식 가격은 괄호 안에 있는 정보에 따르면 괄호 안에 있는 정보입니다. 괄호 안에 있는 주가와 평균 매수 가격의 차이는 괄호 안에 있는 정보입니다. ",
+      "error": null,
+      "latencyMs": 4059.5,
+      "refs": 0,
+      "violations": []
+    },
+    {
+      "phase": "measured",
+      "arm": "control",
+      "index": 53,
+      "key": "q16|US:ZZAP",
+      "output": "현재 보유 중인 주식은 {H2} 12주이며, 평균 매수 가격은 {H3} 201.00 USD입니다. 최근 20일 동안 주식 가격이 {M1a} 6.5% 하락했으며, 시장은 현재 주가를 기준으로 주당 {M2} 24.3배의 시가총액으로 평가합니다. 또한, 기업은 최근 {N1a} 15,000,000,000 USD 상당의 주식 매입 계획을 발표했습니다.",
+      "error": null,
+      "latencyMs": 5730.299999713898,
+      "refs": 5,
+      "violations": [
+        {
+          "type": "duplicate",
+          "text": "12",
+          "repairable": true
+        },
+        {
+          "type": "duplicate",
+          "text": "201.00",
+          "repairable": true
+        },
+        {
+          "type": "bare",
+          "text": "20",
+          "repairable": true
+        },
+        {
+          "type": "duplicate",
+          "text": "6.5%",
+          "repairable": true
+        },
+        {
+          "type": "duplicate",
+          "text": "24.3",
+          "repairable": true
+        },
+        {
+          "type": "duplicate",
+          "text": "15,000,000,000",
+          "repairable": true
+        }
+      ]
+    },
+    {
+      "phase": "measured",
+      "arm": "control",
+      "index": 54,
+      "key": "q17|KR:900001",
+      "output": "삼성테스트전자 주가는 52주 최저가인 {M3b}보다 현재 가치가 덜 수 있습니다. 현재 주가는 {M3b}보다 낮으며 {D1b} 현재 가격은 {M3b}보다 61,500 KRW 더 낮습니다.",
+      "error": null,
+      "latencyMs": 3701.3999996185303,
+      "refs": 4,
+      "violations": [
+        {
+          "type": "duplicate",
+          "text": "61,500",
+          "repairable": true
+        }
+      ]
+    },
+    {
+      "phase": "measured",
+      "arm": "treatment",
+      "index": 55,
+      "key": "q17|KR:900001",
+      "output": "삼성테스트전자 님의 주가가 현재 ₩{D3}의 가격으로 ₩{M3b}의 갱신 갱신된 갱신된 갱신된 갱신된 갱신된 갱신된 갱신된 ₩{M3b}의 갱신된 가격만큼 낮습니다. 이는 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 과거 過去 過去 過去 過去 過去 과거 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去 過去",
+      "error": null,
+      "latencyMs": 73718.90000009537,
+      "refs": 3,
+      "violations": []
+    },
+    {
+      "phase": "measured",
+      "arm": "treatment",
+      "index": 56,
+      "key": "q18|KR:900006",
+      "output": "테스트바이오 임상 결과는 넥브라운 네트워크에서 밸브 릴리스 승인 결과를 발표할 예정입니다. 임상 결과는 넥브라운 네트워크의 발표일 정해지지 않았습니다. 해당 발표일은 밸브 릴리스 승인 결과 발표일을 기준으로 예상되는 날짜입니다.",
+      "error": null,
+      "latencyMs": 4516.400000095367,
+      "refs": 0,
+      "violations": []
+    },
+    {
+      "phase": "measured",
+      "arm": "control",
+      "index": 57,
+      "key": "q18|KR:900006",
+      "output": "Phase 2 trial results are expected in November 2026 {N1}. The share price rose 27.4% over the last 20 sessions {M1a}. Trading volume was 3.2 times its 20-day average on 2026-09-24 {M2a}.\n\n",
+      "error": null,
+      "latencyMs": 4220.800000190735,
+      "refs": 3,
+      "violations": [
+        {
+          "type": "duplicate",
+          "text": "2026",
+          "repairable": true
+        },
+        {
+          "type": "bare",
+          "text": "27.4%",
+          "repairable": true
+        },
+        {
+          "type": "bare",
+          "text": "20",
+          "repairable": true
+        },
+        {
+          "type": "bare",
+          "text": "3.2",
+          "repairable": true
+        },
+        {
+          "type": "bare",
+          "text": "20",
+          "repairable": true
+        },
+        {
+          "type": "bare",
+          "text": "2026-09-24",
+          "repairable": false
+        }
+      ]
+    },
+    {
+      "phase": "measured",
+      "arm": "control",
+      "index": 58,
+      "key": "q19|US:ZZAP",
+      "output": "자사주 매입 규모는 약 15조 달러입니다. 이는 공시 발표일인 2026년 9월 18일에 발표된 자사주 매입 계획 규모입니다. 자사주 매입 규모와 관련된 다른 정보는 현재 사실에는 나와 있지 않습니다.\n\n\n\n",
+      "error": null,
+      "latencyMs": 4409,
+      "refs": 0,
+      "violations": [
+        {
+          "type": "bare",
+          "text": "15",
+          "repairable": false
+        },
+        {
+          "type": "bare",
+          "text": "2026",
+          "repairable": false
+        },
+        {
+          "type": "bare",
+          "text": "18",
+          "repairable": true
+        }
+      ]
+    },
+    {
+      "phase": "measured",
+      "arm": "treatment",
+      "index": 59,
+      "key": "q19|US:ZZAP",
+      "output": "자사주 매입 규모는 ₩ 십육조 천만 달러입니다. {N1a} 이는 회사에서 발표한 제안된 자사주 매입 규모입니다. {N1a} 이 정보가 제공된 사실에 따르면, 이 질문에 대한 답변은 사실로 제공되지 않았습니다.\n\n\n\nFinal Decision: \nThe trader plan is appropriately cautious, maintaining the current holding. The risk review suggests monitoring performance and gathering more data. Therefore reaffirming the holding decision, contingent upon continued evaluation.",
+      "error": null,
+      "latencyMs": 6294,
+      "refs": 2,
+      "violations": []
+    },
+    {
+      "phase": "measured",
+      "arm": "treatment",
+      "index": 60,
+      "key": "t01|KR:900001",
+      "output": "The provided facts do not contain information about 삼성테스트전자's dividend. There is no mention of a dividend amount or financial performance related to dividends. Therefore, I cannot answer the question based on the available information provided.\n\n\n\n",
+      "error": null,
+      "latencyMs": 3195.4000000953674,
+      "refs": 0,
+      "violations": []
+    },
+    {
+      "phase": "measured",
+      "arm": "control",
+      "index": 61,
+      "key": "t01|KR:900001",
+      "output": "The facts provided do not include information about 삼성테스트전자's dividend. The company's third-quarter operating profit guidance was 18% below the previous quarter, but this doesn't relate to dividends. Therefore, the dividend amount is not given in the available information.",
+      "error": null,
+      "latencyMs": 3385.5999999046326,
+      "refs": 0,
+      "violations": [
+        {
+          "type": "bare",
+          "text": "18%",
+          "repairable": true
+        }
+      ]
+    },
+    {
+      "phase": "measured",
+      "arm": "control",
+      "index": 62,
+      "key": "t02|KR:900006",
+      "output": "테스트바이오의 부채비율은 현재 정보에 포함되어 있지 않습니다. 주식의 평균 매입 가격은 {H3}, 주식 수량은 {H2}, 최근 주가는 {D1b}, 그리고 마지막 거래일의 거래량은 {M2c} 입니다. 부채비율에 대한 정보는 제시된 사실에서 찾을 수 없습니다.\n\n\n\n",
+      "error": null,
+      "latencyMs": 4229.5,
+      "refs": 4,
+      "violations": []
+    },
+    {
+      "phase": "measured",
+      "arm": "treatment",
+      "index": 63,
+      "key": "t02|KR:900006",
+      "output": "The facts provided do not contain information regarding 테스트바이오's debt-to-equity ratio. Therefore, this value is not given. The current position value is {D3}, which is ₩ ⑳⑲⑳⑳, and the share price has increased by ₩ ⑳⑳⑳⑳⑳ during the last ⅔ sessions.",
+      "error": null,
+      "latencyMs": 4695.200000286102,
+      "refs": 1,
+      "violations": []
+    },
+    {
+      "phase": "measured",
+      "arm": "treatment",
+      "index": 64,
+      "key": "t03|BTC",
+      "output": "현재까지 비트코인 반감기 날짜에 대한 정보는 제공된 사실에서 확인할 수 없습니다. 최근 며칠 동안의 가격 변동과 수량 보유량에 대한 정보는 제공된 사실로부터 추출할 수 있습니다. 현재 보유 중인 비트코인 {D3}의 현재 가치는 ₩ {D3}.\n\n",
+      "error": null,
+      "latencyMs": 4235.299999713898,
+      "refs": 2,
+      "violations": []
+    },
+    {
+      "phase": "measured",
+      "arm": "control",
+      "index": 65,
+      "key": "t03|BTC",
+      "output": "나는 비트코인의 다음 반감기에 대한 정보를 가지고 있지 않다. 현재 정보를 통해서는 비트코인의 공급량이 줄어들 예정이 있는지 확인할 수 없다. 더 많은 데이터를 분석해야 다음 반감기 날짜에 대한 정확한 예측을 할 수 있다.",
+      "error": null,
+      "latencyMs": 3281.0999999046326,
+      "refs": 0,
+      "violations": []
+    },
+    {
+      "phase": "measured",
+      "arm": "control",
+      "index": 66,
+      "key": "t04|US:ZZSP",
+      "output": "현재 운용보수에 대한 정보는 사실 데이터에서 찾을 수 없습니다. 6.73%의 무상 수익, 지난 20일간의 상승률 {M1}, 그리고 현재 시가인 {D1b} 등의 정보만 제공되었습니다. 해당 정보를 통해 운용보수를 파악할 수 없습니다.",
+      "error": null,
+      "latencyMs": 3775.9000000953674,
+      "refs": 1,
+      "violations": [
+        {
+          "type": "unknown_ref",
+          "text": "{M1}",
+          "repairable": false
+        },
+        {
+          "type": "bare",
+          "text": "6.73%",
+          "repairable": true
+        },
+        {
+          "type": "bare",
+          "text": "20",
+          "repairable": true
+        }
+      ]
+    },
+    {
+      "phase": "measured",
+      "arm": "treatment",
+      "index": 67,
+      "key": "t04|US:ZZSP",
+      "output": "The facts do not contain information about the fund's management fee. The question asks for the fund's management fee. There is no information about the fund's management fee within the provided facts.",
+      "error": null,
+      "latencyMs": 2915.2999997138977,
+      "refs": 0,
+      "violations": []
+    },
+    {
+      "phase": "measured",
+      "arm": "treatment",
+      "index": 68,
+      "key": "t05|US:ZZAP",
+      "output": "죄송합니다, 질문에 대한 답변을 제공할 수 있는 정보가 없습니다. 사건 기록에는 발표 날짜에 대한 세부 정보가 수록되어 있지 않습니다. 덧붙여, 종가의 추세가 있지는 않습니다.\n\n\n\nFinal Decision: Maintain the current position due to the bearish research decision and lack of an agreed-upon exit strategy. Selling ⌊quantity held⌋ shares of ZZAP is supported by the recent price decline and unrealized loss assessment. While monitoring operational performance is advised, a specific target price or timeframe is recommended for potential action.",
+      "error": null,
+      "latencyMs": 5798.900000095367,
+      "refs": 0,
+      "violations": []
+    },
+    {
+      "phase": "measured",
+      "arm": "control",
+      "index": 69,
+      "key": "t05|US:ZZAP",
+      "output": "다음 실적 발표일의 정보는 제공된 사실에서 확인할 수 없습니다. 정보는 제공되지 않았습니다. ",
+      "error": null,
+      "latencyMs": 2036.7000002861023,
+      "refs": 0,
+      "violations": []
+    },
+    {
+      "phase": "measured",
+      "arm": "control",
+      "index": 70,
+      "key": "t06|KRX-GOLD",
+      "output": "내년 금현물의 목표가는 현재 사실로 제공되지 않습니다. 최근 30일 동안 금 가격은 {M1a}%, 일일 거래량은 최저 {M2b} kg이었으며, 최근 몇 달 동안 중앙 은행의 금 구매가 계속되었다는 정보가 있습니다. 그러나 내년 목표가에 대한 구체적인 정보는 없습니다.",
+      "error": null,
+      "latencyMs": 4155.199999809265,
+      "refs": 2,
+      "violations": [
+        {
+          "type": "bare",
+          "text": "30",
+          "repairable": true
+        }
+      ]
+    },
+    {
+      "phase": "measured",
+      "arm": "treatment",
+      "index": 71,
+      "key": "t06|KRX-GOLD",
+      "output": "내년 금현물의 목표가는 명시되어 있지 않습니다. 현재 뷰는 긍정적인 반면, 향후 가격 변동에 대해서는 경제적 불확실성이 존재합니다. 마지막 거래일 현재 가치는 {D3} KRW 입니다.",
+      "error": null,
+      "latencyMs": 3489.2999997138977,
+      "refs": 1,
+      "violations": []
+    }
+  ],
+  "summary": {
+    "control": {
+      "attempts": 33,
+      "withViolation": 25,
+      "withUnrepairable": 8,
+      "types": {
+        "bare:repairable": 55,
+        "bare:unrepairable": 9,
+        "duplicate:repairable": 14,
+        "unknown_ref:unrepairable": 2
+      },
+      "errors": [],
+      "noRef": 10,
+      "latencyMedianMs": 4091.300000190735,
+      "outputCharsMedian": 147
+    },
+    "treatment": {
+      "attempts": 33,
+      "withViolation": 0,
+      "withUnrepairable": 0,
+      "types": {},
+      "errors": [],
+      "noRef": 7,
+      "latencyMedianMs": 4516.400000095367,
+      "outputCharsMedian": 149
+    }
+  },
+  "decision": {
+    "gate": 5,
+    "outcome": "REQUIRES_REVIEW"
+  }
+}
