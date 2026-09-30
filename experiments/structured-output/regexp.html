@@ -1,0 +1,13 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>AkariSP RegExp constraint — real Prompt API</title>
+<style>body{font:14px system-ui;margin:24px;max-width:900px}pre{background:#f4f4f4;padding:12px;white-space:pre-wrap;max-height:40vh;overflow:auto}</style>
+<h1>RegExp constraint: "numbers only as {Dn} references" (research only, 013 revisit 2)</h1>
+<p>Requires <code>LanguageModel.availability() === "available"</code>. Refuses otherwise, so it never starts a model download.
+Runs directly on native clones: 2 acceptance probes, 3 warmup + 30 measured attempts per arm (prompt-only vs RegExp
+constraint), then 3 lookahead-pattern probes. Several minutes.</p>
+<p>Availability: <b id="avail">…</b></p>
+<button id="run">Run</button> <button id="copy">Copy JSON</button>
+<pre id="log"></pre>
+<pre id="json"></pre>
+<script type="module" src="./regexp.js"></script>
