@@ -59,3 +59,30 @@ assert.equal(categorizeRef('Orders were strong this week.', null, K), 'no_ref');
 assert.equal(categorizeRef('  ', null, K), 'empty');
 assert.equal(categorizeRef(null, { name: 'SyntaxError' }, K), 'provider_error');
 console.log('stand-in regexp rules: ok');
+
+// Consumer-workload rules (refs-rules.js, v1)
+import { numbers, violations, decideRefsGate } from './refs-rules.js';
+assert.deepEqual(numbers('6만 5,320원').map((n) => n.value), [65320]);
+assert.deepEqual(numbers('9,125만 원, -11.2%, 2026-09-15').map((n) => n.value), [91250000, 11.2, '2026-09-15']);
+const R = [{ name: 'D1b', shown: '9,125만 원' }, { name: 'M1a', shown: '-11.2%' }, { name: 'M1b', shown: '20' }, { name: 'H3', shown: '7만 1,000원' }];
+const types = (raw, q = '') => violations(raw, R, q).violations.map((v) => `${v.type}:${v.repairable}`);
+assert.deepEqual(types('평가액은 {D1b}이고 {M1a} 하락했습니다.'), []);
+assert.deepEqual(types('평가액은 {D1b} 91,250,000 KRW입니다.'), ['duplicate:true']);
+assert.deepEqual(types('평가액은 91,250,000원입니다.'), ['bare:true']);
+assert.deepEqual(types('약 27% 올랐습니다.'), ['bare:false']);
+assert.deepEqual(types('{M1a, D1b} 기준입니다.'), ['combined:true']);
+assert.deepEqual(types('{M1a, Z9} 기준입니다.'), ['combined:false']);
+assert.deepEqual(types('{Z9}입니다.'), ['unknown_ref:false']);
+assert.deepEqual(types('M1b 동안 {M1a} 하락.'), ['unbraced:true']);
+assert.deepEqual(types('{d1B}, { M1a }입니다.'), []);
+assert.deepEqual(types('3개 종목 중 2개입니다.'), []);             // integers ≤ 10 exempt
+assert.deepEqual(types('매수가 71,000원이면?', '매수가 71,000원이면 손익은?'), []); // value from the question
+assert.equal(violations('{D1b}와 {M1a}', R, '').refs, 2);
+const s = (withViolation, withUnrepairable = 0, errors = []) => ({ withViolation, withUnrepairable, errors });
+assert.deepEqual(decideRefsGate({ blocked: true }), { gate: 1, outcome: 'BLOCKED' });
+assert.deepEqual(decideRefsGate({ control: s(0), treatment: s(0) }), { gate: 2, outcome: 'NO_CHANGE' });
+assert.deepEqual(decideRefsGate({ control: s(10, 2), treatment: s(6) }), { gate: 3, outcome: 'NO_CHANGE' });
+assert.deepEqual(decideRefsGate({ control: s(10, 2), treatment: s(0, 0, ['SyntaxError']) }), { gate: 3, outcome: 'NO_CHANGE' });
+assert.deepEqual(decideRefsGate({ control: s(10, 0), treatment: s(0) }), { gate: 4, outcome: 'NO_CHANGE' });
+assert.deepEqual(decideRefsGate({ control: s(10, 2), treatment: s(5) }), { gate: 5, outcome: 'REQUIRES_REVIEW' });
+console.log('stand-in refs rules: ok');

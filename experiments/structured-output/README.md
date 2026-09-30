@@ -139,4 +139,6 @@ python3 -m http.server 8080
 # http://localhost:8080/experiments/structured-output/index.html → Run → Copy JSON
 # Save unchanged as results/chrome-<major>-<run-date>-run-NN.json
 # RegExp follow-up: regexp.html → Run → Copy JSON → results/chrome-<major>-<run-date>-regexp-run-NN.json
+# BTA-workload rerun: copy BTA harness-prompts-refs.json unchanged to inputs/, then
+# refs.html → Run → Copy JSON → results/chrome-<major>-<run-date>-refs-run-NN.json
 ```

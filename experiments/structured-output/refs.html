@@ -1,0 +1,13 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>AkariSP refs constraint — BTA workload</title>
+<style>body{font:14px system-ui;margin:24px;max-width:900px}pre{background:#f4f4f4;padding:12px;white-space:pre-wrap;max-height:40vh;overflow:auto}</style>
+<h1>BTA "numbers by reference" rerun: prompt-only vs RegExp constraint (research only, 013)</h1>
+<p>Requires <code>LanguageModel.availability() === "available"</code>. Refuses otherwise, so it never starts a model download.
+Reads <code>inputs/harness-prompts-refs.json</code> (33 filled BTA final-role prompts). Runs directly on native clones:
+3 warmup + 33 measured attempts per arm, ABBA, 120 s timeout. About 30–60 minutes.</p>
+<p>Availability: <b id="avail">…</b> · Prompt set: <b id="set">…</b></p>
+<button id="run">Run</button> <button id="copy">Copy JSON</button>
+<pre id="log"></pre>
+<pre id="json"></pre>
+<script type="module" src="./refs.js"></script>
