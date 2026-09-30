@@ -132,7 +132,8 @@ final-role prompts from `inputs/`. The protocol was fixed before the run; see re
 | treatment (`/^([^0-9{}]\|\{[A-Z][0-9]+[a-z]?\})*$/`) | 0/33 | 0/33 | 9 | 4516 / 73719 ms |
 
 - The pre-registered gates stop at gate 5 → REQUIRES_REVIEW.
-- The proposed review outcome is **NO_CHANGE** (gate 6: cost exceeds value).
+- The review outcome is **NO_CHANGE** (gate 6: cost exceeds value). The maintainer decided it on
+  2026-09-30.
   - The treatment's degenerated answers were repetition loops, `₩` placeholders, a truncation and
     an invented non-answer.
   - Wrong amounts moved into spelled-out Korean (2 answers, the same count as the control), and

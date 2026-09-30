@@ -196,6 +196,10 @@ failure. **The workaround is sufficient.**
 - **Outcome: NO_CHANGE.**
 - **Deciding gate: 4** (contracts/evidence-and-decision.md). FR-1310 clause: "the workaround is
   sufficient by FR-1304a".
+- **Follow-ups (2026-09-30) confirm NO_CHANGE**:
+  - RegExp workload: gate 2.
+  - BTA consumer workload: gate 6, decided by the maintainer.
+  - See "RegExp follow-up" and "Consumer-workload rerun" below.
 - The earlier gates did not decide:
   - gate 1: not BLOCKED;
   - gate 2: the control reproduced the failure;
@@ -448,16 +452,24 @@ defined after the outputs were seen; exploratory, not a gate input)
   legal way to write names, dates and counts that it needs, so it substitutes other text. The
   pre-registered metrics count only ASCII-digit violations, so these answers count as clean.
 
-**Review against gates 5–8** (proposed; the decision is the maintainer's)
+**Review against gates 5–8** (decided by the maintainer, 2026-09-30)
 - **Gate 5**: not all providers are class C or D. The Prompt API is class A (R3), so this gate does
   not decide.
-- **Gate 6**, "cost exceeds value", decides the proposed outcome for this workload.
+- **Gate 6**, "cost exceeds value", decides the outcome for this workload.
   - Value: in 33 answers, no ASCII digits, and repairable format violations gone.
   - Cost: 9 degenerated answers, a latency tail up to 74 s, the same number of wrong amounts,
     and the RegExp's inability to express BTA's allowed numbers (question numbers and counts ≤ 10)
     or to prevent type 4.
-  - Proposed outcome: **NO_CHANGE**. The Prompt API constraint is not recommended as a product
+  - **Outcome: NO_CHANGE** (gate 6). The Prompt API constraint is not recommended as a product
     default for this workload.
+- **Accepted cost of not opening**: AkariSP still offers no path to a prompt-scoped native option
+  (BTA finding F-A). A consumer that needs the constraint must call the native API directly and
+  gives up AkariSP's slots, queue, shutdown and abort handling for those calls.
+- **Scope of the decision**: it says there is no evidence yet to open a task-scoped options
+  boundary. It does not say one must never be opened.
+- **Revisit condition 2 is closed** for both workloads:
+  - the RegExp follow-up stopped at gate 2;
+  - the BTA workload was decided at gate 6.
 - **What would reopen this**:
   - a constraint that allows the needed numbers and whose treatment does not degenerate, tested
     under a new fixed protocol;
