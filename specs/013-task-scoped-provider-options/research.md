@@ -287,7 +287,18 @@ the failure with the prompt only.
 
 #### Consumer-workload rerun: fixed protocol (written 2026-09-30 before any capture was seen)
 
-This protocol is fixed before the prompt set, the capture and any rerun output exist.
+This protocol was committed at 10:54 KST, before anyone on the AkariSP side had read the prompt set,
+the capture or any rerun output.
+- **Correction**: BTA had already written both files at 10:29 KST (`generatedAt`
+  2026-09-30T01:29:37Z), so the protocol does not predate their existence. It does predate
+  reading them.
+- AkariSP reads only the prompt set. The capture file (`harness-outputs-refs.json`) is not read.
+
+**Prompt set received**
+- File: `inputs/harness-prompts-refs.json`, byte-identical to BTA
+  `specs/013-numbers-by-reference/evidence/`.
+- sha1: `9468dafbb0e0ea20edff4d9a08c6f2e282a72313`.
+- It has 33 items, all filled, with 10–13 refs each. Every ref name fits the treatment RegExp.
 
 **Scope and inputs**
 - The research is a rerun of R1's control-against-constraint comparison on the BTA workload.
