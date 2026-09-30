@@ -284,6 +284,87 @@ the failure with the prompt only.
   - Type 2 can be repaired when the number equals exactly one known value.
   - A constraint cannot prevent type 4.
 - A rerun therefore has to count violations by type and by whether they can be repaired.
+
+#### Consumer-workload rerun: fixed protocol (written 2026-09-30 before any capture was seen)
+
+This protocol is fixed before the prompt set, the capture and any rerun output exist.
+
+**Scope and inputs**
+- The research is a rerun of R1's control-against-constraint comparison on the BTA workload.
+- The prompt set comes from BTA `scripts/harness-prompts.ts`: file `harness-prompts-refs.json`.
+  - It has 33 `items`, in the order of repetition 1 (25 questions × holdings).
+  - Each item has `finalPrompt`, `questionText` and `refs[]` (`name`, `factId`, `shown`).
+  - The three upstream slots are filled from BTA's native capture.
+  - The file is copied unchanged to `experiments/structured-output/inputs/`, and its sha1 is
+    recorded.
+- The capture's own `finalDecision` answers are prompt-only outputs. They are **not** used for
+  any gate and are only reported as a separate observation.
+
+**Session conditions**
+- The conditions match the app: the default Prompt API template has no creation options and no
+  `initialPrompts`, and each attempt sends one message, `[{ role: 'user', content: finalPrompt }]`.
+- Differences from the app are recorded, not corrected:
+  - one base for the whole run instead of one runtime per graph run;
+  - native calls directly instead of AkariSP, which cannot pass the option;
+  - no upstream roles run in the same session history.
+
+**Arms and order**
+- **control**: no options besides `signal`.
+- **treatment**: `responseConstraint: /^([^0-9{}]|\{[A-Z][0-9]+[a-z]?\})*$/`.
+- 3 warmup attempts per arm on items 0–2 are not counted. Then each of the 33 items runs once per
+  arm, ABBA over pairs of items.
+- The timeout is 120 s per attempt, and a timeout is a provider error.
+- Nothing is retried, and there is no second run unless the first is BLOCKED.
+
+**Violation rule v1** (`refs-rules.js`), applied to the raw output
+- **Numbers**:
+  - A number is `\d[\d,]*(\.\d+)?`, optionally followed by `억` (×10⁸) or `만` (×10⁴).
+  - Adjacent tokens with falling units, separated only by spaces, are summed, so `6만 5,320`
+    is 65,320.
+  - `YYYY-MM-DD` is one date token.
+  - Values are compared as absolute values.
+  - Ref values are parsed from `shown` with the same parser.
+- **Exempt**:
+  - numbers whose value appears in `questionText`;
+  - integers ≤ 10 with no `%`, `억` or `만`, following BTA's "counts ≤ 10 are never extracted".
+- **Braced reference**: `\{\s*[A-Za-z]\d+[A-Za-z]?\s*\}`, normalized as BTA does (upper letter,
+  lower suffix).
+
+**Violation types** (first match per span)
+
+| Type | Rule | Repairable |
+|---|---|---|
+| `combined` (type 3) | braces holding two or more label-like names separated by `,` | yes if every name is known |
+| `unknown_ref` | a braced name not in `refs` | no |
+| `unbraced` | a known name outside braces | yes |
+| `duplicate` (type 1) | a non-exempt number whose value equals a braced reference within 12 characters that hold no other digit | yes (delete it) |
+| `bare` (type 2) | any other non-exempt number | yes only if every ref with that value has the same `shown`; otherwise no, including rounded, computed or invented numbers |
+
+- Type 4 (wrong reference) is semantic and is not counted automatically. It is reported only from
+  a hand audit, labelled as such.
+
+**Per-arm metrics**
+- answers with ≥ 1 violation;
+- answers with ≥ 1 **unrepairable** violation;
+- counts per type;
+- provider error names;
+- `no_ref` answers (no reference at all);
+- latency median and output-length median.
+
+**Gates** (same order as contracts/evidence-and-decision.md)
+1. **BLOCKED**: availability is not `available`, or the run aborted.
+2. **Not reproduced**: control answers with ≥ 1 violation = 0 → NO_CHANGE.
+3. **FR-1304 analogue**. Let c be the number of control answers with a violation. This gate is met
+   when all of the following hold:
+   - treatment answers with a violation ≤ ⌊c/2⌋;
+   - no new provider error names in the treatment (`SyntaxError` counts as new);
+   - failing it → NO_CHANGE.
+4. **Workaround**: control answers with an unrepairable violation = 0 → NO_CHANGE.
+5. Otherwise → REQUIRES_REVIEW against gates 5–8. There is no automatic API change.
+
+**Known differences from BTA's rule, recorded rather than resolved**
+- The treatment RegExp also forbids the exempt numbers and dates, and lowercase or spaced labels.
+- The number parser is simpler than BTA `claims()`.
 - **Not covered**:
   - This is one workload, one device and one run.
   - Chrome's supported RegExp subset was not mapped beyond the two forms above.
